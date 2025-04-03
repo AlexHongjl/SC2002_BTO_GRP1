@@ -1,37 +1,31 @@
 package bto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-//  Inherits from User and implements enquiryInterface to manage enquiries
+// Inherits from User and implements enquiryInterface to manage enquiries
 public class HDBofficer extends User implements enquiryInterface {
 
     private List<Project> registeredProjects; // Projects officer is approved to handle
-    private List<OfficerRegistration> officerRegistrations; // Officer's registration records
-    private List<BTOapplication> applications; // applications under officer incharge project
+    private List<BTOapplication> applications; // applications under officer assigned project
     private List<enquiry> enquiries; // Enquiries submitted for project
+    private List<String> appliedProjectIDs; // Tracks officer registration attempts (only 1 per project)
 
     public HDBofficer(String userID, String password, String name) {
         super(userID, password, name);
         this.registeredProjects = new ArrayList<>();
-        this.officerRegistrations = new ArrayList<>();
         this.applications = new ArrayList<>();
         this.enquiries = new ArrayList<>();
+        this.appliedProjectIDs = new ArrayList<>();
     }
 
     public List<Project> getRegisteredProjects() {
         return registeredProjects;
     }
 
-    public List<OfficerRegistration> getOfficerRegistrations() {
-        return officerRegistrations;
-    }
-
-    public void addRegisteredProject(Project project) {
-        registeredProjects.add(project);
-    }
-
+    //Check if officer is approved for the project
     public boolean isRegisteredForProject(String projectID) {
         for (Project p : registeredProjects) {
             if (p.getProjectID().equals(projectID)) {
@@ -39,38 +33,6 @@ public class HDBofficer extends User implements enquiryInterface {
             }
         }
         return false;
-    }
-
-    //Apply to register as HDB officer for a specific project
-    public void registerProject(Project project) {
-        if (hasAppliedToProject(project.getProjectID())) {
-            System.out.println("Already registered or pending approval for this project.");
-            return;
-        }
-
-        OfficerRegistration reg = new OfficerRegistration(this.getUserID(), project.getProjectID());
-        officerRegistrations.add(reg);
-        System.out.println("Registration request submitted for project: " + project.getProjectID());
-    }
-
-    //Check if officer has applied or registered for a project
-    public boolean hasAppliedToProject(String projectID) {
-        for (OfficerRegistration reg : officerRegistrations) {
-            if (reg.getProjectID().equals(projectID)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    //View the registration status for a given project
-    public String registrationStatus(String projectID) {
-        for (OfficerRegistration reg : officerRegistrations) {
-            if (reg.getProjectID().equals(projectID)) {
-                return reg.getStatus();
-            }
-        }
-        return "Not Registered";
     }
 
     //Adds BTO application to officer's list 
@@ -81,6 +43,57 @@ public class HDBofficer extends User implements enquiryInterface {
     //Add enquiry to officer's list 
     public void addEnquiry(enquiry e) {
         enquiries.add(e);
+    }
+
+    //Apply to be officer if:
+    // 1. Not already registered or pending
+    // 2. Not applicant for this project
+    // 3. Not officer for overlapping project
+    public void registerProject(Project project) {
+        String projectID = project.getProjectID();
+        LocalDate start = project.getApplicationStartDate();
+        LocalDate end = project.getApplicationEndDate();
+
+        if (appliedProjectIDs.contains(projectID)) {
+            System.out.println("Already registered or pending for this project.");
+            return;
+        }
+
+        if (hasAppliedAsApplicant(projectID)) {
+            System.out.println("Invalid: Already applied to this project as an applicant.");
+            return;
+        }
+
+        if (conflictsWithExistingRegistration(start, end)) {
+            System.out.println("Invalid: Handling another project within same period.");
+            return;
+        }
+
+        appliedProjectIDs.add(projectID); //Tracks applied projects
+        System.out.println("Officer registration request submitted for project: " + projectID);
+    }
+
+    //Check if user has applied to same project as applicant
+    private boolean hasAppliedAsApplicant(String projectID) {
+        for (BTOapplication app : applications) {
+            if (app.getUserID().equals(this.getUserID()) &&
+                app.getProjectId().equals(projectID)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Check for time conflict with already approved projects
+    private boolean conflictsWithExistingRegistration(LocalDate start, LocalDate end) {
+        for (Project p : registeredProjects) {
+            LocalDate s = p.getApplicationStartDate();
+            LocalDate e = p.getApplicationEndDate();
+            if (!(end.isBefore(s) || start.isAfter(e))) {
+                return true; // overlap found
+            }
+        }
+        return false;
     }
 
     //Display all enquiries under officer assigned project
