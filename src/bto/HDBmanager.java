@@ -3,13 +3,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Represents an HDB Manager with capabilities to manage BTO projects.
- * Uses traditional loops (no Stream API) and relies on Project.getProjectList().
- * Filter methods are left unimplemented.
- */
+//implement hdb manager functionality
 public class HDBmanager extends User {
-    private List<Project> managedProjects; // Only tracks projects this manager owns
+    private List<Project> managedProjects; // Only tracks projects this manager owns uses all project list under project to access all projects
 
     public HDBmanager(String name, String nric, String password) {
         super(name, nric, password);
@@ -37,36 +33,104 @@ public class HDBmanager extends User {
     }
 
     public void editBTOListings(int projectID, String field, Object newValue) {
-        Project project = findProjectByID(projectID);
+        Project project = Project.findProject(projectID);
         if (project == null || !managedProjects.contains(project)) {
             System.out.println("Error: Project not found or you don't have permission to edit it.");
             return;
         }
 
-        switch (field.toLowerCase()) {
-            case "projectname":
-                project.setProjectName((String) newValue);
-                break;
-            case "neighborhood":
-                project.setNeighborhood((String) newValue);
-                break;
-            // todo
-            default:
-                System.out.println("Error: Invalid field specified.");
+        try {
+            switch (field.toLowerCase()) {
+                case "projectname":
+                    project.setProjectName((String) newValue);
+                    break;
+                case "neighborhood":
+                    project.setNeighborhood((String) newValue);
+                    break;
+                case "twoRoomCount":
+                    int twoRoomCount = (Integer) newValue;
+                    if (twoRoomCount >= 0) {
+                        project.setTwoRoomCount(twoRoomCount);
+                    } else {
+                        System.out.println("Error: Room count cannot be negative.");
+                    }
+                    break;
+                case "threeRoomCount":
+                    int threeRoomCount = (Integer) newValue;
+                    if (threeRoomCount >= 0) {
+                        project.setThreeRoomCount(threeRoomCount);
+                    } else {
+                        System.out.println("Error: Room count cannot be negative.");
+                    }
+                    break;
+                case "visiblity":
+                    project.setVisible((Boolean) newValue);
+                    break;
+                case "openingdate":
+                    LocalDate newOpening = (LocalDate) newValue;
+                    if (newOpening.isAfter(project.getClosingDate())) {
+                        System.out.println("Error: Opening date must be before closing date.");
+                    } else if (isManagingProjectDuringPeriod(newOpening, project.getClosingDate())) {
+                        System.out.println("Error: You are already managing another project during this period.");
+                    } else {
+                        project.setOpeningDate(newOpening);
+                    }
+                    break;
+                case "closingdate":
+                    LocalDate newClosing = (LocalDate) newValue;
+                    if (newClosing.isBefore(project.getOpeningDate())) {
+                        System.out.println("Error: Closing date must be after opening date.");
+                    } else if (isManagingProjectDuringPeriod(project.getOpeningDate(), newClosing)) {
+                        System.out.println("Error: You are already managing another project during this period.");
+                    } else {
+                        project.setClosingDate(newClosing);
+                    }
+                    break;
+                case "officerslots":
+                    int slots = (Integer) newValue;
+                    if (slots >= project.getOfficers().size()) {
+                        project.setOfficerSlots(slots);
+                    } else {
+                        System.out.println("Error: Cannot set slots below current number of registered officers.");
+                    }
+                    break;
+                default:
+                    System.out.println("Error: Invalid field specified.");
+            }
+        } catch (ClassCastException e) {
+            System.out.println("Error: Invalid value type for field " + field);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
     public void deleteBTOListings(int projectID) {
-        Project project = findProjectByID(projectID);
-        if (project != null && managedProjects.remove(project)) {
-            System.out.println("Project deleted successfully.");
+        // Find project in both system and manager's list
+        Project project = Project.findProject(projectID);
+        
+        if (project == null) {
+            System.out.println("Error: Project not found.");
+            return;
+        }
+        
+        if (!managedProjects.contains(project)) {
+            System.out.println("Error: You don't have permission to delete this project.");
+            return;
+        }
+        
+        // Remove from both collections
+        boolean removedFromSystem = Project.removeProject(projectID);  // Assuming this static method exists
+        boolean removedFromManaged = managedProjects.remove(project);
+        
+        if (removedFromSystem && removedFromManaged) {
+            System.out.println("Project deleted successfully from all records.");
         } else {
-            System.out.println("Error: Project not found or you don't have permission to delete it.");
+            System.out.println("Error: Project could not be fully deleted.");
         }
     }
 
     public void toggleProjectVisibility(int projectID, boolean visible) {
-        Project project = findProjectByID(projectID);
+        Project project = Project.findProject(projectID);
         if (project != null && managedProjects.contains(project)) {
             project.setVisible(visible);
             System.out.println("Project visibility set to: " + visible);
@@ -107,7 +171,7 @@ public class HDBmanager extends User {
 
     // === Application Management ===
     public void approveBTOapplication(int projectID) {
-        Project project = findProjectByID(projectID);
+        Project project = Project.findProject(projectID);
         if (project == null || !managedProjects.contains(project)) {
             System.out.println("Error: Project not found or you don't have permission.");
             return;
@@ -133,7 +197,7 @@ public class HDBmanager extends User {
     }
 
     public void approveBTOwithdrawal(int projectID) {
-        Project project = findProjectByID(projectID);
+        Project project = Project.findProject(projectID);
         if (project == null || !managedProjects.contains(project)) {
             System.out.println("Error: Project not found or you don't have permission.");
             return;
@@ -168,7 +232,7 @@ public class HDBmanager extends User {
     }
 
     // === Helper Methods ===
-    private Project findProjectByID(int projectID) {
+    private Project Project.findProject(int projectID) {
         for (Project project : Project.getProjectList()) { // Access all projects via Project class
             if (project.getProjectID() == projectID) {
                 return project;
