@@ -5,16 +5,16 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-// Inherits from User and implements enquiryInterface to manage enquiries
-public class HDBofficer extends User implements enquiryInterface {
+// Inherits from Applicant and implements enquiryInterface to manage enquiries
+public class HDBofficer extends Applicant implements enquiryInterface {
 
     private List<Project> registeredProjects; // Projects officer is approved to handle
     private List<BTOapplication> applications; // applications under officer assigned project
     private List<enquiry> enquiries; // Enquiries submitted for project
     private List<String> appliedProjectIDs; // Tracks officer registration attempts (only 1 per project)
 
-    public HDBofficer(String userID, String password, String name) {
-        super(userID, password, name);
+    public HDBofficer(String userID, String password, String name, boolean married, int age) {
+        super(userID, password, name, married, age); // Call Applicant constructor
         this.registeredProjects = new ArrayList<>();
         this.applications = new ArrayList<>();
         this.enquiries = new ArrayList<>();
