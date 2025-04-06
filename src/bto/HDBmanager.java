@@ -119,7 +119,7 @@ public class HDBmanager extends User {
         }
         
         // Remove from both collections
-        boolean removedFromSystem = Project.removeProject(projectID);  // Assuming this static method exists
+        boolean removedFromSystem = Project.removeProject(projectID);  //need project to have
         boolean removedFromManaged = managedProjects.remove(project);
         
         if (removedFromSystem && removedFromManaged) {
