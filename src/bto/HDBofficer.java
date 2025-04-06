@@ -1,5 +1,6 @@
 package bto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ public class HDBofficer extends Applicant implements enquiryInterface {
     private List<BTOapplication> applications;
     private List<enquiry> enquiries;
     private List<String> appliedProjectIDs;
+    private List<OfficerRegistration> officerApplications;
 
     public HDBofficer(String userID, String password, String name, boolean married, int age) {
         super(userID, password, name, married, age);
@@ -17,14 +19,25 @@ public class HDBofficer extends Applicant implements enquiryInterface {
         this.applications = new ArrayList<>();
         this.enquiries = new ArrayList<>();
         this.appliedProjectIDs = new ArrayList<>();
+        this.officerApplications = new ArrayList<>();
     }
 
     public List<Project> getRegisteredProjects() {
         return registeredProjects;
     }
+    public void addRegisteredProject(Project project) {
+    	registeredProjects.add(project);
+    }
 
     public List<BTOapplication> getApplications() {
         return applications;
+    }
+    public List<OfficerRegistration> getOfficerApplications() {
+        return officerApplications;
+    }
+
+    public void addOfficerApplication(OfficerRegistration application) {
+        officerApplications.add(application);
     }
 
     public List<String> getAppliedProjectIDs() {
@@ -114,5 +127,41 @@ public class HDBofficer extends Applicant implements enquiryInterface {
             }
         }
         System.out.println("No valid booking found for receipt.");
+    }
+    private boolean checkIfApplicant(Project project) {
+        Project appliedProject = this.getAppliedProject(); //reference to applicant method
+        if (appliedProject != null) {
+            return project.getProjectId() == appliedProject.getProjectId();
+        }
+        return false;
+    }
+    private boolean checkOverlap(Project project) {
+        // Get the new project's dates
+    	if (project == null) return false;
+        
+        LocalDate newStart = project.getOpeningDate();
+        LocalDate newEnd = project.getClosingDate();
+        if (newStart == null || newEnd == null) return false;
+        
+        // Check all existing applications (excluding denied ones)
+        for (OfficerRegistration registration : officerApplications) {
+            // Skip denied applications
+            if (registration.getRegistrationStatus().equalsIgnoreCase("Rejected")) {
+                continue;
+            }
+            
+            Project existingProject = registration.getProject();
+            LocalDate existingStart = existingProject.getOpeningDate();
+            LocalDate existingEnd = existingProject.getClosingDate();
+            
+            // Check for date overlap
+            if (!(newEnd.isBefore(existingStart) || newStart.isAfter(existingEnd))) {
+                // Dates overlap
+                return true;
+            }
+        }
+        
+        // No overlapping dates found
+        return false;
     }
 }
