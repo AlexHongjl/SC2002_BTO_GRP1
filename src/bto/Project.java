@@ -54,7 +54,6 @@ public class Project {
     public static boolean removeProjectById(int projectId) {
         for (int i = 0; i < count; i++) {
             if (projects[i].projectId == projectId) {
-                // Shift remaining projects left
                 for (int j = i; j < count - 1; j++) {
                     projects[j] = projects[j + 1];
                 }
@@ -80,7 +79,9 @@ public class Project {
             System.out.println("Project ID: " + projects[i].projectId + ", Name: " + projects[i].projectName);
         }
     }
+    
     //------------------------------------------------------------------separate get set functions
+    
     public int getProjectId() {
         return projectId;
     }
