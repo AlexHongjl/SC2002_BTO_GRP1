@@ -25,6 +25,8 @@ public class Enquiry {
         System.out.println("Enquiry Status Changed: " + status);
     }
     
+    
+    //------------------------------------------------------------------separate get set functions
     public int getEnquiryID() {
         return enquiryID;
     }
