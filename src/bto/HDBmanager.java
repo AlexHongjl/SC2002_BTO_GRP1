@@ -33,7 +33,7 @@ public class HDBmanager extends User {
     }
 
     public void editBTOListings(int projectID, String field, Object newValue) {
-        Project project = Project.findProject(projectID);
+        Project project = ProjectArray.getProjectById(projectID);
         if (project == null || !managedProjects.contains(project)) {
             System.out.println("Error: Project not found or you don't have permission to edit it.");
             return;
@@ -106,7 +106,7 @@ public class HDBmanager extends User {
 
     public void deleteBTOListings(int projectID) {
         // Find project in both system and manager's list
-        Project project = Project.findProject(projectID);
+        Project project = ProjectArray.getProjectById(projectID);
         
         if (project == null) {
             System.out.println("Error: Project not found.");
@@ -119,7 +119,7 @@ public class HDBmanager extends User {
         }
         
         // Remove from both collections
-        boolean removedFromSystem = Project.removeProject(projectID);  // Assuming this static method exists
+        boolean removedFromSystem = ProjectArray.removeProjectById(projectID);  //need project to have
         boolean removedFromManaged = managedProjects.remove(project);
         
         if (removedFromSystem && removedFromManaged) {
@@ -130,9 +130,9 @@ public class HDBmanager extends User {
     }
 
     public void toggleProjectVisibility(int projectID, boolean visible) {
-        Project project = Project.findProject(projectID);
+        Project project = ProjectArray.getProjectById(projectID);
         if (project != null && managedProjects.contains(project)) {
-            project.setVisible(visible);
+            project.setProjectVisibility(visible);
             System.out.println("Project visibility set to: " + visible);
         } else {
             System.out.println("Error: Project not found or you don't have permission to modify it.");
@@ -170,8 +170,8 @@ public class HDBmanager extends User {
     }
 
     // === Application Management ===
-    public void approveBTOapplication(int projectID) {
-        Project project = Project.findProject(projectID);
+    public void approveOfficerRegistration(int projectID) {
+        Project project = ProjectArray.getProjectById(projectID);
         if (project == null || !managedProjects.contains(project)) {
             System.out.println("Error: Project not found or you don't have permission.");
             return;
@@ -197,7 +197,7 @@ public class HDBmanager extends User {
     }
 
     public void approveBTOwithdrawal(int projectID) {
-        Project project = Project.findProject(projectID);
+        Project project = ProjectArray.getProjectById(projectID);
         if (project == null || !managedProjects.contains(project)) {
             System.out.println("Error: Project not found or you don't have permission.");
             return;
@@ -232,7 +232,7 @@ public class HDBmanager extends User {
     }
 
     // === Helper Methods ===
-    private Project Project.findProject(int projectID) {
+    private Project ProjectArray.getProjectById(int projectID) {
         for (Project project : Project.getProjectList()) { // Access all projects via Project class
             if (project.getProjectID() == projectID) {
                 return project;
