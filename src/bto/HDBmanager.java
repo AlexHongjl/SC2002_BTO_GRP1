@@ -1,4 +1,5 @@
 package bto;
+import java.util.stream.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class HDBmanager extends User {
     }
 
     public void editBTOListings(int projectID, String field, Object newValue) {
-        Project project = ProjectArray.getProjectById(projectID);
+        Project project = Project.getProjectById(projectID);
         if (project == null || !managedProjects.contains(project)) {
             System.out.println("Error: Project not found or you don't have permission to edit it.");
             return;
@@ -45,7 +46,7 @@ public class HDBmanager extends User {
                     project.setProjectName((String) newValue);
                     break;
                 case "neighborhood":
-                    project.setNeighborhood((String) newValue);
+                    project.setNeighbourhood((String) newValue);
                     break;
                 case "twoRoomCount":
                     int twoRoomCount = (Integer) newValue;
@@ -64,7 +65,7 @@ public class HDBmanager extends User {
                     }
                     break;
                 case "visiblity":
-                    project.setVisible((Boolean) newValue);
+                    project.setProjectVisibility((Boolean) newValue);
                     break;
                 case "openingdate":
                     LocalDate newOpening = (LocalDate) newValue;
@@ -106,7 +107,7 @@ public class HDBmanager extends User {
 
     public void deleteBTOListings(int projectID) {
         // Find project in both system and manager's list
-        Project project = ProjectArray.getProjectById(projectID);
+        Project project = Project.getProjectById(projectID);
         
         if (project == null) {
             System.out.println("Error: Project not found.");
@@ -119,7 +120,7 @@ public class HDBmanager extends User {
         }
         
         // Remove from both collections
-        boolean removedFromSystem = ProjectArray.removeProjectById(projectID);  //need project to have
+        boolean removedFromSystem = Project.removeProjectById(projectID);  //need project to have
         boolean removedFromManaged = managedProjects.remove(project);
         
         if (removedFromSystem && removedFromManaged) {
@@ -130,7 +131,7 @@ public class HDBmanager extends User {
     }
 
     public void toggleProjectVisibility(int projectID, boolean visible) {
-        Project project = ProjectArray.getProjectById(projectID);
+        Project project = Project.getProjectById(projectID);
         if (project != null && managedProjects.contains(project)) {
             project.setProjectVisibility(visible);
             System.out.println("Project visibility set to: " + visible);
@@ -171,13 +172,13 @@ public class HDBmanager extends User {
 
     // === Application Management ===
     public void approveOfficerRegistration(int projectID) {
-        Project project = ProjectArray.getProjectById(projectID);
+        Project project = Project.getProjectById(projectID);
         if (project == null || !managedProjects.contains(project)) {
             System.out.println("Error: Project not found or you don't have permission.");
             return;
         }
 
-        for (Application app : project.getApplications()) {
+        for (BTOapplication app : project.getApplications()) {
             if (app.getStatus().equals("Pending")) {
                 String flatType = app.getFlatType();
                 if (flatType.equals(project.getType1()) && project.getUnitsType1() > 0) {
@@ -197,7 +198,7 @@ public class HDBmanager extends User {
     }
 
     public void approveBTOwithdrawal(int projectID) {
-        Project project = ProjectArray.getProjectById(projectID);
+        Project project = Project.getProjectById(projectID);
         if (project == null || !managedProjects.contains(project)) {
             System.out.println("Error: Project not found or you don't have permission.");
             return;
@@ -221,16 +222,58 @@ public class HDBmanager extends User {
     }
 
     // === Reports & Views (Unimplemented Filters) ===
-    public List<Application> generateReport(String filter) {
-        System.out.println("Filter functionality not yet implemented.");
-        return new ArrayList<>();
+    public List<BTOapplication> generateReport(String filter) {
+        return managedProjects.stream()
+            .flatMap(project -> project.getApplications().stream())
+            .filter(app -> "booked".equalsIgnoreCase(app.getStatus()))
+            .filter(app -> {
+                Applicant applicant = app.getApplicant();
+                return switch (filter.toLowerCase()) {
+                    case "married" -> applicant.isMarried();
+                    case "single" -> !applicant.isMarried();
+                    case "2-room", "3-room" -> app.getFlatType().equalsIgnoreCase(filter);
+                    case "all" -> true;
+                    default -> false;
+                };
+            })
+            .toList();
     }
+    public List<Project> viewAllProjects(String field) {
+        if (field == null || field.isEmpty()) {
+            // Default to sorting by project name alphabetically if no field is given.
+            return Project.getProjectList().stream()
+                .sorted(Comparator.comparing(Project::getProjectName, String.CASE_INSENSITIVE_ORDER))
+                .collect(Collectors.toList());
+        }
 
-    public List<Project> viewAllProjects(String filter) {
-        System.out.println("Filter functionality not yet implemented.");
-        return Project.getProjectList(); // Use static method from Project class
+        return Project.getProjectList().stream()
+            .sorted((p1, p2) -> {
+                switch (field.toLowerCase()) {
+                    case "projectid":
+                        return Integer.compare(p1.getProjectID(), p2.getProjectID());
+                    case "projectname":
+                        return p1.getProjectName().compareToIgnoreCase(p2.getProjectName());
+                    case "neighborhood":
+                        return p1.getNeighbourhood().compareToIgnoreCase(p2.getNeighbourhood());
+                    case "tworoomcount":
+                        return Integer.compare(p1.getTwoRoomCount(), p2.getTwoRoomCount());
+                    case "threeroomcount":
+                        return Integer.compare(p1.getThreeRoomCount(), p2.getThreeRoomCount());
+                    case "projectvisibility":
+                        return Boolean.compare(p1.isProjectVisibility(), p2.isProjectVisibility());
+                    case "openingdate":
+                        return p1.getOpeningDate().compareTo(p2.getOpeningDate());
+                    case "closingdate":
+                        return p1.getClosingDate().compareTo(p2.getClosingDate());
+                    case "officerslots":
+                        return Integer.compare(p1.getOfficerSlots(), p2.getOfficerSlots());
+                    default:
+                        System.out.println("Unknown sorting field: " + field);
+                        return 0;
+                }
+            })
+            .collect(Collectors.toList());
     }
-
     // === Helper Methods ===
     private Project ProjectArray.getProjectById(int projectID) {
         for (Project project : Project.getProjectList()) { // Access all projects via Project class
