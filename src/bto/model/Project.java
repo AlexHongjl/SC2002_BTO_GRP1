@@ -1,4 +1,4 @@
-package bto;
+package bto.model;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -34,7 +34,7 @@ public class Project {
     }
 
     public void displayApplicantList() {
-        System.out.println("Displaying Applicant List...");
+        System.out.println("Displaying Applicant List...);
     }
     
     public int getTwoRoomAvailability() {

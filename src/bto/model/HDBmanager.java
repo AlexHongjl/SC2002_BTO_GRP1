@@ -1,5 +1,8 @@
-package bto;
+package bto.model;
 import java.util.stream.*;
+
+import bto.service.User;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

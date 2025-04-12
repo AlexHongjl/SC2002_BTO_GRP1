@@ -1,4 +1,6 @@
-package bto;
+package test;
+
+import bto.model.BTOapplication;
 
 public class BTOApplicationTest {
     public static void main(String[] args) {

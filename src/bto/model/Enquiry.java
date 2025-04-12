@@ -1,4 +1,4 @@
-package bto;
+package bto.model;
 
 public class Enquiry {
     private int enquiryID;
