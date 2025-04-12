@@ -1,9 +1,11 @@
-package bto;
+package bto.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import bto.util.enquiryInterface;
 
 public class HDBofficer extends Applicant implements enquiryInterface {
 
@@ -25,13 +27,15 @@ public class HDBofficer extends Applicant implements enquiryInterface {
     public List<Project> getRegisteredProjects() {
         return registeredProjects;
     }
+
     public void addRegisteredProject(Project project) {
-    	registeredProjects.add(project);
+        registeredProjects.add(project);
     }
 
     public List<BTOapplication> getApplications() {
         return applications;
     }
+
     public List<OfficerRegistration> getOfficerApplications() {
         return officerApplications;
     }
@@ -44,9 +48,9 @@ public class HDBofficer extends Applicant implements enquiryInterface {
         return appliedProjectIDs;
     }
 
-    public boolean isRegisteredForProject(String projectID) {
+    public boolean isRegisteredForProject(int projectId) {
         for (Project p : registeredProjects) {
-            if (p.getProjectID().equals(projectID)) {
+            if (p.getProjectId() == projectId) {
                 return true;
             }
         }
@@ -57,7 +61,7 @@ public class HDBofficer extends Applicant implements enquiryInterface {
         applications.add(app);
     }
 
-    public void addEnquiry(enquiry e) {
+    public void addEnquiry(Enquiry e) {
         enquiries.add(e);
     }
 
@@ -65,7 +69,7 @@ public class HDBofficer extends Applicant implements enquiryInterface {
     public void viewEnquiriesAll() {
         System.out.println("---- Enquiries for your assigned projects ----");
         boolean found = false;
-        for (enquiry e : enquiries) {
+        for (Enquiry e : enquiries) {
             if (isRegisteredForProject(e.getProjectId())) {
                 System.out.println(e.toString());
                 found = true;
@@ -78,7 +82,7 @@ public class HDBofficer extends Applicant implements enquiryInterface {
 
     @Override
     public void replyEnquiry(int enquiryId, String replyMessage) {
-        for (enquiry e : enquiries) {
+        for (Enquiry e : enquiries) {
             if (e.getEnquiryID() == enquiryId && isRegisteredForProject(e.getProjectId())) {
                 String fullReply = "[" + this.getName() + " | " + LocalDateTime.now() + "] " + replyMessage;
                 e.reply(fullReply);
@@ -90,17 +94,25 @@ public class HDBofficer extends Applicant implements enquiryInterface {
     }
 
     public void bookUnitForApplicant(String userID, String unitType, Project project) {
-        if (!isRegisteredForProject(project.getProjectID())) {
+        if (!isRegisteredForProject(project.getProjectId())) {
             System.out.println("Access denied: you are not handling this project.");
             return;
         }
 
         for (BTOapplication app : applications) {
             if (app.getUserID().equals(userID) &&
-                app.getProjectId().equals(project.getProjectID()) &&
+                app.getProjectId() == project.getProjectId() &&
                 app.isBookable()) {
 
-                boolean booked = project.allocateUnit(unitType);
+                boolean booked = false;
+                if (unitType.equals("2-Room") && project.getTwoRoomCount() > 0) {
+                    project.setTwoRoomCount(project.getTwoRoomCount() - 1);
+                    booked = true;
+                } else if (unitType.equals("3-Room") && project.getThreeRoomCount() > 0) {
+                    project.setThreeRoomCount(project.getThreeRoomCount() - 1);
+                    booked = true;
+                }
+
                 if (booked) {
                     app.updateStatus("Booked", unitType);
                     System.out.println("Booking successful for " + userID);
@@ -128,40 +140,36 @@ public class HDBofficer extends Applicant implements enquiryInterface {
         }
         System.out.println("No valid booking found for receipt.");
     }
+
     private boolean checkIfApplicant(Project project) {
-        Project appliedProject = this.getAppliedProject(); //reference to applicant method
+        Project appliedProject = this.getAppliedProject();
         if (appliedProject != null) {
             return project.getProjectId() == appliedProject.getProjectId();
         }
         return false;
     }
+
     private boolean checkOverlap(Project project) {
-        // Get the new project's dates
-    	if (project == null) return false;
-        
+        if (project == null) return false;
+
         LocalDate newStart = project.getOpeningDate();
         LocalDate newEnd = project.getClosingDate();
         if (newStart == null || newEnd == null) return false;
-        
-        // Check all existing applications (excluding denied ones)
+
         for (OfficerRegistration registration : officerApplications) {
-            // Skip denied applications
             if (registration.getRegistrationStatus().equalsIgnoreCase("Rejected")) {
                 continue;
             }
-            
+
             Project existingProject = registration.getProject();
             LocalDate existingStart = existingProject.getOpeningDate();
             LocalDate existingEnd = existingProject.getClosingDate();
-            
-            // Check for date overlap
+
             if (!(newEnd.isBefore(existingStart) || newStart.isAfter(existingEnd))) {
-                // Dates overlap
                 return true;
             }
         }
-        
-        // No overlapping dates found
+
         return false;
     }
 }

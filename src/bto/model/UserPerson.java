@@ -1,4 +1,4 @@
-package bto;
+package bto.model;
 
 public class UserPerson {
 	private String name;

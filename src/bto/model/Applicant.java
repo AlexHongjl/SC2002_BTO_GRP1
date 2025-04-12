@@ -1,4 +1,4 @@
-package bto;
+package bto.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +78,11 @@ public class Applicant extends UserPerson {
 
     public boolean isWithdrawn() {
         return hasWithdrawn;
+    }
+    
+    public Project getAppliedProject() {
+        if (appliedProjectId == -1) return null;
+        return Project.getProjectById(appliedProjectId);
     }
 
     //for enquiries

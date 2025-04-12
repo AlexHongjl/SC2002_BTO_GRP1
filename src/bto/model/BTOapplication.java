@@ -1,13 +1,13 @@
-package bto;
+package bto.model;
 
 public class BTOapplication {
     private String userID;
-    private String projectId;
+    private int projectId;
     private String unitType; // "2-Room" or "3-Room"
     private String status;   // Pending, Successful, Unsuccessful, Booked
     private String timestamp; // last status update
 
-    public BTOapplication(String userID, String projectId) {
+    public BTOapplication(String userID, int projectId) {
         this.userID = userID;
         this.projectId = projectId;
         this.status = "Pending";
@@ -29,7 +29,7 @@ public class BTOapplication {
         return userID;
     }
 
-    public String getProjectId() {
+    public int getProjectId() {
         return projectId;
     }
 

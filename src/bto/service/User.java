@@ -1,7 +1,9 @@
-package bto;
+package bto.service;
 
 import java.io.*;
 import java.util.*;
+
+import bto.model.UserPerson;
 
 public class User {
 	
@@ -23,8 +25,9 @@ public class User {
 
 	public static List<UserPerson> readUsersFromFile(String filename, String userType) {
 		List<UserPerson> users = new ArrayList<>();
+		String path = "data/" + filename;
 
-		try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+		try (BufferedReader br = new BufferedReader(new FileReader(path))) {
 			String line;
 			boolean isFirstLine = true;
 

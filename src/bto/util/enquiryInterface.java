@@ -1,4 +1,4 @@
-package bto;
+package bto.util;
 
 public interface enquiryInterface {
 	 void viewEnquiriesAll();
