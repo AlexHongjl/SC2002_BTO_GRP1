@@ -174,7 +174,7 @@ public class HDBmanager extends User {
     }
 
     // === Application Management ===
-    public void approveOfficerRegistration(int projectID) {
+    public void approveBTOapplication(int projectID) {
         Project project = Project.getProjectById(projectID);
         if (project == null || !managedProjects.contains(project)) {
             System.out.println("Error: Project not found or you don't have permission.");
