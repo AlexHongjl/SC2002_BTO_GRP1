@@ -54,6 +54,6 @@ public class BTOapplication {
     }
     
     public boolean deniedApplication() {
-    	return status.equals("Denied");
+    	return status.equals("Unsuccessful");
     }
 }
