@@ -16,8 +16,7 @@ public class User {
 			allUsers.addAll(userList);
 		}
 
-		// Test output
-		for (UserPerson user : allUsers) {
+		for (UserPerson user : allUsers) { // Test output
 			System.out.println(user.getName() + " | " + user.getNRIC() + " | " + user.getUserType());
 		}
 	}
@@ -68,12 +67,16 @@ public class User {
 	}
 	
 	public void changePassword(String userNRIC, String passwordToChange) {
+		boolean found = false;
 		for (UserPerson user : allUsers) {
 			if (user.getNRIC().equals(userNRIC)) {
 				user.changePassword(passwordToChange);
 				System.out.println("Password changed!");
+				found = true;
 			}
 		}
+		if (!found) {
+			System.out.println("User not found. Password not changed");
 	}
 }
 
