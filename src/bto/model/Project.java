@@ -64,7 +64,34 @@ public class Project {
                                ") - Status: " + reg.getRegistrationStatus());
         }
     }
-    
+    public static void display(int projectIdToFind) {
+        boolean found = false;
+        for (int i = 0; i < count; i++) {
+            if (projects[i] != null && projects[i].projectId == projectIdToFind) {
+                Project project = projects[i];
+                System.out.println("===== Project Details =====");
+                System.out.println("Project ID: " + project.projectId);
+                System.out.println("Project Name: " + project.projectName);
+                System.out.println("Neighbourhood: " + project.neighbourhood);
+                System.out.println("Two Room Count: " + project.twoRoomCount);
+                System.out.println("Three Room Count: " + project.threeRoomCount);
+                System.out.println("Project Visibility: " + (project.projectVisibility ? "Visible" : "Hidden"));
+                System.out.println("Manager In Charge: " + project.managerInCharge);
+                System.out.println("Officer Slots: " + project.officerSlots);
+                System.out.println("Open Date: " + (project.openDate != null ? project.openDate : "Not set"));
+                System.out.println("Close Date: " + (project.closeDate != null ? project.closeDate : "Not set"));
+                System.out.println("Number of Officers: " + project.officerList.size());
+                System.out.println("Number of Officer Applications: " + project.officerApplicantList.size());
+                System.out.println("==========================");
+                found = true;
+                break;
+            }
+        }
+        
+        if (!found) {
+            System.out.println("No project found with ID: " + projectIdToFind);
+        }
+    }
     
   //------------------------------------------------------------------separate proj list functions
     
