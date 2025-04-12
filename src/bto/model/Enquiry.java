@@ -6,13 +6,15 @@ public class Enquiry {
     private String message;
     private String response;
     private boolean status;
+    private int projectId;
 
-    public Enquiry(int enquiryID, String applicantName, String message) {
+    public Enquiry(int enquiryID, String applicantName, String message, int projectId) {
         this.enquiryID = enquiryID;
         this.applicantName = applicantName;
         this.message = message;
         this.response = "";
         this.status = false;
+        this.projectId = projectId;
     }
 
     public void reply(String replyMessage) {
@@ -37,6 +39,10 @@ public class Enquiry {
     
     public String getApplicantName() {
         return applicantName;
+    }
+    
+    public int getProjectId() {
+        return projectId;
     }
 
     public void setApplicantName(String applicantName) {
