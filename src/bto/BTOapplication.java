@@ -48,4 +48,12 @@ public class BTOapplication {
     public boolean isBooked() {
         return status.equals("Booked");
     }
+    
+    public boolean approveApplication() {
+    	return status.equals("Approved");
+    }
+    
+    public boolean deniedApplication() {
+    	return status.equals("Denied");
+    }
 }
