@@ -1,8 +1,10 @@
-package bto;
+package bto.model;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Project {
     private int projectId;
@@ -64,6 +66,123 @@ public class Project {
                                ") - Status: " + reg.getRegistrationStatus());
         }
     }
+    public static void displayAllProjects(String field) {
+        // Create a list from the projects array, skipping null elements
+        List<Project> projectList = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            if (projects[i] != null) {
+                projectList.add(projects[i]);
+            }
+        }
+
+        // Sort the list based on the field
+        if (field == null || field.isEmpty()) {
+            Collections.sort(projectList, Comparator.comparing(Project::getProjectName, String.CASE_INSENSITIVE_ORDER));
+        } else {
+            Collections.sort(projectList, (p1, p2) -> {
+                switch (field.toLowerCase()) {
+                    case "projectid":
+                        return Integer.compare(p1.getProjectId(), p2.getProjectId());
+                    case "projectname":
+                        return p1.getProjectName().compareToIgnoreCase(p2.getProjectName());
+                    case "neighborhood":
+                        return p1.getNeighbourhood().compareToIgnoreCase(p2.getNeighbourhood());
+                    case "tworoomcount":
+                        return Integer.compare(p1.getTwoRoomCount(), p2.getTwoRoomCount());
+                    case "threeroomcount":
+                        return Integer.compare(p1.getThreeRoomCount(), p2.getThreeRoomCount());
+                    case "projectvisibility":
+                        return Boolean.compare(p1.isProjectVisibility(), p2.isProjectVisibility());
+                    case "openingdate":
+                        return p1.getOpeningDate().compareTo(p2.getOpeningDate());
+                    case "closingdate":
+                        return p1.getClosingDate().compareTo(p2.getClosingDate());
+                    case "officerslots":
+                        return Integer.compare(p1.getOfficerSlots(), p2.getOfficerSlots());
+                    default:
+                        System.out.println("Unknown sorting field: " + field);
+                        return 0;
+                }
+            });
+        }
+
+        // Print all details for each project
+        System.out.println("=============== All Projects ===============");
+        for (Project project : projectList) {
+            System.out.println("--------------------------------------------");
+            System.out.println("Project ID: " + project.getProjectId());
+            System.out.println("Name: " + project.getProjectName());
+            System.out.println("Neighbourhood: " + project.getNeighbourhood());
+            System.out.println("Two Room Count: " + project.getTwoRoomCount());
+            System.out.println("Three Room Count: " + project.getThreeRoomCount());
+            System.out.println("Project Visibility: " + (project.isProjectVisibility() ? "Visible" : "Hidden"));
+            System.out.println("Opening Date: " + (project.getOpeningDate() != null ? project.getOpeningDate() : "Not set"));
+            System.out.println("Closing Date: " + (project.getClosingDate() != null ? project.getClosingDate() : "Not set"));
+            System.out.println("Officer Slots: " + project.getOfficerSlots());
+            System.out.println("Manager In Charge: " + (project.getManagerInCharge() != null ? project.getManagerInCharge().getName() : "None"));
+            System.out.println("Number of Officers Assigned: " + project.getOfficers().size());
+            System.out.println("Number of Officer Applications: " + project.getOfficerRegistrations().size());
+        }
+        System.out.println("============================================");
+    }
+
+
+    public static void displayAllProjectsApplicant(String field) {
+        // Create a list from the projects array, including only visible projects
+        List<Project> visibleProjects = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            if (projects[i] != null && projects[i].isProjectVisibility()) {
+                visibleProjects.add(projects[i]);
+            }
+        }
+        
+        // Sort the list based on the field
+        if (field == null || field.isEmpty()) {
+            // Default sort by project name
+            Collections.sort(visibleProjects, Comparator.comparing(Project::getProjectName, String.CASE_INSENSITIVE_ORDER));
+        } else {
+            // Sort based on the specified field
+            Collections.sort(visibleProjects, (p1, p2) -> {
+                switch (field.toLowerCase()) {
+                    case "projectid":
+                        return Integer.compare(p1.getProjectId(), p2.getProjectId());
+                    case "projectname":
+                        return p1.getProjectName().compareToIgnoreCase(p2.getProjectName());
+                    case "neighborhood":
+                        return p1.getNeighbourhood().compareToIgnoreCase(p2.getNeighbourhood());
+                    case "tworoomcount":
+                        return Integer.compare(p1.getTwoRoomCount(), p2.getTwoRoomCount());
+                    case "threeroomcount":
+                        return Integer.compare(p1.getThreeRoomCount(), p2.getThreeRoomCount());
+                    case "openingdate":
+                        return p1.getOpeningDate().compareTo(p2.getOpeningDate());
+                    case "closingdate":
+                        return p1.getClosingDate().compareTo(p2.getClosingDate());
+                    case "officerslots":
+                        return Integer.compare(p1.getOfficerSlots(), p2.getOfficerSlots());
+                    default:
+                        System.out.println("Unknown sorting field: " + field);
+                        return 0;
+                }
+            });
+        }
+        
+        // Print header
+        System.out.println("============ Available Projects ============");
+        System.out.println("ID | Name | Neighbourhood | Two-Room | Three-Room");
+        System.out.println("-------------------------------------------");
+        
+        // Display each project
+        for (Project project : visibleProjects) {
+            System.out.printf("%d | %s | %s | %d | %d%n", 
+                project.getProjectId(), 
+                project.getProjectName(), 
+                project.getNeighbourhood(),
+                project.getTwoRoomCount(),
+                project.getThreeRoomCount());
+        }
+        System.out.println("===========================================");
+    }
     public static void display(int projectIdToFind) {
         boolean found = false;
         for (int i = 0; i < count; i++) {
@@ -87,11 +206,12 @@ public class Project {
                 break;
             }
         }
-        
+            
         if (!found) {
             System.out.println("No project found with ID: " + projectIdToFind);
         }
     }
+
     
   //------------------------------------------------------------------separate proj list functions
     
