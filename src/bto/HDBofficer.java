@@ -9,12 +9,12 @@ public class HDBofficer extends Applicant implements enquiryInterface {
 
     private List<Project> registeredProjects;
     private List<BTOapplication> applications;
-    private List<enquiry> enquiries;
+    private List<Enquiry> enquiries;
     private List<String> appliedProjectIDs;
     private List<OfficerRegistration> officerApplications;
 
-    public HDBofficer(String userID, String password, String name, boolean married, int age) {
-        super(userID, password, name, married, age);
+    public HDBofficer(String NRIC, String password, String name, boolean married, int age) {
+        super(name, NRIC, age, married ? "Married" : "Single", password);
         this.registeredProjects = new ArrayList<>();
         this.applications = new ArrayList<>();
         this.enquiries = new ArrayList<>();
