@@ -1,7 +1,12 @@
-package bto;
+package bto.model;
 import java.util.stream.*;
+
+import bto.service.User;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 //implement hdb manager functionality
@@ -14,7 +19,7 @@ public class HDBmanager extends User {
     }
 
     // === Project Management ===
-    public Project createBTOListings(int projectID , String projectName, String neighborhood,
+    public Project createBTOListings(String projectName, String neighborhood,
                                     int twoRoomCount,
                                     int threeRoomCount, boolean projectVisibility, 
                                    LocalDate openingDate, LocalDate closingDate,
@@ -24,11 +29,11 @@ public class HDBmanager extends User {
             return null;
         }
 
-        Project newProject = new Project(projectID , projectName, neighborhood,
+        Project newProject = new Project( projectName, neighborhood,
                 twoRoomCount,
                 threeRoomCount, projectVisibility, 
                openingDate, closingDate,
-               officerSlots);
+               officerSlots, this);
         managedProjects.add(newProject);
         return newProject;
     }
@@ -141,29 +146,15 @@ public class HDBmanager extends User {
     }
 
     // === Officer Registration ===
-    public List<OfficerRegistration> viewHDBOfficerReg(String USERID) {
-        List<OfficerRegistration> result = new ArrayList<>();
-        for (Project project : managedProjects) {
-            for (OfficerRegistration reg : project.getOfficerRegistrations()) {
-                if (reg.getOfficer().getNric().equals(USERID)) {
-                    result.add(reg);
-                }
-            }
-        }
-        return result;
+    public void viewHDBOfficerReg(Project project) {
+        project.displayApplicantList();
     }
 
     public void approveHDBOfficerReg(String USERID) {
         for (Project project : managedProjects) {
             for (OfficerRegistration reg : project.getOfficerRegistrations()) {
                 if (reg.getOfficer().getNric().equals(USERID) && reg.getStatus().equals("Pending")) {
-                    if (project.getOfficers().size() < project.getOfficerSlots()) {
-                        reg.setStatus("Approved");
-                        project.addOfficer(USERID);
-                        System.out.println("Officer registration approved for project: " + project.getProjectName());
-                    } else {
-                        System.out.println("Error: No available slots in project: " + project.getProjectName());
-                    }
+                    reg.approveRegistration();
                     return;
                 }
             }
@@ -171,7 +162,7 @@ public class HDBmanager extends User {
     }
 
     // === Application Management ===
-    public void approveOfficerRegistration(int projectID) {
+    public void approveBTOapplication(int projectID) {
         Project project = Project.getProjectById(projectID);
         if (project == null || !managedProjects.contains(project)) {
             System.out.println("Error: Project not found or you don't have permission.");
@@ -239,50 +230,55 @@ public class HDBmanager extends User {
             .toList();
     }
     public List<Project> viewAllProjects(String field) {
-        if (field == null || field.isEmpty()) {
-            // Default to sorting by project name alphabetically if no field is given.
-            return Project.getProjectList().stream()
-                .sorted(Comparator.comparing(Project::getProjectName, String.CASE_INSENSITIVE_ORDER))
-                .collect(Collectors.toList());
-        }
-
-        return Project.getProjectList().stream()
-            .sorted((p1, p2) -> {
-                switch (field.toLowerCase()) {
-                    case "projectid":
-                        return Integer.compare(p1.getProjectID(), p2.getProjectID());
-                    case "projectname":
-                        return p1.getProjectName().compareToIgnoreCase(p2.getProjectName());
-                    case "neighborhood":
-                        return p1.getNeighbourhood().compareToIgnoreCase(p2.getNeighbourhood());
-                    case "tworoomcount":
-                        return Integer.compare(p1.getTwoRoomCount(), p2.getTwoRoomCount());
-                    case "threeroomcount":
-                        return Integer.compare(p1.getThreeRoomCount(), p2.getThreeRoomCount());
-                    case "projectvisibility":
-                        return Boolean.compare(p1.isProjectVisibility(), p2.isProjectVisibility());
-                    case "openingdate":
-                        return p1.getOpeningDate().compareTo(p2.getOpeningDate());
-                    case "closingdate":
-                        return p1.getClosingDate().compareTo(p2.getClosingDate());
-                    case "officerslots":
-                        return Integer.compare(p1.getOfficerSlots(), p2.getOfficerSlots());
-                    default:
-                        System.out.println("Unknown sorting field: " + field);
-                        return 0;
-                }
-            })
-            .collect(Collectors.toList());
-    }
-    // === Helper Methods ===
-    private Project ProjectArray.getProjectById(int projectID) {
-        for (Project project : Project.getProjectList()) { // Access all projects via Project class
-            if (project.getProjectID() == projectID) {
-                return project;
+        // Get the projects array
+        Project[] projectsArray = Project.getProjects();
+        List<Project> projectList = new ArrayList<>();
+        
+        // Convert array to list, skipping null elements
+        for (int i = 0; i < Project.getCount(); i++) {
+            if (projectsArray[i] != null) {
+                projectList.add(projectsArray[i]);
             }
         }
-        return null;
+        
+        // Sort the list based on the field
+        if (field == null || field.isEmpty()) {
+            // Default sort by project name
+            Collections.sort(projectList, Comparator.comparing(Project::getProjectName, String.CASE_INSENSITIVE_ORDER));
+            return projectList;
+        }
+        
+        // Sort based on the specified field
+        Collections.sort(projectList, (p1, p2) -> {
+            switch (field.toLowerCase()) {
+                case "projectid":
+                    return Integer.compare(p1.getProjectId(), p2.getProjectId());
+                case "projectname":
+                    return p1.getProjectName().compareToIgnoreCase(p2.getProjectName());
+                case "neighborhood":
+                    return p1.getNeighbourhood().compareToIgnoreCase(p2.getNeighbourhood());
+                case "tworoomcount":
+                    return Integer.compare(p1.getTwoRoomCount(), p2.getTwoRoomCount());
+                case "threeroomcount":
+                    return Integer.compare(p1.getThreeRoomCount(), p2.getThreeRoomCount());
+                case "projectvisibility":
+                    return Boolean.compare(p1.isProjectVisibility(), p2.isProjectVisibility());
+                case "openingdate":
+                    return p1.getOpeningDate().compareTo(p2.getOpeningDate());
+                case "closingdate":
+                    return p1.getClosingDate().compareTo(p2.getClosingDate());
+                case "officerslots":
+                    return Integer.compare(p1.getOfficerSlots(), p2.getOfficerSlots());
+                default:
+                    System.out.println("Unknown sorting field: " + field);
+                    return 0;
+            }
+        });
+        
+        return projectList;
     }
+    // === Helper Methods ===
+ 
 
     private boolean isManagingProjectDuringPeriod(LocalDate newOpening, LocalDate newClosing) {
         for (Project project : managedProjects) {

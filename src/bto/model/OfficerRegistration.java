@@ -1,4 +1,4 @@
-package bto;
+package bto.model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -28,6 +28,10 @@ public class OfficerRegistration {
             this.registrationStatus = "Approved";
             project.addOfficer(officer);
             officer.addRegisteredProject(project);
+            System.out.println("Officer registration approved for project: " + project.getProjectName());
+        }
+        else {
+        	System.out.println("Error: No available slots in project: " + project.getProjectName());
         }
     }
 
@@ -40,7 +44,7 @@ public class OfficerRegistration {
         return registrationStatus;
     }
 
-    public Officer getOfficer() {
+    public HDBofficer getOfficer() {
         return officer;
     }
 
