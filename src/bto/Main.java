@@ -3,7 +3,10 @@ package bto;
 import java.util.Scanner;
 import java.util.ArrayList;
 
+import bto.model.Applicant;
+import bto.model.BTOapplication;
 import bto.model.Enquiry;
+import bto.model.Project;
 import bto.model.UserPerson;
 
 public class Main {
@@ -12,9 +15,11 @@ public class Main {
     	
     	ArrayList<UserPerson> Users = new ArrayList<>();
     	
-        Applicant.LoadUsers(Users); // need a method in applicant to edit an array(as argument) and load in all user from applicant list
-        HDBofficer.LoadUsers(Users);
-        HDBmanager.LoadUsers(Users);
+        //Applicant.LoadUsers(Users); // need a method in applicant to edit an array(as argument) and load in all user from applicant list
+        //HDBofficer.LoadUsers(Users);
+        //HDBmanager.LoadUsers(Users);
+        
+    	UserPerson.LoadUsers(Users);
         
         //load in project
         
@@ -171,7 +176,7 @@ public class Main {
 	                System.out.println("Case 5 selected.");
 	                sc.nextLine();//clear buffer
 	                System.out.println("Input message:");
-	                Enquiry.addEnquiry(Enquiry(Enquiry.getCount(), a.getName(), sc.nextLine()));// output success msg alr
+	                Enquiry.addEnquiry(new Enquiry(Enquiry.getCount(), a.getName(), sc.nextLine()));// output success msg alr
 	                break;
 	            case 6:
 	            	int enquiryID;
