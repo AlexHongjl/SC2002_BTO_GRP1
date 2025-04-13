@@ -18,7 +18,7 @@ public class Enquiry {
         this.applicantName = applicantName;
         this.message = message;
         this.response = "";
-        this.status = false;
+        this.status = true;
         //this.projectId = projectId;
     }
     

@@ -174,7 +174,7 @@ public class Project {
         
         // Display each project
         for (Project project : visibleProjects) {
-            System.out.printf("%d | %s | %s | %d | %d%n", 
+        	System.out.printf("%d |  %s  |   %s   |  %d  |   %d%n", 
                 project.getProjectId(), 
                 project.getProjectName(), 
                 project.getNeighbourhood(),
