@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import bto.model.Applicant;
 import bto.model.BTOapplication;
 import bto.model.Enquiry;
+import bto.model.HDBmanager;
+import bto.model.HDBofficer;
 import bto.model.Project;
 import bto.model.UserPerson;
 
@@ -59,39 +61,347 @@ public class Main {
         
         
         int selection=0;
-        if(cur.getUserType() == "manager") { //if possible change to check the obj itself
-        	System.out.println("1. View All BTO projects"); 
-        	System.out.println("2. Toggle visibility");//if not officer in charge
-        	System.out.println("3. approve BTO application by applicant");//both withdraw and apply
-        	System.out.println("4. approve officer application by officer");// put view function within
-        	System.out.println("5. Add BTO listing");
-        	System.out.println("6. Edit BTO listing");
-        	System.out.println("7. Delete BTO listing");
-        	System.out.println("8. Logout");
-        	System.out.println("9. change PW");
-        	System.out.println("10. filer by area/flat type availability/px/date");
-        	System.out.println("11. End program");
-        	System.out.println("12. reply enquries");
-        	System.out.println("13. generate report");
-        	System.out.println("Pls input seletion: (e.g. 5)");
-        }else if(cur.getUserType() == "officer") {// no need the enquiries list attribute and applied projID attribute cause applicant class alr have
-        	System.out.println("1. View BTO project/or only the project you applied for(if applicable)"); 
-        	System.out.println("2. Apply for BTO project");//if not officer in charge
-        	System.out.println("3. Withdraw BTO project");
-        	System.out.println("4. View enquries");
-        	System.out.println("5. Add enquries");
-        	System.out.println("6. Edit enquries");
-        	System.out.println("7. Delete enquries");
-        	System.out.println("8. Logout");
-        	System.out.println("9. change PW");
-        	System.out.println("10. filer by area/flat type availability/px/date");
-        	System.out.println("11. End program");
-        	System.out.println("--------officer functions----------");
-        	System.out.println("12. reply enquries");
-        	System.out.println("13. apply for officer of a project");
-        	System.out.println("14. book slot for applicant on approved applications");//after approved then visible to officer?
-        	System.out.println("15. generate receipt");
-        	System.out.println("Pls input seletion: (e.g. 5)");
+        if(cur.getUserType() == "manager" && cur instanceof HDBmanager) { //if possible change to check the obj itself
+        	HDBmanager m = (HDBmanager) cur;//downcast
+        	do {
+	        	System.out.println("1. View All BTO projects"); 
+	        	System.out.println("2. Toggle visibility");//if not officer in charge
+	        	System.out.println("3. approve BTO application by applicant");//both withdraw and apply
+	        	System.out.println("4. approve officer application by officer");// put view function within
+	        	System.out.println("5. Add BTO listing");
+	        	System.out.println("6. Edit BTO listing");
+	        	System.out.println("7. Delete BTO listing");
+	        	System.out.println("8. Logout");
+	        	System.out.println("9. change PW");
+	        	System.out.println("10. filer by area/flat type availability/px/date");
+	        	System.out.println("11. End program");
+	        	System.out.println("12. reply enquries");
+	        	System.out.println("13. generate report");
+	        	System.out.println("Pls input seletion: (e.g. 5)");
+	        	
+	        	selection = sc.nextInt();
+	        	switch (selection) {
+	        	    case 1:
+	        	        System.out.println("Case 1 selected.");
+	        	        break;
+	        	    case 2:
+	        	        System.out.println("Case 2 selected.");
+	        	        break;
+	        	    case 3:
+	        	        System.out.println("Case 3 selected.");
+	        	        break;
+	        	    case 4:
+	        	        System.out.println("Case 4 selected.");
+	        	        break;
+	        	    case 5:
+	        	        System.out.println("Case 5 selected.");
+	        	        break;
+	        	    case 6:
+	        	        System.out.println("Case 6 selected.");
+	        	        break;
+	        	    case 7:
+	        	        System.out.println("Case 7 selected.");
+	        	        break;
+	        	    case 8:
+	        	        System.out.println("Case 8 selected.");
+	        	        break;
+	        	    case 9:
+	        	        System.out.println("Case 9 selected.");
+	        	        break;
+	        	    case 10:
+	        	        System.out.println("Case 10 selected.");
+	        	        break;
+	        	    case 11:
+	        	        System.out.println("Case 11 selected.");
+	        	        break;
+	        	    case 12:
+	        	        System.out.println("Case 12 selected.");
+	        	        break;
+	        	    case 13:
+	        	        System.out.println("Case 13 selected.");
+	        	        break;
+	        	    default:
+	        	        System.out.println("Invalid choice. Try again");
+	        	        break;
+	        	}
+        	}while(selection<14 && selection>0 && selection!=8 && selection!=11);
+        	
+        }else if(cur.getUserType() == "officer" && cur instanceof HDBofficer) {// no need the enquiries list attribute and applied projID attribute cause applicant class alr have
+        	HDBofficer o = (HDBofficer) cur;//downcast
+        	do {
+	        	System.out.println("1. View BTO project/or only the project you applied for(if applicable)"); 
+	        	System.out.println("2. Apply for BTO project");//if not officer in charge, need change a bit, check he is using officer mode by attribute or project he is officer
+	        	System.out.println("3. Withdraw BTO project");
+	        	System.out.println("4. View enquries");//
+	        	System.out.println("5. Add enquries");
+	        	System.out.println("6. Edit enquries");
+	        	System.out.println("7. Delete enquries");
+	        	System.out.println("8. Logout");
+	        	System.out.println("9. change PW");
+	        	System.out.println("10. filer by area/flat type availability/px/date");
+	        	System.out.println("11. End program");
+	        	System.out.println("--------officer functions----------");
+	        	System.out.println("12. reply enquries");//doc mention about enquiry for a project
+	        	System.out.println("13. apply for officer of a project");
+	        	System.out.println("14. book slot for applicant on approved applications");//after approved then visible to officer?
+	        	System.out.println("15. generate receipt");
+	        	System.out.println("Pls input seletion: (e.g. 5)");
+	        	
+	        	selection = sc.nextInt();
+	        	switch (selection) {
+		        	case 1:
+		                System.out.println("Case 1 selected.");
+		                if(o.getApplicationStatus()!= "None" && o.getApplicationStatus()!= "Unsuccessful") {
+		                	Project.display(o.getAppliedProjectId());
+		                }else if(o.getApplicationStatus()== "None" ||o.getApplicationStatus()== "Unsuccessful") {
+		                	Project.displayAllProjectsApplicant(null);//sld be same same applicant but display an extra one if he officer
+		                }
+		                break;
+		            case 2:
+		            	int projectID, rtsel;
+		            	String rt="";
+		                System.out.println("Case 2 selected.");
+		                System.out.println("enter project ID of desired project: (e.g. 1)");
+		                projectID=sc.nextInt();
+		                
+		                do {
+		                System.out.println("1. 2-Room flat remaining:" + Project.getProjectById(projectID).getTwoRoomCount());// can add dynamic to check that project has what first then display menu
+		                System.out.println("2. 3-Room flat remaining:" + Project.getProjectById(projectID).getThreeRoomCount());
+		                System.out.println("enter disired room type: (e.g. 1)");
+		                rtsel=sc.nextInt();
+		                switch (rtsel) {
+			                case 1:
+			                    rt="2-Room";
+			                    break;
+			                case 2:
+			                    rt="3-Room";
+			                    break;
+			                default:
+			                	System.out.println("Invalid choice. Try again");
+		                }
+		                }while(rtsel!=1 && rtsel!=2);
+		                
+		                if(o.isEligible(Project.getProjectById(projectID),rt)){
+		                	if(o.applyForProject(Project.getProjectById(projectID),rt)) {
+		                		BTOapplication app= new BTOapplication(o.getNRIC(), projectID);
+		                	    app.updateStatus("Pending Approval", rt);
+		                	    BTOapplication.addApplication(app);
+		                		System.out.println("Successfully applied!, sent to manager for approval");
+		                		app.display();
+		                	}else {
+		                		System.out.println("Unsuccessful!, likely having ongoing application!");
+		                	}
+		                }else {
+		                	System.out.println("not eligible!");
+		                }
+		                break;
+		            case 3:
+		                System.out.println("Case 3 selected.");
+		                if(o.getApplicationStatus()!= "None" && o.getApplicationStatus()!= "Unsuccessful") {
+		                	o.withdrawApplication();
+		                	BTOapplication.getApplicationByUserId(o.getNRIC()).updateStatus("Pending Withdrawal", BTOapplication.getApplicationByUserId(o.getNRIC()).getUnitType());
+		                	BTOapplication.getApplicationByUserId(o.getNRIC()).display();
+		                	System.out.println("Successfully withdrawn!, sent to manager for approval");
+		                }else if(o.getApplicationStatus()== "None" ||o.getApplicationStatus()== "Unsuccessful"){
+		                	System.out.println("Unsuccessful!, no current ongoing application");
+		                }
+		                break;
+		            case 4:
+		                System.out.println("Case 4 selected.");
+		                Enquiry.displayAllEnquiries();
+		                break;
+		            case 5:
+		                System.out.println("Case 5 selected.");
+		                sc.nextLine();
+		                System.out.println("Input message:");
+		                Enquiry.addEnquiry(new Enquiry(Enquiry.getCount(), o.getName(), sc.nextLine()));
+		                break;
+		            case 6:
+		            	int enquiryID;
+		                System.out.println("Case 6 selected.");
+		                if(Enquiry.displayByUser(o.getName())) {
+		                	System.out.println("input enquiry ID to select enquiry to edit:");
+		                	enquiryID=sc.nextInt();
+		                	if(Enquiry.getByID(enquiryID)==null) {
+		                		System.out.println("invalid ID");
+		                	}else if(Enquiry.getByID(enquiryID).getApplicantName()!=o.getName()) {
+		                		System.out.println("invalid access, not under your name");
+		                	}else {
+		                		System.out.println("current enquiry:");
+		                		Enquiry.getByID(enquiryID).display();
+		                		System.out.println("input new msg:");
+		                		sc.nextLine();//clear buffer
+		                		Enquiry.editEnquiry(enquiryID, sc.nextLine());
+		                	}
+		                }
+		                break;
+		            case 7:
+		            	int enquiryID1;
+		                System.out.println("Case 7 selected.");
+		                if(Enquiry.displayByUser(o.getName())) {
+		                	System.out.println("input enquiry ID to select enquiry to delete:");
+		                	enquiryID1=sc.nextInt();
+		                	if(Enquiry.getByID(enquiryID1)==null) {
+		                		System.out.println("invalid ID");
+		                	}else if(Enquiry.getByID(enquiryID1).getApplicantName()!=o.getName()) {
+		                		System.out.println("invalid access, not under your name");
+		                	}else {
+		                		System.out.println("current enquiry:");
+		                		Enquiry.getByID(enquiryID1).display();
+		                		Enquiry.deleteEnquiry(enquiryID1);//success msg included
+		                	}
+		                }
+		                break;
+		            case 8:
+		                System.out.println("Case 8 selected.");
+		                System.out.println("logging out");
+		                break;
+		            case 9:
+		            	String pw;
+		                System.out.println("Case 9 selected.");
+		                sc.nextLine();//clear buffer
+		                System.out.println("input new pw:");
+		                pw=sc.nextLine();
+		                System.out.println("confirm new pw:(input same pw agn)");
+		                if(pw.equals(sc.nextLine())) {
+		                	o.changePassword(pw);
+		                }else {
+		                	System.out.println("Unsuccessful change, re-enter pw not same");
+		                }
+		                break;//add filter by px
+		            case 10:
+		                int ftsel;
+		                String ft="";
+		                do{
+		                
+		                System.out.println("Case 10 selected.");
+		                System.out.println("1. filter by projectid");
+		                System.out.println("2. filter by projectname");
+		                System.out.println("3. filter by neighborhood");
+		                System.out.println("4. filter by tworoomcount");
+		                System.out.println("5. filter by threeroomcount");
+		                System.out.println("6. filter by projectvisibility");
+		                System.out.println("7. filter by openingdate");
+		                System.out.println("8. filter by closingdate");
+		                System.out.println("9. filter by officerslots");
+		                System.out.println("10. exit to prv menu");
+		                System.out.println("input selection:");
+		                ftsel=sc.nextInt();
+		                switch (ftsel) {
+			                case 1:
+			                    ft="projectid";
+			                    break;
+			                case 2:
+			                    ft="projectname";
+			                    break;
+			                case 3:
+			                    ft="neighborhood";
+			                    break;
+			                case 4:
+			                    ft="tworoomcount";
+			                    break;
+			                case 5:
+			                    ft="threeroomcount";
+			                    break;
+			                  case 6:
+			                    ft="projectvisibility";
+			                    break;
+			                  case 7:
+			                    ft="openingdate";
+			                    break;
+			                  case 8:
+			                    ft="closingdate";
+			                    break;
+			                  case 9:
+			                    ft="officerslots";
+			                    break;
+			                  case 10:
+			                      break;
+			                default:
+			                	System.out.println("Invalid choice. Try again");
+		                }
+		                }while(ftsel>10 || ftsel<1);
+		                if(ft.equals("")){
+		                    //pass
+		                }else{
+		                    Project.displayAllProjects(ft);
+		                }
+		                break;
+		            case 11:
+		                System.out.println("Case 11 selected.");
+		                sc.close();
+		                System.out.println("Ending...");
+		                break;
+	        	    case 12:
+	        	        System.out.println("Case 12 selected.");
+	        	        int enquiryID2;
+	        	        Enquiry.displayAllEnquiries();
+	        	        System.out.println("input enquiry ID to select enquiry to reply:");
+	                	enquiryID2=sc.nextInt();
+	                	if(Enquiry.getByID(enquiryID2)==null) {
+	                		System.out.println("invalid ID");
+	                	}else {
+	                		System.out.println("current enquiry:");
+	                		Enquiry.getByID(enquiryID2).display();
+	                		System.out.println("input reply:");
+	                		sc.nextLine();//clear buffer
+	                		Enquiry.getByID(enquiryID2).reply(sc.nextLine());
+	                	}
+	        	        break;
+	        	    case 13:
+	        	        System.out.println("Case 13 selected.");
+	        	        break;
+	        	    case 14://only 
+	        	    	String app;
+	        	        System.out.println("Case 14 selected.");
+	        	        //display "successful" bto app also filter by his officer project so he can book his own project only
+	        	        for(BTOapplication a :BTOapplication.getAllApplications()) {
+	        	        	if(a.getStatus().equals("successful")) && o in Project.getProjectById(a.getProjectId()).getOfficers()){
+	        	        		a.display();
+	        	        	}
+	        	        }
+	        	        
+	        	        System.out.println("input applicant user ID to select BTO application to book:");
+	        	        app=sc.nextLine();
+	        	        if(BTOapplication.getApplicationByUserId(app)==null){//check if is in range or accessing other or prvs app
+	        	        	System.out.println("invalid userID");
+	        	        
+	        	        }else {
+	        	        	boolean book;
+	        	        	BTOapplication.getApplicationByUserId(app).display();
+	        	        	System.out.println("book flats? Y/N e.g. +ve int for Y, 0 for N");
+	        	        	book=sc.hasNextBoolean();
+	        	        	if(book==true) {
+	        	        		BTOapplication.getApplicationByUserId(app).updateStatus("booked", BTOapplication.getApplicationByUserId(app).getUnitType());//applicant status nvr update
+	        	        		if(BTOapplication.getApplicationByUserId(app).getUnitType().equals("2-Room")) {//update to booked and decrement num in project
+	        	        			Project.getProjectById(BTOapplication.getApplicationByUserId(app).getProjectId()).setTwoRoomCount(Project.getProjectById(BTOapplication.getApplicationByUserId(app).getProjectId()).getTwoRoomCount()--);
+	        	        		}else if(BTOapplication.getApplicationByUserId(app).getUnitType().equals("3-Room")){
+	        	        			Project.getProjectById(BTOapplication.getApplicationByUserId(app).getProjectId()).setThreeRoomCount(Project.getProjectById(BTOapplication.getApplicationByUserId(app).getProjectId()).getThreeRoomCount()--);
+	        	        		}
+	        	        		//find the guy and update his attribute
+	        	        		for(UserPerson guy : Users) {
+	        	        			if(guy.getNRIC().equals(app)) {
+	        	        				Applicant b = (Applicant) guy;
+	        	        				b.bookFlat(BTOapplication.getApplicationByUserId(app).getUnitType());
+	        	        				break;
+	        	        			}
+	        	        		}
+        	        		}else {
+        	        		System.out.println("you entered No");
+	        	        	}
+	        	        }
+	        	        
+	        	        
+	        	        break;
+	        	    case 15:
+	        	        System.out.println("Case 15 selected.");
+	        	        break;
+	        	    default:
+	        	        System.out.println("Invalid choice. Try again");
+	        	        break;
+	        	}
+
+        	}while(selection<16 && selection>0 && selection!=8 && selection!=11);
         	
         }else if(cur.getUserType() == "applicant" && cur instanceof Applicant){// for applicant
         	Applicant a = (Applicant) cur;//downcast
@@ -190,7 +500,7 @@ public class Main {
 	                	}else if(Enquiry.getByID(enquiryID).getApplicantName()!=a.getName()) {
 	                		System.out.println("invalid access, not under your name");
 	                	}else {//both got an enquiry and under user's name
-	                		System.out.println("current enqury:");
+	                		System.out.println("current enquiry:");
 	                		Enquiry.getByID(enquiryID).display();
 	                		System.out.println("input new msg:");
 	                		sc.nextLine();//clear buffer
@@ -209,7 +519,7 @@ public class Main {
 	                	}else if(Enquiry.getByID(enquiryID1).getApplicantName()!=a.getName()) {
 	                		System.out.println("invalid access, not under your name");
 	                	}else {//both got an enquiry and under user's name
-	                		System.out.println("current enqury:");
+	                		System.out.println("current enquiry:");
 	                		Enquiry.getByID(enquiryID1).display();
 	                		Enquiry.deleteEnquiry(enquiryID1);//success msg included
 	                	}
