@@ -16,12 +16,10 @@ public class Main {
     	//UserPerson[] Users = new UserPerson[20]; // creating a array to store all users
     	
     	ArrayList<UserPerson> Users = new ArrayList<>();
-    	
-        //Applicant.LoadUsers(Users); // need a method in applicant to edit an array(as argument) and load in all user from applicant list
-        //HDBofficer.LoadUsers(Users);
-        //HDBmanager.LoadUsers(Users);
         
     	UserPerson.LoadUsers(Users);
+    	
+    	Project.Loadprojects();
         
         //load in project
         
@@ -617,6 +615,8 @@ public class Main {
         
         if(selection == 8) {
         	logout=1;
+        }else {
+        	logout=0;
         }
     }while(logout == 1);
     }
