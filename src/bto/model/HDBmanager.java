@@ -2,6 +2,7 @@ package bto.model;
 import java.util.stream.*;
 
 import bto.service.User;
+import bto.util.enquiryInterface;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,11 +11,11 @@ import java.util.Comparator;
 import java.util.List;
 
 //implement hdb manager functionality
-public class HDBmanager extends User {
-    private List<Project> managedProjects; // Only tracks projects this manager owns uses all project list under project to access all projects
+public class HDBmanager extends UserPerson implements enquiryInterface {
+    private List<Project> managedProjects; // Only tracks projects this manager owns
 
-    public HDBmanager(String name, String nric, String password) {
-        super(name, nric, password);
+    public HDBmanager(String name, String NRIC, int age, String maritalStatus, String password, String userType) {
+        super(name, NRIC, age, maritalStatus, password, userType);
         this.managedProjects = new ArrayList<>();
     }
 
@@ -29,7 +30,7 @@ public class HDBmanager extends User {
             return null;
         }
 
-        Project newProject = new Project( projectName, neighborhood,
+        Project newProject = new Project(projectName, neighborhood,
                 twoRoomCount,
                 threeRoomCount, projectVisibility, 
                openingDate, closingDate,
@@ -53,7 +54,7 @@ public class HDBmanager extends User {
                 case "neighborhood":
                     project.setNeighbourhood((String) newValue);
                     break;
-                case "twoRoomCount":
+                case "tworoomcount":
                     int twoRoomCount = (Integer) newValue;
                     if (twoRoomCount >= 0) {
                         project.setTwoRoomCount(twoRoomCount);
@@ -61,7 +62,7 @@ public class HDBmanager extends User {
                         System.out.println("Error: Room count cannot be negative.");
                     }
                     break;
-                case "threeRoomCount":
+                case "threeroomcount":
                     int threeRoomCount = (Integer) newValue;
                     if (threeRoomCount >= 0) {
                         project.setThreeRoomCount(threeRoomCount);
@@ -125,7 +126,7 @@ public class HDBmanager extends User {
         }
         
         // Remove from both collections
-        boolean removedFromSystem = Project.removeProjectById(projectID);  //need project to have
+        boolean removedFromSystem = Project.removeProjectById(projectID);
         boolean removedFromManaged = managedProjects.remove(project);
         
         if (removedFromSystem && removedFromManaged) {
@@ -145,24 +146,85 @@ public class HDBmanager extends User {
         }
     }
 
-    // === Officer Registration ===
-    public void viewHDBOfficerReg(Project project) {
-        project.displayApplicantList();
-    }
-
-    public void approveHDBOfficerReg(String USERID) {
-        for (Project project : managedProjects) {
-            for (OfficerRegistration reg : project.getOfficerRegistrations()) {
-                if (reg.getOfficer().getNric().equals(USERID) && reg.getStatus().equals("Pending")) {
-                    reg.approveRegistration();
-                    return;
-                }
-            }
+    // === Officer Registration Management ===
+    public void viewOfficerRegistrations(int projectID) {
+        Project project = Project.getProjectById(projectID);
+        if (project == null || !managedProjects.contains(project)) {
+            System.out.println("Error: Project not found or you don't have permission to view it.");
+            return;
+        }
+        
+        System.out.println("Officer Registrations for Project: " + project.getProjectName());
+        for (OfficerRegistration reg : project.getOfficerRegistrations()) {
+            HDBofficer officer = reg.getOfficer();
+            System.out.println("Officer: " + officer.getName() + 
+                             " (NRIC: " + officer.getNRIC() + 
+                             ") - Status: " + reg.getRegistrationStatus());
         }
     }
 
+    public void approveOfficerRegistration(int projectID, String officerNRIC) {
+        Project project = Project.getProjectById(projectID);
+        if (project == null || !managedProjects.contains(project)) {
+            System.out.println("Error: Project not found or you don't have permission.");
+            return;
+        }
+        
+        for (OfficerRegistration reg : project.getOfficerRegistrations()) {
+            if (reg.getOfficer().getNRIC().equals(officerNRIC) && reg.getRegistrationStatus().equals("Pending")) {
+                reg.approveRegistration();
+                return;
+            }
+        }
+        
+        System.out.println("No pending registration found for officer with NRIC: " + officerNRIC);
+    }
+    
+    public void rejectOfficerRegistration(int projectID, String officerNRIC) {
+        Project project = Project.getProjectById(projectID);
+        if (project == null || !managedProjects.contains(project)) {
+            System.out.println("Error: Project not found or you don't have permission.");
+            return;
+        }
+        
+        for (OfficerRegistration reg : project.getOfficerRegistrations()) {
+            if (reg.getOfficer().getNRIC().equals(officerNRIC) && reg.getRegistrationStatus().equals("Pending")) {
+                reg.rejectRegistration();
+                System.out.println("Officer registration rejected.");
+                return;
+            }
+        }
+        
+        System.out.println("No pending registration found for officer with NRIC: " + officerNRIC);
+    }
+
     // === Application Management ===
-    public void approveBTOapplication(int projectID) {
+    public void approveBTOApplication(int projectID, String applicantNRIC) {
+        Project project = Project.getProjectById(projectID);
+        if (project == null || !managedProjects.contains(project)) {
+            System.out.println("Error: Project not found or you don't have permission.");
+            return;
+        }
+
+        // Assuming project has a list of applications that can be accessed
+        for (BTOapplication app : project.getApplications()) {
+            if (app.getUserID().equals(applicantNRIC) && app.getStatus().equals("Pending")) {
+                if (app.getUnitType().equals("2-Room") && project.getTwoRoomCount() > 0) {
+                    app.updateStatus("Successful", "2-Room");
+                    System.out.println("Application approved for 2-Room flat.");
+                } else if (app.getUnitType().equals("3-Room") && project.getThreeRoomCount() > 0) {
+                    app.updateStatus("Successful", "3-Room");
+                    System.out.println("Application approved for 3-Room flat.");
+                } else {
+                    System.out.println("Error: No available units of the requested type.");
+                }
+                return;
+            }
+        }
+        System.out.println("No pending application found for applicant with NRIC: " + applicantNRIC);
+    }
+    
+    public void rejectBTOApplication(int projectID, String applicantNRIC) {
         Project project = Project.getProjectById(projectID);
         if (project == null || !managedProjects.contains(project)) {
             System.out.println("Error: Project not found or you don't have permission.");
@@ -170,116 +232,190 @@ public class HDBmanager extends User {
         }
 
         for (BTOapplication app : project.getApplications()) {
-            if (app.getStatus().equals("Pending")) {
-                String flatType = app.getFlatType();
-                if (flatType.equals(project.getType1()) && project.getUnitsType1() > 0) {
-                    app.setStatus("Successful");
-                    project.setUnitsType1(project.getUnitsType1() - 1);
-                    System.out.println("Application approved.");
-                } else if (flatType.equals(project.getType2()) && project.getUnitsType2() > 0) {
-                    app.setStatus("Successful");
-                    project.setUnitsType2(project.getUnitsType2() - 1);
-                    System.out.println("Application approved.");
-                } else {
-                    System.out.println("Error: No available units of the requested type.");
-                }
+            if (app.getUserID().equals(applicantNRIC) && app.getStatus().equals("Pending")) {
+                app.updateStatus("Unsuccessful", app.getUnitType());
+                System.out.println("Application rejected.");
                 return;
             }
         }
+        System.out.println("No pending application found for applicant with NRIC: " + applicantNRIC);
     }
-
-    public void approveBTOwithdrawal(int projectID) {
+    
+    public void approveWithdrawalRequest(int projectID, String applicantNRIC) {
         Project project = Project.getProjectById(projectID);
         if (project == null || !managedProjects.contains(project)) {
             System.out.println("Error: Project not found or you don't have permission.");
             return;
         }
 
-        for (Application app : project.getApplications()) {
-            if (app.getStatus().equals("Withdrawal Requested")) {
-                app.setStatus("Withdrawn");
-                if (app.getStatus().equals("Booked")) {
-                    String flatType = app.getFlatType();
-                    if (flatType.equals(project.getType1())) {
-                        project.setUnitsType1(project.getUnitsType1() + 1);
-                    } else if (flatType.equals(project.getType2())) {
-                        project.setUnitsType2(project.getUnitsType2() + 1);
+        for (BTOapplication app : project.getApplications()) {
+            if (app.getUserID().equals(applicantNRIC) && app.getStatus().equals("Withdrawal Requested")) {
+                String previousStatus = app.getStatus();
+                app.updateStatus("Withdrawn", app.getUnitType());
+                
+                // If the application was approved or booked, return the unit to the inventory
+                if (previousStatus.equals("Successful") || previousStatus.equals("Booked")) {
+                    if (app.getUnitType().equals("2-Room")) {
+                        project.setTwoRoomCount(project.getTwoRoomCount() + 1);
+                    } else if (app.getUnitType().equals("3-Room")) {
+                        project.setThreeRoomCount(project.getThreeRoomCount() + 1);
                     }
                 }
-                System.out.println("Withdrawal approved.");
+                
+                System.out.println("Withdrawal request approved.");
                 return;
             }
         }
+        System.out.println("No withdrawal request found for applicant with NRIC: " + applicantNRIC);
     }
+    
+    public void rejectWithdrawalRequest(int projectID, String applicantNRIC) {
+        Project project = Project.getProjectById(projectID);
+        if (project == null || !managedProjects.contains(project)) {
+            System.out.println("Error: Project not found or you don't have permission.");
+            return;
+        }
 
-    // === Reports & Views (Unimplemented Filters) ===
-    public List<BTOapplication> generateReport(String filter) {
-        return managedProjects.stream()
-            .flatMap(project -> project.getApplications().stream())
-            .filter(app -> "booked".equalsIgnoreCase(app.getStatus()))
-            .filter(app -> {
-                Applicant applicant = app.getApplicant();
-                return switch (filter.toLowerCase()) {
-                    case "married" -> applicant.isMarried();
-                    case "single" -> !applicant.isMarried();
-                    case "2-room", "3-room" -> app.getFlatType().equalsIgnoreCase(filter);
-                    case "all" -> true;
-                    default -> false;
-                };
-            })
-            .toList();
-    }
-    public List<Project> viewAllProjects(String field) {
-        // Get the projects array
-        Project[] projectsArray = Project.getProjects();
-        List<Project> projectList = new ArrayList<>();
-        
-        // Convert array to list, skipping null elements
-        for (int i = 0; i < Project.getCount(); i++) {
-            if (projectsArray[i] != null) {
-                projectList.add(projectsArray[i]);
+        for (BTOapplication app : project.getApplications()) {
+            if (app.getUserID().equals(applicantNRIC) && app.getStatus().equals("Withdrawal Requested")) {
+                // Set the status back to what it was before the withdrawal request
+                // This would need additional tracking in the BTOapplication class
+                app.updateStatus(app.getPreviousStatus(), app.getUnitType());
+                System.out.println("Withdrawal request rejected.");
+                return;
             }
         }
-        
-        // Sort the list based on the field
-        if (field == null || field.isEmpty()) {
-            // Default sort by project name
-            Collections.sort(projectList, Comparator.comparing(Project::getProjectName, String.CASE_INSENSITIVE_ORDER));
-            return projectList;
+        System.out.println("No withdrawal request found for applicant with NRIC: " + applicantNRIC);
+    }
+
+    // === Enquiry Management ===
+    @Override
+    public void viewEnquiriesAll() {
+        System.out.println("All Enquiries:");
+        Enquiry.displayAllEnquiries();
+    }
+    
+    public void viewProjectEnquiries(int projectID) {
+        Project project = Project.getProjectById(projectID);
+        if (project == null) {
+            System.out.println("Error: Project not found.");
+            return;
         }
+        
+        System.out.println("Enquiries for Project: " + project.getProjectName());
+        // Assuming Enquiry class has method to filter by projectId
+        // This would need to be implemented
+        // Enquiry.displayByProject(projectID);
+    }
+    
+    @Override
+    public void replyEnquiry(int enquiryID, String reply) {
+        Enquiry enquiry = Enquiry.getByID(enquiryID);
+        if (enquiry == null) {
+            System.out.println("Error: Enquiry not found.");
+            return;
+        }
+        
+        enquiry.reply(reply);
+    }
+
+    // === Reports & Views ===
+    public void viewMyProjects(String filter) {
+        System.out.println("My Managed Projects:");
+        
+        if (managedProjects.isEmpty()) {
+            System.out.println("You are not currently managing any projects.");
+            return;
+        }
+        
+        // Create a copy of managed projects
+        List<Project> projectList = new ArrayList<>(managedProjects);
         
         // Sort based on the specified field
-        Collections.sort(projectList, (p1, p2) -> {
-            switch (field.toLowerCase()) {
-                case "projectid":
-                    return Integer.compare(p1.getProjectId(), p2.getProjectId());
-                case "projectname":
-                    return p1.getProjectName().compareToIgnoreCase(p2.getProjectName());
-                case "neighborhood":
-                    return p1.getNeighbourhood().compareToIgnoreCase(p2.getNeighbourhood());
-                case "tworoomcount":
-                    return Integer.compare(p1.getTwoRoomCount(), p2.getTwoRoomCount());
-                case "threeroomcount":
-                    return Integer.compare(p1.getThreeRoomCount(), p2.getThreeRoomCount());
-                case "projectvisibility":
-                    return Boolean.compare(p1.isProjectVisibility(), p2.isProjectVisibility());
-                case "openingdate":
-                    return p1.getOpeningDate().compareTo(p2.getOpeningDate());
-                case "closingdate":
-                    return p1.getClosingDate().compareTo(p2.getClosingDate());
-                case "officerslots":
-                    return Integer.compare(p1.getOfficerSlots(), p2.getOfficerSlots());
-                default:
-                    System.out.println("Unknown sorting field: " + field);
-                    return 0;
-            }
-        });
+        if (filter != null && !filter.isEmpty()) {
+            Collections.sort(projectList, (p1, p2) -> {
+                switch (filter.toLowerCase()) {
+                    case "projectid":
+                        return Integer.compare(p1.getProjectId(), p2.getProjectId());
+                    case "projectname":
+                        return p1.getProjectName().compareToIgnoreCase(p2.getProjectName());
+                    case "neighborhood":
+                        return p1.getNeighbourhood().compareToIgnoreCase(p2.getNeighbourhood());
+                    case "tworoomcount":
+                        return Integer.compare(p1.getTwoRoomCount(), p2.getTwoRoomCount());
+                    case "threeroomcount":
+                        return Integer.compare(p1.getThreeRoomCount(), p2.getThreeRoomCount());
+                    case "projectvisibility":
+                        return Boolean.compare(p1.isProjectVisibility(), p2.isProjectVisibility());
+                    case "openingdate":
+                        return p1.getOpeningDate().compareTo(p2.getOpeningDate());
+                    case "closingdate":
+                        return p1.getClosingDate().compareTo(p2.getClosingDate());
+                    case "officerslots":
+                        return Integer.compare(p1.getOfficerSlots(), p2.getOfficerSlots());
+                    default:
+                        System.out.println("Unknown sorting field: " + filter + ". Using default sort by project name.");
+                        return p1.getProjectName().compareToIgnoreCase(p2.getProjectName());
+                }
+            });
+        } else {
+            // Default sort by project name
+            Collections.sort(projectList, Comparator.comparing(Project::getProjectName, String.CASE_INSENSITIVE_ORDER));
+        }
         
-        return projectList;
+        // Display the sorted projects
+        System.out.println(String.format("%-5s %-20s %-15s %-12s %-12s %-8s %-8s %-5s", 
+            "ID", "Project Name", "Neighborhood", "Opening", "Closing", "2-Room", "3-Room", "Visible"));
+        System.out.println("--------------------------------------------------------------------------------------");
+        
+        for (Project project : projectList) {
+            System.out.println(String.format("%-5d %-20s %-15s %-12s %-12s %-8d %-8d %-5s",
+                project.getProjectId(),
+                project.getProjectName(),
+                project.getNeighbourhood(),
+                project.getOpeningDate(),
+                project.getClosingDate(),
+                project.getTwoRoomCount(),
+                project.getThreeRoomCount(),
+                project.isProjectVisibility() ? "Yes" : "No"));
+        }
     }
-    // === Helper Methods ===
- 
+    
+    public List<BTOapplication> generateReport(int projectID, String filter) {
+        Project project = Project.getProjectById(projectID);
+        if (project == null || !managedProjects.contains(project)) {
+            System.out.println("Error: Project not found or you don't have permission.");
+            return new ArrayList<>();
+        }
+        
+        return project.getApplications().stream()
+            .filter(app -> app.getStatus().equals("Booked"))
+            .filter(app -> {
+                switch (filter.toLowerCase()) {
+                    case "married":
+                        // Need to get Applicant info from the application
+                        // This would require additional functionality
+                        return true; // Placeholder
+                    case "single":
+                        return true; // Placeholder
+                    case "2-room":
+                        return app.getUnitType().equals("2-Room");
+                    case "3-room":
+                        return app.getUnitType().equals("3-Room");
+                    case "all":
+                        return true;
+                    default:
+                        return false;
+                }
+            })
+            .collect(Collectors.toList());
+    }
+    
+    public void viewAllProjects(String field) {
+        Project.displayAllProjects(field);
+    }
 
+    // === Helper Methods ===
     private boolean isManagingProjectDuringPeriod(LocalDate newOpening, LocalDate newClosing) {
         for (Project project : managedProjects) {
             if (datesOverlap(project.getOpeningDate(), project.getClosingDate(), newOpening, newClosing)) {
