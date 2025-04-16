@@ -14,8 +14,8 @@ import java.util.List;
 public class HDBmanager extends UserPerson implements enquiryInterface {
     private List<Project> managedProjects; // Only tracks projects this manager owns
 
-    public HDBmanager(String name, String NRIC, int age, String maritalStatus, String password, String userType) {
-        super(name, NRIC, age, maritalStatus, password, userType);
+    public HDBmanager(String name, String NRIC, int age, String maritalStatus, String password) {
+        super(name, NRIC, age, maritalStatus, password, "manager");
         this.managedProjects = new ArrayList<>();
     }
 

@@ -12,11 +12,12 @@ public class HDBofficer extends Applicant implements enquiryInterface {
     private List<Project> registeredProjects;
     private List<BTOapplication> applications;
     private List<Enquiry> enquiries;
-    private List<String> appliedProjectIDs;
-    private List<OfficerRegistration> officerApplications;
+    private List<String> appliedProjectIDs;//sld be a list of int?
+    private List<OfficerRegistration> officerApplications;//sld it be a list, unless want to store history
 
     public HDBofficer(String NRIC, String password, String name, boolean married, int age) {
         super(name, NRIC, age, married ? "Married" : "Single", password);
+        setUserType("officer");
         this.registeredProjects = new ArrayList<>();
         this.applications = new ArrayList<>();
         this.enquiries = new ArrayList<>();

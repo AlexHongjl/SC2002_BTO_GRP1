@@ -110,6 +110,11 @@ public class UserPerson {
 		return this.userType;
 	}
 	
+	public void setUserType(String userType) {
+	    this.userType = userType;
+	}
+
+	
 	public void changePassword(String newPassword) {
 		this.password = newPassword;
 	}
