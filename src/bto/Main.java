@@ -8,6 +8,7 @@ import bto.model.BTOapplication;
 import bto.model.Enquiry;
 import bto.model.HDBmanager;
 import bto.model.HDBofficer;
+import bto.model.OfficerRegistration;
 import bto.model.Project;
 import bto.model.UserPerson;
 
@@ -62,8 +63,8 @@ public class Main {
         if(cur.getUserType() == "manager" && cur instanceof HDBmanager) { //if possible change to check the obj itself
         	HDBmanager m = (HDBmanager) cur;//downcast
         	do {
-	        	System.out.println("1. View All BTO projects"); 
-	        	System.out.println("2. Toggle visibility");//if not officer in charge
+	        	System.out.println("1. View All BTO projects listing"); 
+	        	System.out.println("2. Toggle visibility");
 	        	System.out.println("3. approve BTO application by applicant");//both withdraw and apply
 	        	System.out.println("4. approve officer application by officer");// put view function within
 	        	System.out.println("5. Add BTO listing");
@@ -81,42 +82,183 @@ public class Main {
 	        	switch (selection) {
 	        	    case 1:
 	        	        System.out.println("Case 1 selected.");
+	        	        Project.displayAllProjects();
 	        	        break;
 	        	    case 2:
+	        	    	int projectID2;
+	        	    	boolean a;
 	        	        System.out.println("Case 2 selected.");
+	        	        System.out.println("input project ID for the project you want to toggle visibility on");
+	        	        projectID2=sc.nextInt();
+	        	        System.out.println("on/off e.g. =ve int for on, 0 for off");
+	        	        a=sc.nextBoolean();
+	        	        m.toggleProjectVisibility(projectID2, a);
 	        	        break;
 	        	    case 3:
 	        	        System.out.println("Case 3 selected.");
+	        	        int projectID1;
+	        	    	String appNRIC;
+	        	    	BTOapplication.displayStatusPendingA();
+	        	    	BTOapplication.displayStatusPendingW();
+	        	        System.out.println("input project ID:");
+	        	        projectID1=sc.nextInt();
+	        	        sc.nextLine();
+	        	        System.out.println("input applicant NRIC to approve/reject:");
+	        	        appNRIC=sc.nextLine();
+	        	        BTOapplication app;
+	        	        app= BTOapplication.getApplicationByUserId(appNRIC);
+	        	        app.display();
+	        	        System.out.println("approve/reject " + app.getStatus() +" e.g. +ve int for approve,0 for reject");
+	        	        boolean c=sc.nextBoolean();
+	        	        if(c) {
+	        	        	m.approveBTOApplication(projectID1, appNRIC);
+	        	        }else {
+	        	        	m.rejectBTOApplication(projectID1, appNRIC);
+	        	        }
 	        	        break;
 	        	    case 4:
+	        	    	int projectID;
+	        	    	String officerNRIC;
 	        	        System.out.println("Case 4 selected.");
+	        	        //display list of officer reg under his list of project
+	        	        System.out.println("input project ID:");
+	        	        projectID=sc.nextInt();
+	        	        sc.nextLine();
+	        	        System.out.println("input officer NRIC to approve/reject:");
+	        	        officerNRIC=sc.nextLine();
+	        	        OfficerRegistration offreg;
+	        	        //find the offreg obj first
+	        	        //display the offreg obj especially cur status if approve or reject
+	        	        System.out.println("approve/reject " + offreg.getRegistrationStatus() +" e.g. +ve int for approve,0 for reject");
+	        	        boolean b=sc.nextBoolean();
+	        	        if(b) {
+	        	        	m.approveOfficerRegistration(int projectID, String officerNRIC);
+	        	        }else {
+	        	        	m.rejectOfficerRegistration(int projectID, String officerNRIC);
+	        	        }
 	        	        break;
 	        	    case 5:
 	        	        System.out.println("Case 5 selected.");
+	        	        //display how many list under him first then he want to add to which list or create new list
+	        	        System.out.println("input projectName, String neighborhood,\r\n"
+	        	        		+ "                                    int twoRoomCount,\r\n"
+	        	        		+ "                                    int threeRoomCount, boolean projectVisibility, \r\n"
+	        	        		+ "                                   LocalDate openingDate, LocalDate closingDate,\r\n"
+	        	        		+ "                                   int officerSlots in sequence separated by space, e.g. 1 0 1 0 1 0 1 0");
+	        	        m.createBTOListings(null, null, 0, 0, true, null, null, 0);//sld be a list?
 	        	        break;
 	        	    case 6:
-	        	        System.out.println("Case 6 selected.");
+	        	        System.out.println("Case 6 selected.");// edit field by field can be quite slow
+	        	        System.out.println("input proj ID, field to edit(e.g. projectname), new value in sequence e.g. 1 projectname Taban Garden:");
+	        	        m.editBTOListings(projectID, officerNRIC, offreg);
 	        	        break;
 	        	    case 7:
 	        	        System.out.println("Case 7 selected.");
+	        	        System.out.println("input proj ID:");
+	        	        int projectID3=sc.nextInt();
+	        	        m.deleteBTOListings(projectID3);
 	        	        break;
 	        	    case 8:
-	        	        System.out.println("Case 8 selected.");
-	        	        break;
+	        	    	System.out.println("Case 8 selected.");
+		                System.out.println("logging out\n\n");
+		                break;
 	        	    case 9:
 	        	        System.out.println("Case 9 selected.");
+	        	        String pw;
+		                System.out.println("Case 9 selected.");
+		                sc.nextLine();//clear buffer
+		                System.out.println("input new pw:");
+		                pw=sc.nextLine();
+		                System.out.println("confirm new pw:(input same pw agn)");
+		                if(pw.equals(sc.nextLine())) {
+		                	m.changePassword(pw);
+		                }else {
+		                	System.out.println("Unsuccessful change, re-enter pw not same");
+		                }
 	        	        break;
 	        	    case 10:
 	        	        System.out.println("Case 10 selected.");
+	        	        int ftsel;
+		                String ft="";
+		                do{
+		                
+		                System.out.println("Case 10 selected.");
+		                System.out.println("1. filter by projectid");
+		                System.out.println("2. filter by projectname");
+		                System.out.println("3. filter by neighborhood");
+		                System.out.println("4. filter by tworoomcount");
+		                System.out.println("5. filter by threeroomcount");
+		                System.out.println("6. filter by projectvisibility");
+		                System.out.println("7. filter by openingdate");
+		                System.out.println("8. filter by closingdate");
+		                System.out.println("9. filter by officerslots");
+		                System.out.println("10. exit to prv menu");
+		                System.out.println("input selection:");
+		                ftsel=sc.nextInt();
+		                switch (ftsel) {
+			                case 1:
+			                    ft="projectid";
+			                    break;
+			                case 2:
+			                    ft="projectname";
+			                    break;
+			                case 3:
+			                    ft="neighborhood";
+			                    break;
+			                case 4:
+			                    ft="tworoomcount";
+			                    break;
+			                case 5:
+			                    ft="threeroomcount";
+			                    break;
+			                  case 6:
+			                    ft="projectvisibility";
+			                    break;
+			                  case 7:
+			                    ft="openingdate";
+			                    break;
+			                  case 8:
+			                    ft="closingdate";
+			                    break;
+			                  case 9:
+			                    ft="officerslots";
+			                    break;
+			                  case 10:
+			                      break;
+			                default:
+			                	System.out.println("Invalid choice. Try again");
+		                }
+		                }while(ftsel>10 || ftsel<1);
+		                if(ft.equals("")){
+		                    //pass
+		                }else{
+		                    Project.displayAllProjects(ft);
+		                }
 	        	        break;
 	        	    case 11:
 	        	        System.out.println("Case 11 selected.");
+		                sc.close();
+		                System.out.println("Ending...");
 	        	        break;
 	        	    case 12:
 	        	        System.out.println("Case 12 selected.");
+	        	        int enquiryID3;
+	        	        Enquiry.displayAllEnquiries();
+	        	        System.out.println("input enquiry ID to select enquiry to reply:");
+	                	enquiryID3=sc.nextInt();
+	                	if(Enquiry.getByID(enquiryID3)==null) {
+	                		System.out.println("invalid ID");
+	                	}else {
+	                		System.out.println("current enquiry:");
+	                		Enquiry.getByID(enquiryID3).display();
+	                		System.out.println("input reply:");
+	                		sc.nextLine();//clear buffer
+	                		Enquiry.getByID(enquiryID3).reply(sc.nextLine());
+	                	}
 	        	        break;
 	        	    case 13:
 	        	        System.out.println("Case 13 selected.");
+	        	        m.generateReport(//projectID, null)
 	        	        break;
 	        	    default:
 	        	        System.out.println("Invalid choice. Try again");
@@ -251,8 +393,8 @@ public class Main {
 		                }
 		                break;
 		            case 8:
-		                System.out.println("Case 8 selected.");
-		                System.out.println("logging out");
+		            	System.out.println("Case 8 selected.");
+		                System.out.println("logging out\n\n");
 		                break;
 		            case 9:
 		            	String pw;
@@ -524,8 +666,8 @@ public class Main {
 	                }
 	                break;
 	            case 8:
-	                System.out.println("Case 8 selected.");
-	                System.out.println("logging out");
+	            	System.out.println("Case 8 selected.");
+	                System.out.println("logging out\n\n");
 	                break;
 	            case 9:
 	            	String pw;

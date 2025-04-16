@@ -210,7 +210,7 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         for (BTOapplication app : project.getApplications()) {
             if (app.getUserID().equals(applicantNRIC) && app.getStatus().equals("Pending")) {
                 if (app.getUnitType().equals("2-Room") && project.getTwoRoomCount() > 0) {
-                    app.updateStatus("Successful", "2-Room");
+                    app.updateStatus("Successful", "2-Room");//update the room count attribute under project as well, and status under applicant
                     System.out.println("Application approved for 2-Room flat.");
                 } else if (app.getUnitType().equals("3-Room") && project.getThreeRoomCount() > 0) {
                     app.updateStatus("Successful", "3-Room");
