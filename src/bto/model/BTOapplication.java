@@ -9,6 +9,7 @@ public class BTOapplication {
     private String status;   // Pending approval,Pending withdrawal, Successful, Unsuccessful, Booked
     private String timestamp; // last status update
     private Applicant user;
+    private String previousStatus;//"",Pending approval,Pending withdrawal, Successful, Unsuccessful
     
     private static ArrayList<BTOapplication> allApplications = new ArrayList<>();
 
@@ -18,7 +19,12 @@ public class BTOapplication {
         this.status = "Pending approval";
         this.unitType = "";
         this.timestamp = "";
+        this.previousStatus="";
         user = u;
+    }
+
+    public String getPreviousStatus(){
+        return this.previousStatus;
     }
     
     public static void addApplication(BTOapplication app) {
