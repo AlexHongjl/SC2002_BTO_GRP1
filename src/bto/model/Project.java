@@ -166,6 +166,10 @@ public class Project {
 
     public void displayOfficerList() {
         System.out.println("Displaying Officer List...");
+        if (officerList == null || officerList.isEmpty()) {
+            System.out.println("No officers assigned to this project.");
+            return;
+        }
         for (HDBofficer officer : officerList) {
             System.out.println("Officer: " + officer.getName() + " (NRIC: " + officer.getNRIC() + ")");
         }
@@ -234,7 +238,14 @@ public class Project {
             System.out.println("Officer Slots: " + project.getOfficerSlots());
             System.out.println("Manager In Charge: " + (project.getManagerInCharge() != null ? project.getManagerInCharge().getName() : "None"));
             System.out.println("Number of Officers Assigned: " + project.getOfficers().size());
-            System.out.println("Number of Officer Applications: " + project.getOfficerRegistrations().size());
+            if (!project.getOfficers().isEmpty()) {
+                System.out.println("Assigned Officers:");
+                for (HDBofficer officer : project.getOfficers()) {
+                    System.out.println(" - " + officer.getName() + " (NRIC: " + officer.getNRIC() + ")");
+                }
+            } else {
+                System.out.println("Assigned Officers: None");
+            }
         }
         System.out.println("============================================");
     }
@@ -312,7 +323,15 @@ public class Project {
                 System.out.println("Officer Slots: " + project.officerSlots);
                 System.out.println("Open Date: " + (project.openDate != null ? project.openDate : "Not set"));
                 System.out.println("Close Date: " + (project.closeDate != null ? project.closeDate : "Not set"));
-                System.out.println("Number of Officers: " + project.officerList.size());
+                System.out.println("Number of Officers Assigned: " + project.officerList.size());
+                if (!project.officerList.isEmpty()) {
+                    for (HDBofficer officer : project.officerList) {
+                        System.out.println("- Officer: " + officer.getName() + " (NRIC: " + officer.getNRIC() + ")");
+                    }
+                } else {
+                    System.out.println("No officers assigned.");
+                }
+
                 System.out.println("Number of Officer Applications: " + project.officerApplicantList.size());
                 System.out.println("==========================");
                 found = true;
