@@ -142,6 +142,22 @@ public class Project {
     public List<HDBofficer> getOfficerList() {
         return officerList;
     }
+
+    public static OfficerRegistration getOfficerRegistrationByID(String officerID) {
+        for (int i = 0; i < count; i++) {
+            Project p = projects[i];
+            if (p == null) continue;
+    
+            for (OfficerRegistration reg : p.officerApplicantList) {
+                if (reg.getOfficer().getNRIC().equalsIgnoreCase(officerID)) {
+                    return reg;
+                }
+            }
+        }
+    
+        return null; // not found
+    }
+    
     
 
     public void displayOfficerList() {

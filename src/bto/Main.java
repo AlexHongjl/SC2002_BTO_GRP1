@@ -109,8 +109,10 @@ public class Main {
 	        	        officerNRIC=sc.nextLine();
 	        	        OfficerRegistration offreg;
 	        	        //find the offreg obj first
+						offreg=Project.getOfficerRegistrationByID(officerNRIC);
+						offreg.display();
 	        	        //display the offreg obj especially cur status if approve or reject
-	        	        //System.out.println("approve/reject " + offreg.getRegistrationStatus() +" e.g. +ve int for approve,0 for reject");
+	        	        System.out.println("approve/reject " + offreg.getRegistrationStatus() +" e.g. +ve int for approve,0 for reject");
 	        	        boolean b=sc.nextInt()==1?true:false;
 	        	        if(b) {
 	        	        	m.approveOfficerRegistration(projectID, officerNRIC);
