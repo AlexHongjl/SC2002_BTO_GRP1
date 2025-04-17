@@ -496,8 +496,10 @@ public class Main {
 	        	        System.out.println("Case 14 selected.");
 	        	        //display "successful" bto app also filter by his officer project so he can book his own project only
 	        	        for(BTOapplication a :BTOapplication.getAllApplications()) {
-	        	        	if(a.getStatus().equals("successful")) && o in Project.getProjectById(a.getProjectId().getOfficers()){
+	        	        	for(HDBofficer ok :(Project.getProjectById(a.getProjectId())).getOfficers()) {
+	        	        	if(a.getStatus().equals("successful") && ok==o){
 	        	        		a.display();
+	        	        	}
 	        	        	}
 	        	        }
 	        	        
