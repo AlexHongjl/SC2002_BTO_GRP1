@@ -19,6 +19,14 @@ public class Enquiry {
         this.message = message;
         this.response = "";
         this.status = true;
+    }
+
+    public Enquiry(int enquiryID, String applicantName, String message, int projectId) {
+        this.enquiryID = enquiryID;
+        this.applicantName = applicantName;
+        this.message = message;
+        this.response = "";
+        this.status = true;
         this.projectId = projectId;
     }
     
