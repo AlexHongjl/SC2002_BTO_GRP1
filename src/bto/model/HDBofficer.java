@@ -15,7 +15,7 @@ public class HDBofficer extends Applicant implements enquiryInterface {
     private List<String> appliedProjectIDs;//sld be a list of int?
     private List<OfficerRegistration> officerApplications;//sld it be a list, unless want to store history
 
-    public HDBofficer(String NRIC, String password, String name, boolean married, int age) {
+    public HDBofficer(String name, String NRIC, int age, boolean married, String password) {
         super(name, NRIC, age, married ? "Married" : "Single", password);
         setUserType("officer");
         this.registeredProjects = new ArrayList<>();
