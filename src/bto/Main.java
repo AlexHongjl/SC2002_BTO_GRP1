@@ -83,7 +83,7 @@ public class Main {
 	        	switch (selection) {
 	        	    case 1:
 	        	        System.out.println("Case 1 selected.");
-	        	        Project.displayAllProjects();
+	        	        Project.displayAllProjects(saved_filter);
 	        	        break;
 	        	    case 2:
 	        	    	int projectID2;
