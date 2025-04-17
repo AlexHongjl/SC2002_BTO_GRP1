@@ -23,8 +23,13 @@ public class Main {
         
     	UserPerson.LoadUsers(Users);
     	
+    	/*for (UserPerson u : Users) {
+    	    System.out.println("Found: " + u.getName() + " is instance of " + u.getClass().getSimpleName());
+    	}*/
+
     	Project.loadProjectsFromCSV(Users);
         
+    	//Project.display(1);
         //load in project
         
         //login menu

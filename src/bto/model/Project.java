@@ -124,9 +124,16 @@ public class Project {
                 if(manager!=null) {
                 	manager.addProject(p);
                 }
-    
+                
+                String[] tokens = smartSplitCSVLine(line);
+
                 // Find and assign officers
-                for (String officerName : officerNames) {
+                String officerField = tokens[tokens.length - 1]; // e.g., "Daniel,Emily"
+                officerField = officerField.replace("\"", "");   // remove quotes
+
+                String[] officerNames1 = officerField.split(",");
+
+                for (String officerName : officerNames1) {
                     officerName = officerName.trim();
                     for (UserPerson u : Users) {
                         if (u instanceof HDBofficer && u.getName().equalsIgnoreCase(officerName)) {
@@ -140,6 +147,28 @@ public class Project {
             e.printStackTrace();
         }
     }
+      
+      public static String[] smartSplitCSVLine(String line) {
+    	    ArrayList<String> result = new ArrayList<>();
+    	    StringBuilder sb = new StringBuilder();
+    	    boolean inQuotes = false;
+
+    	    for (int i = 0; i < line.length(); i++) {
+    	        char c = line.charAt(i);
+
+    	        if (c == '"') {
+    	            inQuotes = !inQuotes; // toggle state
+    	        } else if (c == ',' && !inQuotes) {
+    	            result.add(sb.toString().trim());
+    	            sb.setLength(0); // clear buffer
+    	        } else {
+    	            sb.append(c);
+    	        }
+    	    }
+    	    result.add(sb.toString().trim()); // add last value
+    	    return result.toArray(new String[0]);
+    	}
+
     
     public List<HDBofficer> getOfficerList() {
         return officerList;
@@ -366,7 +395,7 @@ public class Project {
                 System.out.println("Two Room Count: " + project.twoRoomCount);
                 System.out.println("Three Room Count: " + project.threeRoomCount);
                 System.out.println("Project Visibility: " + (project.projectVisibility ? "Visible" : "Hidden"));
-                System.out.println("Manager In Charge: " + project.managerInCharge);
+                System.out.println("Manager In Charge: " + project.managerInCharge.getName());
                 System.out.println("Officer Slots: " + project.officerSlots);
                 System.out.println("Open Date: " + (project.openDate != null ? project.openDate : "Not set"));
                 System.out.println("Close Date: " + (project.closeDate != null ? project.closeDate : "Not set"));
@@ -559,3 +588,4 @@ public class Project {
 		return count;
 	}
 }
+
