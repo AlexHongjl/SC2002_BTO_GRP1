@@ -12,7 +12,7 @@ import bto.model.OfficerRegistration;
 import bto.model.Project;
 import bto.model.UserPerson;
 
-public class Main {.
+public class Main {
     public static void main(String[] args) {
     	//UserPerson[] Users = new UserPerson[20]; // creating a array to store all users
     	
@@ -20,7 +20,7 @@ public class Main {.
         
     	UserPerson.LoadUsers(Users);
     	
-    	Project.loadProjectsFromCSV();
+    	Project.loadProjectsFromCSV(Users);
         
         //load in project
         
@@ -39,7 +39,7 @@ public class Main {.
 	        
 	        
 	        for (UserPerson user : Users) {
-	        	//if (user == null) continues;
+	        	//if (user == null) continue;
 	        	
 	        	if(username.equals(user.getNRIC())) {
 	        		if(password.equals(user.getPassword())) {
@@ -132,9 +132,9 @@ public class Main {.
 	        	        System.out.println("approve/reject " + offreg.getRegistrationStatus() +" e.g. +ve int for approve,0 for reject");
 	        	        boolean b=sc.nextBoolean();
 	        	        if(b) {
-	        	        	m.approveOfficerRegistration(int projectID, String officerNRIC);
+	        	        	m.approveOfficerRegistration(projectID, officerNRIC);
 	        	        }else {
-	        	        	m.rejectOfficerRegistration(int projectID, String officerNRIC);
+	        	        	m.rejectOfficerRegistration(projectID, officerNRIC);
 	        	        }
 	        	        break;
 	        	    case 5:
@@ -258,7 +258,7 @@ public class Main {.
 	        	        break;
 	        	    case 13:
 	        	        System.out.println("Case 13 selected.");
-	        	        m.generateReport(//projectID, null)
+	        	        m.generateReport("projectID", null);
 	        	        break;
 	        	    default:
 	        	        System.out.println("Invalid choice. Try again");
@@ -493,11 +493,15 @@ public class Main {.
 	        	        break;
 	        	    case 14://only 
 	        	    	String app;
+	        	    	BTOapplication c;
 	        	        System.out.println("Case 14 selected.");
 	        	        //display "successful" bto app also filter by his officer project so he can book his own project only
 	        	        for(BTOapplication a :BTOapplication.getAllApplications()) {
-	        	        	if(a.getStatus().equals("successful")) && o in Project.getProjectById(a.getProjectId()).getOfficers()){
+	        	        	for(HDBofficer ok :(Project.getProjectById(a.getProjectId())).getOfficers()) {
+	        	        	if(a.getStatus().equals("successful") && ok==o){
+	        	        		c =a;
 	        	        		a.display();
+	        	        	}
 	        	        	}
 	        	        }
 	        	        
@@ -512,21 +516,9 @@ public class Main {.
 	        	        	System.out.println("book flats? Y/N e.g. +ve int for Y, 0 for N");
 	        	        	book=sc.hasNextBoolean();
 	        	        	if(book==true) {
-	        	        		BTOapplication.getApplicationByUserId(app).updateStatus("booked", BTOapplication.getApplicationByUserId(app).getUnitType());//applicant status nvr update
-	        	        		if(BTOapplication.getApplicationByUserId(app).getUnitType().equals("2-Room")) {//update to booked and decrement num in project
-	        	        			Project.getProjectById(BTOapplication.getApplicationByUserId(app).getProjectId()).setTwoRoomCount(Project.getProjectById(BTOapplication.getApplicationByUserId(app).getProjectId()).getTwoRoomCount()--);
-	        	        		}else if(BTOapplication.getApplicationByUserId(app).getUnitType().equals("3-Room")){
-	        	        			Project.getProjectById(BTOapplication.getApplicationByUserId(app).getProjectId()).setThreeRoomCount(Project.getProjectById(BTOapplication.getApplicationByUserId(app).getProjectId()).getThreeRoomCount()--);
+	        	        		o.bookUnitForApplicant(app,c.getUnitType(), Project.getProjectById(c.getProjectId()));
 	        	        		}
-	        	        		//find the guy and update his attribute
-	        	        		for(UserPerson guy : Users) {
-	        	        			if(guy.getNRIC().equals(app)) {
-	        	        				Applicant b = (Applicant) guy;
-	        	        				b.bookFlat(BTOapplication.getApplicationByUserId(app).getUnitType());
-	        	        				break;
-	        	        			}
-	        	        		}
-        	        		}else {
+        	        		else {
         	        		System.out.println("you entered No");
 	        	        	}
 	        	        }
