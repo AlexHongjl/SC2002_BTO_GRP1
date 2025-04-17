@@ -329,11 +329,6 @@ public class Project {
         return null;
     }
 
-    public static void displayAllProjects() {
-        for (int i = 0; i < getCount(); i++) {
-            System.out.println("Project ID: " + projects[i].projectId + ", Name: " + projects[i].projectName);
-        }
-    }
     public void addOfficerRegistration(OfficerRegistration registration) {
         officerApplicantList.add(registration);
     }
