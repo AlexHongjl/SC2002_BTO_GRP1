@@ -28,7 +28,7 @@ public class MainTest {
         int logout=0;
         do {
             Scanner sc = new Scanner(System.in);
-            UserPerson cur = login(Users, sc);
+            UserPerson cur = UserPerson.login(Users, sc);
 
             System.out.println("\nWelcome <" + cur.getUserType() + "> " + cur.getName() + "!\n");
         
@@ -263,7 +263,26 @@ public class MainTest {
         }
     }
     
-public static UserPerson login(ArrayList<UserPerson> users, Scanner sc) {
+
+    
+class UserPerson {
+	private String name;
+	private String NRIC;
+	private int age;
+	private String maritalStatus;
+	private String password;
+	private String userType;
+	
+	public UserPerson(String name, String NRIC, int age, String maritalStatus, String password, String userType) {
+		this.name = name;
+		this.NRIC = NRIC;
+		this.age = age;
+		this.maritalStatus = maritalStatus;
+		this.password = password;
+		this.userType = userType;
+	}
+	
+	public static UserPerson login(ArrayList<UserPerson> users, Scanner sc) {
         UserPerson cur = null;
         while (cur == null) {
             System.out.println("\n--- BTO System Login ---");
@@ -287,22 +306,30 @@ public static UserPerson login(ArrayList<UserPerson> users, Scanner sc) {
         return cur;
     }
     
-class UserPerson {
-	private String name;
-	private String NRIC;
-	private int age;
-	private String maritalStatus;
-	private String password;
-	private String userType;
-	
-	public UserPerson(String name, String NRIC, int age, String maritalStatus, String password, String userType) {
-		this.name = name;
-		this.NRIC = NRIC;
-		this.age = age;
-		this.maritalStatus = maritalStatus;
-		this.password = password;
-		this.userType = userType;
-	}
+    public static String readPasswordWithAsterisks(String prompt) {
+        System.out.print(prompt);
+        StringBuilder password = new StringBuilder();
+        try {
+            while (true) {
+                int ch = System.in.read();
+                if (ch == '\n' ||  ch == '\r') {
+                    System.out.println();
+                    break;
+                } else if (ch == 8 || ch == 127) { // backspace
+                    if (password.length() > 0) {
+                        password.deleteCharAt(password.length() - 1);
+                        System.out.print("\b \b");
+                    }
+                } else {
+                    password.append((char) ch);
+                    System.out.print("*");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return password.toString();
+    }
 	
 	public String getName() {
 		return this.name;
