@@ -143,6 +143,9 @@ public class Project {
         return officerList;
     }
     
+    public List<OfficerRegistration> getOfficerApplicantList() {
+        return this.officerApplicantList;
+    }
 
     public static OfficerRegistration getOfficerRegistrationByID(String officerID) {
         for (int i = 0; i < count; i++) {

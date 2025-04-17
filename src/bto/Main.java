@@ -504,13 +504,19 @@ public class Main {
 	                	}
 	        	        break;
 	        	    case 13:
+						int projectID5;
 	        	        System.out.println("Case 13 selected.");
+						Project.displayAllProjects(saved_filter);//if not alr regged
+						System.out.println("enter project ID:");
+						projectID5=sc.nextInt();
+						o.applyOffReg(Project.getProjectById(projectID5));
 	        	        break;
 	        	    case 14:
 	        	        System.out.println("Case 14 selected.");
 
 	        	        // Display all successful applications for officer's projects
 	        	        ArrayList<BTOapplication> matchingApps = new ArrayList<>();
+						System.out.println("AVAILABLE BTO APPLICATIONS TO BOOK");
 	        	        for (BTOapplication a : BTOapplication.getAllApplications()) {
 	        	            if (a.getStatus().equalsIgnoreCase("successful")) {
 	        	                Project proj = Project.getProjectById(a.getProjectId());

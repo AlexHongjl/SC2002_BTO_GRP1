@@ -141,6 +141,25 @@ public class HDBofficer extends Applicant implements enquiryInterface {
         }
         System.out.println("No valid booking found for receipt.");
     }
+        // Method for officer to apply for a project (no slot checking here)
+        public OfficerRegistration applyOffReg(Project project) {
+            if (project == null) {
+                System.out.println("Error: Project cannot be null.");
+                return null;
+            }
+    
+            // Create the registration with default status "pending"
+            OfficerRegistration reg = new OfficerRegistration(this, project);
+    
+            // Add to the project's officer applicant list
+            project.getOfficerApplicantList().add(reg);
+    
+            System.out.println(this.getName() + " has applied to project '" + project.getProjectName() + "'. Status: pending");
+    
+            return reg;
+        }
+    }
+    
 
     private boolean checkIfApplicant(Project project) {
         Project appliedProject = this.getAppliedProject();
