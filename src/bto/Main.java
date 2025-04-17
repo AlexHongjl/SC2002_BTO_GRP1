@@ -20,7 +20,7 @@ public class Main {
         
     	UserPerson.LoadUsers(Users);
     	
-    	Project.Loadprojects();
+    	Project.loadProjectsFromCSV(Users);
         
         //load in project
         
