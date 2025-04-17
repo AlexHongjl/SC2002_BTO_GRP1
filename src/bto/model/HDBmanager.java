@@ -450,6 +450,9 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         }
         return false;
     }
+    public void addProject(Project project) {
+    	managedProjects.add(project);
+    }
 
     private boolean datesOverlap(LocalDate start1, LocalDate end1, LocalDate start2, LocalDate end2) {
         return !start1.isAfter(end2) && !start2.isAfter(end1);
