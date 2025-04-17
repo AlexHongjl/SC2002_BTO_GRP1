@@ -1,12 +1,14 @@
 package bto.model;
 
+import bto.model.Enquiry;
+
 public class Enquiry {
     private int enquiryID;
     private String applicantName;
     private String message;
     private String response;// sld be a list?
     private boolean status;//true means open for reply?
-    //private int projectId;//still need? since enquiry not by project anymore
+    private int projectId;//still need? since enquiry not by project anymore
     
     private static Enquiry[] Enquiries = new Enquiry[100];
     private static int count = 0;
@@ -17,7 +19,7 @@ public class Enquiry {
         this.message = message;
         this.response = "";
         this.status = true;
-        //this.projectId = projectId;
+        this.projectId = projectId;
     }
     
     public void display() {
@@ -26,7 +28,7 @@ public class Enquiry {
         System.out.println("Message: " + message);
         System.out.println("Response: " + (response.isEmpty() ? "No response yet." : response));
         System.out.println("Status: " + (status ? "Open" : "Closed"));
-        //System.out.println("Project ID: " + projectId);
+        System.out.println("Project ID: " + projectId);
         System.out.println("-------------------------------");
     }
     
@@ -132,9 +134,9 @@ public class Enquiry {
         return applicantName;
     }
     
-    /*public int getProjectId() {
+    public int getProjectId() {
         return projectId;
-    }*/
+    }
 
     public void setApplicantName(String applicantName) {
         this.applicantName = applicantName;
