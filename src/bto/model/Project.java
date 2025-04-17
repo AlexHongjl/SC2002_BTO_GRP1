@@ -23,6 +23,7 @@ public class Project {
     private LocalDate closeDate;
     private List<HDBofficer> officerList;
     private List<OfficerRegistration> officerApplicantList;
+    //add project specific enquiry list
     
     private static Project[] projects = new Project[100];
     private static int count = 0;
