@@ -207,7 +207,7 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         }
 
         // Assuming project has a list of applications that can be accessed
-        for (BTOapplication app : project.getApplications()) {
+        for (BTOapplication app : BTOapplication.getAllApplications()) {
             if (app.getUserID().equals(applicantNRIC) && app.getStatus().equals("Pending")) {
                 if (app.getUnitType().equals("2-Room") && project.getTwoRoomCount() > 0) {
                     app.updateStatus("Successful", "2-Room");//update the room count attribute under project as well, and status under applicant
@@ -231,7 +231,7 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
             return;
         }
 
-        for (BTOapplication app : project.getApplications()) {
+        for (BTOapplication app : BTOapplication.getAllApplications()) {
             if (app.getUserID().equals(applicantNRIC) && app.getStatus().equals("Pending")) {
                 app.updateStatus("Unsuccessful", app.getUnitType());
                 System.out.println("Application rejected.");
@@ -248,7 +248,7 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
             return;
         }
 
-        for (BTOapplication app : project.getApplications()) {
+        for (BTOapplication app : BTOapplication.getAllApplications()) {
             if (app.getUserID().equals(applicantNRIC) && app.getStatus().equals("Withdrawal Requested")) {
                 String previousStatus = app.getStatus();
                 app.updateStatus("Withdrawn", app.getUnitType());
@@ -276,7 +276,7 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
             return;
         }
 
-        for (BTOapplication app : project.getApplications()) {
+        for (BTOapplication app : BTOapplication.getAllApplications()) {
             if (app.getUserID().equals(applicantNRIC) && app.getStatus().equals("Withdrawal Requested")) {
                 // Set the status back to what it was before the withdrawal request
                 // This would need additional tracking in the BTOapplication class
@@ -388,7 +388,7 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
             return new ArrayList<>();
         }
         
-        return project.getApplications().stream()
+        return BTOapplication.getAllApplications().stream().filter(app -> app.getProjectId()==projectID)
             .filter(app -> app.getStatus().equals("Booked"))
             .filter(app -> {
                 switch (filter.toLowerCase()) {
