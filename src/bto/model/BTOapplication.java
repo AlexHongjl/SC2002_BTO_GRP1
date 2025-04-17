@@ -8,15 +8,17 @@ public class BTOapplication {
     private String unitType; // "2-Room" or "3-Room"
     private String status;   // Pending approval,Pending withdrawal, Successful, Unsuccessful, Booked
     private String timestamp; // last status update
+    private Applicant user;
     
     private static ArrayList<BTOapplication> allApplications = new ArrayList<>();
 
-    public BTOapplication(String userID, int projectId) {
+    public BTOapplication(String userID, int projectId, Applicant u) {
         this.userID = userID;
         this.projectId = projectId;
         this.status = "Pending approval";
         this.unitType = "";
         this.timestamp = "";
+        user = u;
     }
     
     public static void addApplication(BTOapplication app) {
@@ -127,5 +129,8 @@ public class BTOapplication {
     
     public boolean deniedApplication() {
     	return status.equals("Unsuccessful");
+    }
+    public Applicant getUser() {
+    	return user;
     }
 }

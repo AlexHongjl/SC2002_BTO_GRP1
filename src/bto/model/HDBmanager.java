@@ -394,11 +394,9 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
             .filter(app -> {
                 switch (filter.toLowerCase()) {
                     case "married":
-                        // Need to get Applicant info from the application
-                        // This would require additional functionality
-                        return true; // Placeholder
+                    	return app.getUser().getMaritalStatus().equalsIgnoreCase("Married");
                     case "single":
-                        return true; // Placeholder
+                        return app.getUser().getMaritalStatus().equalsIgnoreCase("Single");
                     case "2-room":
                         return app.getUnitType().equals("2-Room");
                     case "3-room":
