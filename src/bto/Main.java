@@ -65,7 +65,8 @@ public class Main {
 	        	    	int projectID2;
 	        	    	boolean a;
 	        	        System.out.println("Case 2 selected.");
-	        	        System.out.println("input project ID for the project you want to toggle visibility on");
+	        	        System.out.println("input project ID for the proje"
+	        	        		+ "ct you want to toggle visibility on");
 	        	        projectID2=sc.nextInt();
 	        	        System.out.println("on/off e.g. =ve int for on, 0 for off");
 	        	        a=sc.nextInt()==1?true:false;
@@ -86,7 +87,7 @@ public class Main {
 	        	        app= BTOapplication.getApplicationByUserId(appNRIC);
 	        	        app.display();
 	        	        System.out.println("approve/reject " + app.getStatus() +" e.g. +ve int for approve,0 for reject");
-	        	        boolean c=sc.nextBoolean();
+	        	        boolean c = (sc.nextInt()==1);
 	        	        if(c) {
 	        	        	m.approveBTOApplication(projectID1, appNRIC);
 	        	        }else {
@@ -107,7 +108,7 @@ public class Main {
 	        	        //find the offreg obj first
 	        	        //display the offreg obj especially cur status if approve or reject
 	        	        //System.out.println("approve/reject " + offreg.getRegistrationStatus() +" e.g. +ve int for approve,0 for reject");
-	        	        boolean b=sc.nextBoolean();
+	        	        boolean b=sc.nextInt()==1?true:false;
 	        	        if(b) {
 	        	        	m.approveOfficerRegistration(projectID, officerNRIC);
 	        	        }else {
