@@ -1,6 +1,8 @@
 package bto;
 
 import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import bto.model.Applicant;
@@ -128,7 +130,40 @@ public class Main {
 	        	        		+ "                                    int threeRoomCount, boolean projectVisibility, \r\n"
 	        	        		+ "                                   LocalDate openingDate, LocalDate closingDate,\r\n"
 	        	        		+ "                                   int officerSlots in sequence separated by space, e.g. 1 0 1 0 1 0 1 0");
-	        	        m.createBTOListings(null, null, 0, 0, true, null, null, 0);//sld be a list?
+	        	        // Collect inputs from user
+						System.out.print("Enter project name: ");
+						String projectName = sc.nextLine();
+
+						System.out.print("Enter neighbourhood: ");
+						String neighbourhood = sc.nextLine();
+
+						System.out.print("Enter two-room count: ");
+						int twoRoomCount = sc.nextInt();
+
+						System.out.print("Enter three-room count: ");
+						int threeRoomCount = sc.nextInt();
+
+						System.out.print("Enter project visibility (1 for true, 0 for false): ");
+						boolean projectVisibility = (sc.nextInt() == 1);
+
+						// Collect opening and closing dates
+						sc.nextLine(); // consume the leftover newline
+						System.out.print("Enter opening date (yyyy-MM-dd): ");
+						String openDateString = sc.nextLine();
+						LocalDate openDate = LocalDate.parse(openDateString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+						System.out.print("Enter closing date (yyyy-MM-dd): ");
+						String closeDateString = sc.nextLine();
+						LocalDate closeDate = LocalDate.parse(closeDateString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+						// Collect officer slots (sequence of 1's and 0's)
+						System.out.print("Enter officer slots (sequence separated by space): ");
+						String officerSlotsInput = sc.nextLine();
+						String[] officerSlotsArray = officerSlotsInput.split(" ");
+						int officerSlots = officerSlotsArray.length;
+
+						// Call the createBTOListings method with user inputs
+						m.createBTOListings(projectName, neighbourhood, twoRoomCount, threeRoomCount, projectVisibility, openDate, closeDate, officerSlots);//sld be a list?
 	        	        break;
 	        	    case 6:
 	        	        System.out.println("Case 6 selected.");// edit field by field can be quite slow

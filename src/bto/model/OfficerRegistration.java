@@ -25,6 +25,16 @@ public class OfficerRegistration {
         }
     }
 
+    public void display() {
+        System.out.println("Officer Registration Details:");
+        System.out.println("Officer Name: " + officer.getName());
+        System.out.println("Officer ID: " + officer.getNRIC());
+        System.out.println("Project: " + project.getProjectName());
+        System.out.println("Project ID: " + project.getProjectId());
+        System.out.println("Status: " + registrationStatus); // e.g. "pending", "approved", etc.
+    }
+    
+
     // === Eligibility Checks ===
     private boolean isEligible() {
         return !isApplicantForSameProject() && !hasOverlappingProjects() && hasAvailableSlots();
