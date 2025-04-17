@@ -129,7 +129,7 @@ public class Main {
 	        	        OfficerRegistration offreg;
 	        	        //find the offreg obj first
 	        	        //display the offreg obj especially cur status if approve or reject
-	        	        System.out.println("approve/reject " + offreg.getRegistrationStatus() +" e.g. +ve int for approve,0 for reject");
+	        	        //System.out.println("approve/reject " + offreg.getRegistrationStatus() +" e.g. +ve int for approve,0 for reject");
 	        	        boolean b=sc.nextBoolean();
 	        	        if(b) {
 	        	        	m.approveOfficerRegistration(projectID, officerNRIC);
@@ -150,7 +150,7 @@ public class Main {
 	        	    case 6:
 	        	        System.out.println("Case 6 selected.");// edit field by field can be quite slow
 	        	        System.out.println("input proj ID, field to edit(e.g. projectname), new value in sequence e.g. 1 projectname Taban Garden:");
-	        	        m.editBTOListings(projectID, officerNRIC, offreg);
+	        	        //m.editBTOListings(projectID, officerNRIC, offreg);
 	        	        break;
 	        	    case 7:
 	        	        System.out.println("Case 7 selected.");
