@@ -132,9 +132,9 @@ public class Main {
 	        	        System.out.println("approve/reject " + offreg.getRegistrationStatus() +" e.g. +ve int for approve,0 for reject");
 	        	        boolean b=sc.nextBoolean();
 	        	        if(b) {
-	        	        	m.approveOfficerRegistration(projectID, officerNRIC);
+	        	        	m.approveOfficerRegistration(int projectID, String officerNRIC);
 	        	        }else {
-	        	        	m.rejectOfficerRegistration(projectID, officerNRIC);
+	        	        	m.rejectOfficerRegistration(int projectID, String officerNRIC);
 	        	        }
 	        	        break;
 	        	    case 5:
@@ -258,7 +258,7 @@ public class Main {
 	        	        break;
 	        	    case 13:
 	        	        System.out.println("Case 13 selected.");
-	        	        m.generateReport("projectID", null);
+	        	        m.generateReport(//projectID, null)
 	        	        break;
 	        	    default:
 	        	        System.out.println("Invalid choice. Try again");
@@ -496,7 +496,7 @@ public class Main {
 	        	        System.out.println("Case 14 selected.");
 	        	        //display "successful" bto app also filter by his officer project so he can book his own project only
 	        	        for(BTOapplication a :BTOapplication.getAllApplications()) {
-	        	        	if(a.getStatus().equals("successful")) && o in Project.getProjectById(a.getProjectId().getOfficers()){
+	        	        	if(a.getStatus().equals("successful")) && o in Project.getProjectById(a.getProjectId()).getOfficers()){
 	        	        		a.display();
 	        	        	}
 	        	        }
