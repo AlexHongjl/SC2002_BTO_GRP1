@@ -12,7 +12,7 @@ import bto.model.OfficerRegistration;
 import bto.model.Project;
 import bto.model.UserPerson;
 
-public class Main {
+public class Main {.
     public static void main(String[] args) {
     	//UserPerson[] Users = new UserPerson[20]; // creating a array to store all users
     	
@@ -20,7 +20,7 @@ public class Main {
         
     	UserPerson.LoadUsers(Users);
     	
-    	Project.Loadprojects();
+    	Project.loadProjectsFromCSV();
         
         //load in project
         
