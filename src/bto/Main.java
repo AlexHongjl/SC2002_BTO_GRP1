@@ -39,7 +39,7 @@ public class Main {
 	        
 	        
 	        for (UserPerson user : Users) {
-	        	//if (user == null) continue;
+	        	//if (user == null) continues;
 	        	
 	        	if(username.equals(user.getNRIC())) {
 	        		if(password.equals(user.getPassword())) {
