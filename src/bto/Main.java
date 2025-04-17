@@ -493,11 +493,13 @@ public class Main {
 	        	        break;
 	        	    case 14://only 
 	        	    	String app;
+	        	    	BTOapplication c;
 	        	        System.out.println("Case 14 selected.");
 	        	        //display "successful" bto app also filter by his officer project so he can book his own project only
 	        	        for(BTOapplication a :BTOapplication.getAllApplications()) {
 	        	        	for(HDBofficer ok :(Project.getProjectById(a.getProjectId())).getOfficers()) {
 	        	        	if(a.getStatus().equals("successful") && ok==o){
+	        	        		c =a;
 	        	        		a.display();
 	        	        	}
 	        	        	}
@@ -514,21 +516,9 @@ public class Main {
 	        	        	System.out.println("book flats? Y/N e.g. +ve int for Y, 0 for N");
 	        	        	book=sc.hasNextBoolean();
 	        	        	if(book==true) {
-	        	        		BTOapplication.getApplicationByUserId(app).updateStatus("booked", BTOapplication.getApplicationByUserId(app).getUnitType());//applicant status nvr update
-	        	        		if(BTOapplication.getApplicationByUserId(app).getUnitType().equals("2-Room")) {//update to booked and decrement num in project
-	        	        			Project.getProjectById(BTOapplication.getApplicationByUserId(app).getProjectId()).setTwoRoomCount(Project.getProjectById(BTOapplication.getApplicationByUserId(app).getProjectId()).getTwoRoomCount()--);
-	        	        		}else if(BTOapplication.getApplicationByUserId(app).getUnitType().equals("3-Room")){
-	        	        			Project.getProjectById(BTOapplication.getApplicationByUserId(app).getProjectId()).setThreeRoomCount(Project.getProjectById(BTOapplication.getApplicationByUserId(app).getProjectId()).getThreeRoomCount()--);
+	        	        		o.bookUnitForApplicant(app,c.getUnitType(), Project.getProjectById(c.getProjectId()));
 	        	        		}
-	        	        		//find the guy and update his attribute
-	        	        		for(UserPerson guy : Users) {
-	        	        			if(guy.getNRIC().equals(app)) {
-	        	        				Applicant b = (Applicant) guy;
-	        	        				b.bookFlat(BTOapplication.getApplicationByUserId(app).getUnitType());
-	        	        				break;
-	        	        			}
-	        	        		}
-        	        		}else {
+        	        		else {
         	        		System.out.println("you entered No");
 	        	        	}
 	        	        }

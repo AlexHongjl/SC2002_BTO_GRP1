@@ -381,14 +381,15 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         }
     }
     
-    public List<BTOapplication> generateReport(int projectID, String filter) {
+    public void generateReport(int projectID, String filter) {
         Project project = Project.getProjectById(projectID);
         if (project == null || !managedProjects.contains(project)) {
             System.out.println("Error: Project not found or you don't have permission.");
-            return new ArrayList<>();
+            return;
         }
         
-        return BTOapplication.getAllApplications().stream().filter(app -> app.getProjectId()==projectID)
+        List<BTOapplication> filteredApplications = BTOapplication.getAllApplications().stream()
+            .filter(app -> app.getProjectId() == projectID)
             .filter(app -> app.getStatus().equals("Booked"))
             .filter(app -> {
                 switch (filter.toLowerCase()) {
@@ -409,6 +410,33 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
                 }
             })
             .collect(Collectors.toList());
+        
+        // Print the report header
+        System.out.println("=========== Project Booking Report ===========");
+        System.out.println("Project ID: " + projectID);
+        System.out.println("Project Name: " + project.getProjectName());
+        System.out.println("Filter: " + filter);
+        System.out.println("Number of Bookings: " + filteredApplications.size());
+        System.out.println("============================================");
+        
+        if (filteredApplications.isEmpty()) {
+            System.out.println("No bookings found matching the filter criteria.");
+        } else {
+            // Print column headers
+            System.out.printf("%-15s %-15s %-10s %-20s%n", "User ID", "Unit Type", "Status", "Booking Time");
+            System.out.println("------------------------------------------------------------");
+            
+            // Print each application
+            for (BTOapplication app : filteredApplications) {
+                System.out.printf("%-15s %-15s %-10s %-20s%n", 
+                    app.getUserID(),
+                    app.getUnitType(),
+                    app.getStatus(),
+                    app.getTimestamp());
+            }
+        }
+        
+        System.out.println("============================================");
     }
     
     public void viewAllProjects(String field) {
