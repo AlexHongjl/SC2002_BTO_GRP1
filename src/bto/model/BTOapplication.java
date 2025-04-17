@@ -21,6 +21,10 @@ public class BTOapplication {
         this.timestamp = "";
         this.previousStatus="";
         user = u;
+        Project project = Project.getProjectById(projectId);
+        if (project != null) {
+            project.addApplication(this);
+        }
     }
 
     public String getPreviousStatus(){

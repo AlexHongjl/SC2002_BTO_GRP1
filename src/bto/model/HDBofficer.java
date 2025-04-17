@@ -10,16 +10,14 @@ import bto.util.enquiryInterface;
 public class HDBofficer extends Applicant implements enquiryInterface {
 
     private List<Project> registeredProjects;
-    private List<BTOapplication> applications;
     private List<Enquiry> enquiries;
-    private List<String> appliedProjectIDs;//sld be a list of int?
-    private List<OfficerRegistration> officerApplications;//sld it be a list, unless want to store history
+    private List<String> appliedProjectIDs; // should be a list of int?
+    private List<OfficerRegistration> officerApplications;
 
     public HDBofficer(String name, String NRIC, int age, String married, String password) {
         super(name, NRIC, age, married, password);
         setUserType("officer");
         this.registeredProjects = new ArrayList<>();
-        this.applications = new ArrayList<>();
         this.enquiries = new ArrayList<>();
         this.appliedProjectIDs = new ArrayList<>();
         this.officerApplications = new ArrayList<>();
@@ -31,10 +29,6 @@ public class HDBofficer extends Applicant implements enquiryInterface {
 
     public void addRegisteredProject(Project project) {
         registeredProjects.add(project);
-    }
-
-    public List<BTOapplication> getApplications() {
-        return applications;
     }
 
     public List<OfficerRegistration> getOfficerApplications() {
@@ -56,10 +50,6 @@ public class HDBofficer extends Applicant implements enquiryInterface {
             }
         }
         return false;
-    }
-
-    public void addApplication(BTOapplication app) {
-        applications.add(app);
     }
 
     public void addEnquiry(Enquiry e) {
@@ -100,35 +90,33 @@ public class HDBofficer extends Applicant implements enquiryInterface {
             return;
         }
 
-        for (BTOapplication app : applications) {
-            if (app.getUserID().equals(userID) &&
-                app.getProjectId() == project.getProjectId() &&
-                app.isBookable()) {
-
-                boolean booked = false;
-                if (unitType.equals("2-Room") && project.getTwoRoomCount() > 0) {
-                    project.setTwoRoomCount(project.getTwoRoomCount() - 1);
-                    booked = true;
-                } else if (unitType.equals("3-Room") && project.getThreeRoomCount() > 0) {
-                    project.setThreeRoomCount(project.getThreeRoomCount() - 1);
-                    booked = true;
-                }
-
-                if (booked) {
-                    app.updateStatus("Booked", unitType);
-                    System.out.println("Booking successful for " + userID);
-                } else {
-                    System.out.println("No available units for type: " + unitType);
-                }
-                return;
+        BTOapplication app = project.getApplicationByUserId(userID);
+        
+        if (app != null && app.isBookable()) {
+            boolean booked = false;
+            if (unitType.equals("2-Room") && project.getTwoRoomCount() > 0) {
+                project.setTwoRoomCount(project.getTwoRoomCount() - 1);
+                booked = true;
+            } else if (unitType.equals("3-Room") && project.getThreeRoomCount() > 0) {
+                project.setThreeRoomCount(project.getThreeRoomCount() - 1);
+                booked = true;
             }
+
+            if (booked) {
+                app.updateStatus("Booked", unitType);
+                System.out.println("Booking successful for " + userID);
+            } else {
+                System.out.println("No available units for type: " + unitType);
+            }
+            return;
         }
         System.out.println("No eligible application found.");
     }
 
     public void generateReceipt(String userID) {
-        for (BTOapplication app : applications) {
-            if (app.getUserID().equals(userID) && app.isBooked() && isRegisteredForProject(app.getProjectId())) {
+        for (Project project : registeredProjects) {
+            BTOapplication app = project.getApplicationByUserId(userID);
+            if (app != null && app.isBooked()) {
                 System.out.println("----- BTO Booking Receipt -----");
                 System.out.println("Officer: " + this.getName());
                 System.out.println("Applicant NRIC: " + userID);
@@ -141,22 +129,21 @@ public class HDBofficer extends Applicant implements enquiryInterface {
         }
         System.out.println("No valid booking found for receipt.");
     }
-        // Method for officer to apply for a project (no slot checking here)
-        public OfficerRegistration applyOffReg(Project project) {
-            if (project == null) {
-                System.out.println("Error: Project cannot be null.");
-                return null;
-            }
     
-            // Create the registration with default status "pending"
-            OfficerRegistration reg = new OfficerRegistration(this, project);
-    
-            // Add to the project's officer applicant list
-    
-            System.out.println(this.getName() + " has applied to project '" + project.getProjectName() + "'. Status: pending");
-    
-            return reg;
+    // Method for officer to apply for a project
+    public OfficerRegistration applyOffReg(Project project) {
+        if (project == null) {
+            System.out.println("Error: Project cannot be null.");
+            return null;
         }
+
+        // Create the registration with default status "pending"
+        OfficerRegistration reg = new OfficerRegistration(this, project);
+
+        System.out.println(this.getName() + " has applied to project '" + project.getProjectName() + "'. Status: pending");
+
+        return reg;
+    }
     
     private boolean checkIfApplicant(Project project) {
         Project appliedProject = this.getAppliedProject();

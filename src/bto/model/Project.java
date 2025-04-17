@@ -23,7 +23,7 @@ public class Project {
     private LocalDate closeDate;
     private List<HDBofficer> officerList;
     private List<OfficerRegistration> officerApplicantList;
-    //add project specific enquiry list
+    private List<BTOapplication> applicationList; // Added application list
     
     private static Project[] projects = new Project[100];
     private static int count = 0;
@@ -47,6 +47,7 @@ public class Project {
     	this.managerInCharge = managerInCharge;
     	this.officerList = new ArrayList<>();
     	this.officerApplicantList = new ArrayList<>();
+        this.applicationList = new ArrayList<>(); // Initialize application list
 
     	if (getCount() <= projects.length) {
     		projects[getCount() - 1] = this; // Add to project list
@@ -147,6 +148,14 @@ public class Project {
         return this.officerApplicantList;
     }
 
+    public List<BTOapplication> getApplicationList() {
+        return this.applicationList;
+    }
+
+    public void addApplication(BTOapplication application) {
+        this.applicationList.add(application);
+    }
+
     public static OfficerRegistration getOfficerRegistrationByID(String officerID) {
         for (int i = 0; i < count; i++) {
             Project p = projects[i];
@@ -162,7 +171,29 @@ public class Project {
         return null; // not found
     }
     
+    // Method to get application by user ID within this project
+    public BTOapplication getApplicationByUserId(String userId) {
+        for (BTOapplication app : applicationList) {
+            if (app.getUserID().equals(userId)) {
+                return app;
+            }
+        }
+        return null;
+    }
     
+    // Static method to find an application by user ID across all projects
+    public static BTOapplication findApplicationByUserId(String userId) {
+        for (int i = 0; i < count; i++) {
+            Project p = projects[i];
+            if (p == null) continue;
+            
+            BTOapplication app = p.getApplicationByUserId(userId);
+            if (app != null) {
+                return app;
+            }
+        }
+        return null;
+    }
 
     public void displayOfficerList() {
         System.out.println("Displaying Officer List...");
@@ -183,6 +214,20 @@ public class Project {
                                ") - Status: " + reg.getRegistrationStatus());
         }
     }
+    
+    public void displayApplicationList() {
+        System.out.println("Displaying BTO Applications for Project " + projectName + ":");
+        if (applicationList == null || applicationList.isEmpty()) {
+            System.out.println("No applications for this project.");
+            return;
+        }
+        for (BTOapplication app : applicationList) {
+            System.out.println("User ID: " + app.getUserID() + 
+                               ", Unit Type: " + app.getUnitType() + 
+                               ", Status: " + app.getStatus());
+        }
+    }
+    
     public static void displayAllProjects(String field) {
         // Create a list from the projects array, skipping null elements
         List<Project> projectList = new ArrayList<>();
@@ -246,6 +291,7 @@ public class Project {
             } else {
                 System.out.println("Assigned Officers: None");
             }
+            System.out.println("Applications: " + project.getApplicationList().size());
         }
         System.out.println("============================================");
     }
@@ -333,6 +379,7 @@ public class Project {
                 }
 
                 System.out.println("Number of Officer Applications: " + project.officerApplicantList.size());
+                System.out.println("Number of BTO Applications: " + project.applicationList.size());
                 System.out.println("==========================");
                 found = true;
                 break;
@@ -344,6 +391,31 @@ public class Project {
         }
     }
 
+    // Method to display all BTO applications with specific status
+    public void displayApplicationsByStatus(String status) {
+        System.out.println("=== " + status + " Applications for Project " + projectName + " ===");
+        boolean found = false;
+        for (BTOapplication app : applicationList) {
+            if (app.getStatus().equals(status)) {
+                System.out.println(app);
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("No applications with status: " + status);
+        }
+    }
+    
+    // Get all applications across all projects
+    public static List<BTOapplication> getAllApplications() {
+        List<BTOapplication> allApps = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            if (projects[i] != null) {
+                allApps.addAll(projects[i].getApplicationList());
+            }
+        }
+        return allApps;
+    }
     
   //------------------------------------------------------------------separate proj list functions
     
@@ -486,4 +558,3 @@ public class Project {
 		return count;
 	}
 }
-

@@ -206,13 +206,15 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
             return;
         }
 
-        // Assuming project has a list of applications that can be accessed
-        for (BTOapplication app : BTOapplication.getAllApplications()) {
+        // Search in the project's application list instead of global list
+        for (BTOapplication app : project.getApplicationList()) {
             if (app.getUserID().equals(applicantNRIC) && app.getStatus().equals("Pending Approval")) {
                 if (app.getUnitType().equals("2-Room") && project.getTwoRoomCount() > 0) {
-                    app.updateStatus("Successful", "2-Room");//update the room count attribute under project as well, and status under applicant
+                    project.setTwoRoomCount(project.getTwoRoomCount() - 1);
+                    app.updateStatus("Successful", "2-Room");
                     System.out.println("Application approved for 2-Room flat.");
                 } else if (app.getUnitType().equals("3-Room") && project.getThreeRoomCount() > 0) {
+                    project.setThreeRoomCount(project.getThreeRoomCount() - 1);
                     app.updateStatus("Successful", "3-Room");
                     System.out.println("Application approved for 3-Room flat.");
                 } else {
@@ -223,7 +225,7 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         }
         System.out.println("No pending application found for applicant with NRIC: " + applicantNRIC);
     }
-    
+
     public void rejectBTOApplication(int projectID, String applicantNRIC) {
         Project project = Project.getProjectById(projectID);
         if (project == null || !managedProjects.contains(project)) {
@@ -231,7 +233,7 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
             return;
         }
 
-        for (BTOapplication app : BTOapplication.getAllApplications()) {
+        for (BTOapplication app : project.getApplicationList()) {
             if (app.getUserID().equals(applicantNRIC) && app.getStatus().equals("Pending Approval")) {
                 app.updateStatus("Unsuccessful", app.getUnitType());
                 System.out.println("Application rejected.");
@@ -248,7 +250,7 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
             return;
         }
 
-        for (BTOapplication app : BTOapplication.getAllApplications()) {
+        for (BTOapplication app : project.getApplicationList()) {
             if (app.getUserID().equals(applicantNRIC) && app.getStatus().equals("Withdrawal Requested")) {
                 String previousStatus = app.getStatus();
                 app.updateStatus("Withdrawn", app.getUnitType());
@@ -268,7 +270,7 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         }
         System.out.println("No withdrawal request found for applicant with NRIC: " + applicantNRIC);
     }
-    
+
     public void rejectWithdrawalRequest(int projectID, String applicantNRIC) {
         Project project = Project.getProjectById(projectID);
         if (project == null || !managedProjects.contains(project)) {
@@ -276,10 +278,9 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
             return;
         }
 
-        for (BTOapplication app : BTOapplication.getAllApplications()) {
+        for (BTOapplication app : project.getApplicationList()) {
             if (app.getUserID().equals(applicantNRIC) && app.getStatus().equals("Withdrawal Requested")) {
                 // Set the status back to what it was before the withdrawal request
-                // This would need additional tracking in the BTOapplication class
                 app.updateStatus(app.getPreviousStatus(), app.getUnitType());
                 System.out.println("Withdrawal request rejected.");
                 return;
@@ -287,7 +288,6 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         }
         System.out.println("No withdrawal request found for applicant with NRIC: " + applicantNRIC);
     }
-
     // === Enquiry Management ===
     @Override
     public void viewEnquiriesAll() {
