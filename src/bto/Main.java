@@ -36,6 +36,7 @@ public class Main {
         
         
         int selection=0;
+		String saved_filter;
         if(cur.getUserType() == "manager" && cur instanceof HDBmanager) { //if possible change to check the obj itself
         	HDBmanager m = (HDBmanager) cur;//downcast
         	do {
@@ -58,7 +59,7 @@ public class Main {
 	        	switch (selection) {
 	        	    case 1:
 	        	        System.out.println("Case 1 selected.");
-	        	        Project.displayAllProjects();
+	        	        Project.displayAllProjects(saved_filter);
 	        	        break;
 	        	    case 2:
 	        	    	int projectID2;
