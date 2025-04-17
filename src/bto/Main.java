@@ -84,6 +84,9 @@ public class Main {
 	        	        appNRIC=sc.nextLine();
 	        	        BTOapplication app;
 	        	        app= BTOapplication.getApplicationByUserId(appNRIC);
+						if(app==null){
+							break;
+						}
 	        	        app.display();
 	        	        System.out.println("approve/reject " + app.getStatus() +" e.g. +ve int for approve,0 for reject");
 	        	        boolean c=sc.nextBoolean();
@@ -140,7 +143,6 @@ public class Main {
 		                System.out.println("logging out\n\n");
 		                break;
 	        	    case 9:
-	        	        System.out.println("Case 9 selected.");
 	        	        String pw;
 		                System.out.println("Case 9 selected.");
 		                sc.nextLine();//clear buffer
@@ -158,8 +160,6 @@ public class Main {
 	        	        int ftsel;
 		                String ft="";
 		                do{
-		                
-		                System.out.println("Case 10 selected.");
 		                System.out.println("1. filter by projectid");
 		                System.out.println("2. filter by projectname");
 		                System.out.println("3. filter by neighborhood");
@@ -391,17 +391,15 @@ public class Main {
 		                }
 		                break;//add filter by px
 		            case 10:
+						System.out.println("Case 10 selected.");
 		                int ftsel;
 		                String ft="";
 		                do{
-		                
-		                System.out.println("Case 10 selected.");
 		                System.out.println("1. filter by projectid");
 		                System.out.println("2. filter by projectname");
 		                System.out.println("3. filter by neighborhood");
 		                System.out.println("4. filter by tworoomcount");
 		                System.out.println("5. filter by threeroomcount");
-		                System.out.println("6. filter by projectvisibility");
 		                System.out.println("7. filter by openingdate");
 		                System.out.println("8. filter by closingdate");
 		                System.out.println("9. filter by officerslots");
@@ -425,7 +423,6 @@ public class Main {
 			                    ft="threeroomcount";
 			                    break;
 			                  case 6:
-			                    ft="projectvisibility";
 			                    break;
 			                  case 7:
 			                    ft="openingdate";
@@ -656,17 +653,15 @@ public class Main {
 	                }
 	                break;//add filter by px
 	            case 10:
+					System.out.println("Case 10 selected.");
 	                int ftsel;
 	                String ft="";
 	                do{
-	                
-	                System.out.println("Case 10 selected.");
 	                System.out.println("1. filter by projectid");
 	                System.out.println("2. filter by projectname");
 	                System.out.println("3. filter by neighborhood");
 	                System.out.println("4. filter by tworoomcount");
 	                System.out.println("5. filter by threeroomcount");
-	                System.out.println("6. filter by projectvisibility");
 	                System.out.println("7. filter by openingdate");
 	                System.out.println("8. filter by closingdate");
 	                System.out.println("9. filter by officerslots");
@@ -690,7 +685,6 @@ public class Main {
 		                    ft="threeroomcount";
 		                    break;
 		                  case 6:
-		                    ft="projectvisibility";
 		                    break;
 		                  case 7:
 		                    ft="openingdate";
