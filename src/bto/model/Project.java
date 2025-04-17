@@ -119,6 +119,9 @@ public class Project {
                     officerSlots,
                     manager
                 );
+
+                
+                manager.addProject(p);
     
                 // Find and assign officers
                 for (String officerName : officerNames) {
