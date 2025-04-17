@@ -1,7 +1,5 @@
 package bto.model;
 
-import bto.Enquiry;
-
 public class Enquiry {
     private int enquiryID;
     private String applicantName;
