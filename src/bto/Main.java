@@ -51,7 +51,7 @@ public class Main {
 	        	System.out.println("7. Delete BTO listing");
 	        	System.out.println("8. Logout");
 	        	System.out.println("9. change PW");
-	        	System.out.println("10. filer by area/flat type availability/px/date");
+	        	System.out.println("10. filter by area/flat type availability/px/date");
 	        	System.out.println("11. End program");
 	        	System.out.println("12. reply enquries");
 	        	System.out.println("13. generate report");
@@ -297,7 +297,7 @@ public class Main {
 	        	System.out.println("7. Delete enquries");
 	        	System.out.println("8. Logout");
 	        	System.out.println("9. change PW");
-	        	System.out.println("10. filer by area/flat type availability/px/date");
+	        	System.out.println("10. filter by area/flat type availability/px/date");
 	        	System.out.println("11. End program");
 	        	System.out.println("--------officer functions----------");
 	        	System.out.println("12. reply enquries");//doc mention about enquiry for a project
@@ -576,7 +576,7 @@ public class Main {
 	        	System.out.println("7. Delete enquries");
 	        	System.out.println("8. Logout");
 	        	System.out.println("9. change PW");
-	        	System.out.println("10. filer by area/flat type availability/px/date");
+	        	System.out.println("10. filter by area/flat type availability/px/date");
 	        	System.out.println("11. End program");
 	        	System.out.println("Pls input seletion: (e.g. 5)");
 	        	selection = sc.nextInt();
