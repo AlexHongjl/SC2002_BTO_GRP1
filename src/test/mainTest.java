@@ -1,5 +1,7 @@
 package test;
 
+import java.io.Console;
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.time.LocalDate;
@@ -9,7 +11,7 @@ import java.util.List;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class MainTest {
+public class mainTest {
     public static void main(String[] args) {
     	//UserPerson[] Users = new UserPerson[20]; // fixed array not suited for enhanced for loop, if use fixed need size or skip in for loop
         ArrayList<UserPerson> Users = new ArrayList<>();
@@ -30,8 +32,6 @@ public class MainTest {
             Scanner sc = new Scanner(System.in);
             UserPerson cur = UserPerson.login(Users, sc);
 
-            System.out.println("\nWelcome <" + cur.getUserType() + "> " + cur.getName() + "!\n");
-        
         //first interface 1 menu for each user type
         System.out.println("\nWelcome" + " <" + cur.getUserType() + "> " + cur.getName() +"!\n");
         
@@ -283,53 +283,63 @@ class UserPerson {
 	}
 	
 	public static UserPerson login(ArrayList<UserPerson> users, Scanner sc) {
-        UserPerson cur = null;
-        while (cur == null) {
-            System.out.println("\n--- BTO System Login ---");
-            System.out.print("Enter NRIC: ");
-            String username = sc.nextLine().trim();
+	    UserPerson cur = null;
+	    while (cur == null) {
+	        System.out.println("\n--- BTO System Login ---");
+	        System.out.print("Enter NRIC: ");
+	        String username = sc.nextLine().trim();
 
-            System.out.print("Enter Password: ");
-            String password = sc.nextLine();
+	        String password;
 
-            for (UserPerson user : users) {
-                if (user.getNRIC().equals(username) && user.getPassword().equals(password)) {
-                    cur = user;
-                    break;
-                }
-            }
+	        Console console = System.console();
+	        if (console != null) {
+	            // Real system console: read password without echoing
+	            char[] pwChars = console.readPassword("Enter Password: ");
+	            password = new String(pwChars);
+	        } else {
+	            // Fallback for Eclipse or non-console environments
+	            password = readPasswordWithAsterisks("Enter Password: ");
+	        }
 
-            if (cur == null) {
-                System.out.println("Invalid username or password. Please try again.\n");
-            }
-        }
-        return cur;
-    }
-    
-    public static String readPasswordWithAsterisks(String prompt) {
-        System.out.print(prompt);
-        StringBuilder password = new StringBuilder();
-        try {
-            while (true) {
-                int ch = System.in.read();
-                if (ch == '\n' ||  ch == '\r') {
-                    System.out.println();
-                    break;
-                } else if (ch == 8 || ch == 127) { // backspace
-                    if (password.length() > 0) {
-                        password.deleteCharAt(password.length() - 1);
-                        System.out.print("\b \b");
-                    }
-                } else {
-                    password.append((char) ch);
-                    System.out.print("*");
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return password.toString();
-    }
+	        for (UserPerson user : users) {
+	            if (user.getNRIC().equals(username) && user.getPassword().equals(password)) {
+	                cur = user;
+	                break;
+	            }
+	        }
+
+	        if (cur == null) {
+	            System.out.println("Invalid username or password. Please try again.\n");
+	        }
+	    }
+	    return cur;
+	}
+
+	public static String readPasswordWithAsterisks(String prompt) {
+	    System.out.print(prompt);
+	    StringBuilder password = new StringBuilder();
+	    try {
+	        while (true) {
+	            int ch = System.in.read();
+	            if (ch == '\n' || ch == '\r') {
+	                break;
+	            } else if (ch == 8 || ch == 127) { // Backspace
+	                if (password.length() > 0) {
+	                    password.deleteCharAt(password.length() - 1);
+	                    System.out.print("\b \b");
+	                }
+	            } else {
+	                password.append((char) ch);
+	                System.out.print("*");
+	            }
+	        }
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	    System.out.println(); // Move to next line after password entry
+	    return password.toString();
+	}
+
 	
 	public String getName() {
 		return this.name;
