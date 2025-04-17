@@ -68,7 +68,7 @@ public class Main {
 	        	        System.out.println("input project ID for the project you want to toggle visibility on");
 	        	        projectID2=sc.nextInt();
 	        	        System.out.println("on/off e.g. =ve int for on, 0 for off");
-	        	        a=sc.nextBoolean();
+	        	        a=sc.nextInt()==1?true:false;
 	        	        m.toggleProjectVisibility(projectID2, a);
 	        	        break;
 	        	    case 3:
