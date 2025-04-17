@@ -586,7 +586,7 @@ public class Main {
 	                if(a.getApplicationStatus()!= "None" && a.getApplicationStatus()!= "Unsuccessful") {
 	                	Project.display(a.getAppliedProjectId());
 	                }else if(a.getApplicationStatus()== "None" ||a.getApplicationStatus()== "Unsuccessful") {
-	                	Project.displayAllProjectsApplicant(null);
+	                	Project.displayAllProjectsApplicant(saved_filter);
 	                }
 	                break;
 	            case 2:
@@ -754,6 +754,7 @@ public class Main {
 	                if(ft.equals("")){
 	                    
 	                }else{
+	                	saved_filter=ft;
 	                    Project.displayAllProjects(ft);
 	                }
 	                break;
