@@ -1,22 +1,29 @@
 package bto.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class OfficerRegistration {
-    private String registrationStatus;
+    private String registrationStatus; // Pending approval, Successful, Unsuccessful
     private HDBofficer officer; // Reference to the officer
     private Project project; // Reference to the project being registered for
     private LocalDate registrationDate;
+    
+    private static ArrayList<OfficerRegistration> allRegistrations = new ArrayList<>();
+    
 
     public OfficerRegistration(HDBofficer officer, Project project) {
         this.officer = officer;
         this.project = project;
-        this.registrationStatus = "Pending"; // Default status
+        this.registrationStatus = "Pending approval"; // Default status
         this.registrationDate = LocalDate.now();
-        
+
+        // Add to static list
+        allRegistrations.add(this);
+
         // Validate eligibility before creating registration
         if (!isEligible()) {
-            this.registrationStatus = "Rejected";
+            this.registrationStatus = "Unsuccessful";
             System.out.println("Registration automatically rejected due to eligibility issues.");
         } else {
             // Add this registration to both the project and officer
@@ -24,6 +31,32 @@ public class OfficerRegistration {
             officer.addOfficerApplication(this);
         }
     }
+    
+    public static void displayAll(String givenStatus) {
+        boolean found = false;
+
+        for (OfficerRegistration reg : allRegistrations) {
+            // If givenStatus is null, display everything
+            if (givenStatus == null || reg.getRegistrationStatus().equalsIgnoreCase(givenStatus)) {
+                System.out.println("Officer: " + reg.getOfficer().getName() +
+                		", Officer UserID: " + reg.getOfficer().getNRIC() +
+                        ", Project: " + reg.getProject().getProjectName() +
+                        ", Project ID: " + reg.getProject().getProjectId() +
+                        ", Date: " + reg.getRegistrationDate() +
+                        ", Status: " + reg.getRegistrationStatus());
+                found = true;
+            }
+        }
+
+        if (!found) {
+            if (givenStatus == null) {
+                System.out.println("No registrations found.");
+            } else {
+                System.out.println("No registrations found with status: " + givenStatus);
+            }
+        }
+    }
+
 
     public void display() {
         System.out.println("Officer Registration Details:");
@@ -97,9 +130,9 @@ public class OfficerRegistration {
 
     // === Status Management ===
     public void approveRegistration() {
-        if (registrationStatus.equals("Pending")) {
+        if (registrationStatus.equals("Pending approval")) {
             if (hasAvailableSlots()) {
-                registrationStatus = "Approved";
+                registrationStatus = "Successful";
                 project.addOfficer(officer);
                 officer.addRegisteredProject(project);
                 System.out.println("Officer registration approved for project: " + project.getProjectName());
@@ -107,18 +140,19 @@ public class OfficerRegistration {
                 System.out.println("Error: No available slots in project: " + project.getProjectName());
             }
         } else {
-            System.out.println("Error: Can only approve pending registrations. Current status: " + registrationStatus);
+            System.out.println("Error: Can only approve registrations with status 'Pending approval'. Current status: " + registrationStatus);
         }
     }
 
     public void rejectRegistration() {
-        if (registrationStatus.equals("Pending")) {
-            registrationStatus = "Rejected";
+        if (registrationStatus.equals("Pending approval")) {
+            registrationStatus = "Unsuccessful";
             System.out.println("Officer registration rejected for project: " + project.getProjectName());
         } else {
-            System.out.println("Error: Can only reject pending registrations. Current status: " + registrationStatus);
+            System.out.println("Error: Can only reject registrations with status 'Pending approval'. Current status: " + registrationStatus);
         }
     }
+
 
     // === Getters and Setters ===
     public String getRegistrationStatus() {

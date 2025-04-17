@@ -103,6 +103,8 @@ public class Main {
 	        	    	int projectID;
 	        	    	String officerNRIC;
 	        	        System.out.println("Case 4 selected.");
+	        	        OfficerRegistration.displayAll("Pending approval");
+	        	        OfficerRegistration.displayAll("Pending withdrawal");
 	        	        //display list of officer reg under his list of project
 	        	        System.out.println("input project ID:");
 	        	        projectID=sc.nextInt();
@@ -113,8 +115,9 @@ public class Main {
 	        	        //find the offreg obj first
 						offreg=Project.getOfficerRegistrationByID(officerNRIC);
 						offreg.display();
+	        	        //sc.nextLine();
 	        	        //display the offreg obj especially cur status if approve or reject
-	        	        System.out.println("approve/reject " + offreg.getRegistrationStatus() +" e.g. +ve int for approve,0 for reject");
+	        	        System.out.println("approve/reject " + offreg.getRegistrationStatus() +" e.g. 1 for approve,0 for reject");
 	        	        boolean b=sc.nextInt()==1?true:false;
 	        	        if(b) {
 	        	        	m.approveOfficerRegistration(projectID, officerNRIC);
