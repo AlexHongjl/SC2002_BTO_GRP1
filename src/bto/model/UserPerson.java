@@ -65,10 +65,10 @@ public class UserPerson {
 
 	            switch (userType) {
 	                case "officer":
-	                    user = new HDBOfficer(name, NRIC, age, maritalStatus, password);//wrong constructor not same
+	                    user = new HDBofficer(name, NRIC, age, maritalStatus, password);//wrong constructor not same
 	                    break;
 	                case "manager":
-	                    user = new HDBManager(name, NRIC, age, maritalStatus, password);//sequence wrong also marital status is boolean or str...
+	                    user = new HDBmanager(name, NRIC, age, maritalStatus, password);//sequence wrong also marital status is boolean or str...
 	                    break;
 	                case "applicant":
 	                    user = new Applicant(name, NRIC, age, maritalStatus, password);//correct
