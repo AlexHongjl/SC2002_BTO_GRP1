@@ -159,7 +159,6 @@ public class HDBofficer extends Applicant implements enquiryInterface {
             return reg;
         }
     
-    
 
     private boolean checkIfApplicant(Project project) {
         Project appliedProject = this.getAppliedProject();
