@@ -152,14 +152,12 @@ public class HDBofficer extends Applicant implements enquiryInterface {
             OfficerRegistration reg = new OfficerRegistration(this, project);
     
             // Add to the project's officer applicant list
-            project.getOfficerApplicantList().add(reg);
     
             System.out.println(this.getName() + " has applied to project '" + project.getProjectName() + "'. Status: pending");
     
             return reg;
         }
     
-
     private boolean checkIfApplicant(Project project) {
         Project appliedProject = this.getAppliedProject();
         if (appliedProject != null) {
