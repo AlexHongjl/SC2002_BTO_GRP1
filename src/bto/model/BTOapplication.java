@@ -6,7 +6,7 @@ public class BTOapplication {
     private String userID;
     private int projectId;
     private String unitType; // "2-Room" or "3-Room"
-    private String status;   // Pending, Successful, Unsuccessful, Booked
+    private String status;   // Pending approval,Pending withdrawal, Successful, Unsuccessful, Booked
     private String timestamp; // last status update
     
     private static ArrayList<BTOapplication> allApplications = new ArrayList<>();
