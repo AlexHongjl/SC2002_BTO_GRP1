@@ -11,6 +11,7 @@ import bto.model.HDBofficer;
 import bto.model.OfficerRegistration;
 import bto.model.Project;
 import bto.model.UserPerson;
+import bto.service.LoginService;
 
 public class Main {
     public static void main(String[] args) {
@@ -25,35 +26,10 @@ public class Main {
         //load in project
         
         //login menu
-        int logout=0;
-        do {
-        Scanner sc= new Scanner(System.in);
-        UserPerson cur= null; // current user, need a pointer
-        do {
-	        System.out.println("BTO System login page \n");
-	        System.out.println("Pls input username:");
-	        
-	        String username = sc.nextLine();
-	        System.out.println("Pls input PW:");
-	        String password = sc.nextLine();
-	        
-	        
-	        for (UserPerson user : Users) {
-	        	//if (user == null) continue;
-	        	
-	        	if(username.equals(user.getNRIC())) {
-	        		if(password.equals(user.getPassword())) {
-	        			cur= user;
-	        			break;
-	        		}
-	        	}
-	        }
-	        
-	        if (cur == null) {
-                System.out.println("Invalid credentials. Try again.\n");
-            }
-	        
-        }while(cur== null);
+    	int logout = 0;
+    	do {
+    	    Scanner sc = new Scanner(System.in); // only if not declared earlier
+    	    UserPerson cur = LoginService.login(Users, sc);
         
         //first interface 1 menu for each user type
         System.out.println("Welcome" + " <" + cur.getUserType() + "> " + cur.getName() +"!\n");
