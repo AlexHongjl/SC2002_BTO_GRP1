@@ -60,6 +60,7 @@ public class Main {
         
         
         int selection=0;
+		String saved_filter;
         if(cur.getUserType() == "manager" && cur instanceof HDBmanager) { //if possible change to check the obj itself
         	HDBmanager m = (HDBmanager) cur;//downcast
         	do {
