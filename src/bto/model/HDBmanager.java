@@ -171,7 +171,7 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         }
         
         for (OfficerRegistration reg : project.getOfficerRegistrations()) {
-            if (reg.getOfficer().getNRIC().equals(officerNRIC) && reg.getRegistrationStatus().equals("Pending")) {
+            if (reg.getOfficer().getNRIC().equals(officerNRIC) && reg.getRegistrationStatus().equals("Pending approval")) {
                 reg.approveRegistration();
                 return;
             }
@@ -188,7 +188,7 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         }
         
         for (OfficerRegistration reg : project.getOfficerRegistrations()) {
-            if (reg.getOfficer().getNRIC().equals(officerNRIC) && reg.getRegistrationStatus().equals("Pending")) {
+            if (reg.getOfficer().getNRIC().equals(officerNRIC) && reg.getRegistrationStatus().equals("Pending approval")) {
                 reg.rejectRegistration();
                 System.out.println("Officer registration rejected.");
                 return;

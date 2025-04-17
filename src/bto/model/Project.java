@@ -121,8 +121,9 @@ public class Project {
                     manager
                 );
 
-                
-                manager.addProject(p);
+                if(manager!=null) {
+                	manager.addProject(p);
+                }
     
                 // Find and assign officers
                 for (String officerName : officerNames) {
