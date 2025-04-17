@@ -60,7 +60,7 @@ public class Main {
         
         
         int selection=0;
-		String saved_filter;
+		String saved_filter=null;
         if(cur.getUserType() == "manager" && cur instanceof HDBmanager) { //if possible change to check the obj itself
         	HDBmanager m = (HDBmanager) cur;//downcast
         	do {
@@ -194,7 +194,7 @@ public class Main {
 		                System.out.println("8. filter by closingdate");
 		                System.out.println("9. filter by officerslots");
 		                System.out.println("10. exit to prv menu");
-		                System.out.println("input selection:");
+		                System.out.println("input selection(filter saved for current login):");
 		                ftsel=sc.nextInt();
 		                switch (ftsel) {
 			                case 1:
@@ -233,6 +233,7 @@ public class Main {
 		                if(ft.equals("")){
 		                    //pass
 		                }else{
+							saved_filter=ft;
 		                    Project.displayAllProjects(ft);
 		                }
 	        	        break;
