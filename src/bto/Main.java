@@ -267,8 +267,7 @@ public class Main {
 	        	System.out.println("--------officer functions----------");
 	        	System.out.println("12. reply enquries");//doc mention about enquiry for a project
 	        	System.out.println("13. apply for officer of a project");
-	        	System.out.println("14. book slot for applicant on approved applications");//after approved then visible to officer?
-	        	System.out.println("15. generate receipt");
+	        	System.out.println("14. book slot for applicant on approved applications & generate receipt");//after approved then visible to officer?
 	        	System.out.println("Pls input seletion: (e.g. 5)");
 	        	
 	        	selection = sc.nextInt();
@@ -472,42 +471,49 @@ public class Main {
 	        	    case 13:
 	        	        System.out.println("Case 13 selected.");
 	        	        break;
-	        	    case 14://only 
-	        	    	String app;
-	        	    	BTOapplication c=null;
+	        	    case 14:
 	        	        System.out.println("Case 14 selected.");
-	        	        //display "successful" bto app also filter by his officer project so he can book his own project only
-	        	        for(BTOapplication a :BTOapplication.getAllApplications()) {
-	        	        	for(HDBofficer ok :(Project.getProjectById(a.getProjectId())).getOfficers()) {
-	        	        	if(a.getStatus().equals("successful") && ok==o){
-	        	        		c =a;
-	        	        		a.display();
-	        	        	}
-	        	        	}
+
+	        	        // Display all successful applications for officer's projects
+	        	        ArrayList<BTOapplication> matchingApps = new ArrayList<>();
+	        	        for (BTOapplication a : BTOapplication.getAllApplications()) {
+	        	            if (a.getStatus().equalsIgnoreCase("successful")) {
+	        	                Project proj = Project.getProjectById(a.getProjectId());
+	        	                if (proj != null && proj.getOfficers().contains(o)) {
+	        	                    a.display();
+	        	                    matchingApps.add(a);
+	        	                }
+	        	            }
 	        	        }
-	        	        
-	        	        System.out.println("input applicant user ID to select BTO application to book:");
-	        	        app=sc.nextLine();
-	        	        if(BTOapplication.getApplicationByUserId(app)==null){//check if is in range or accessing other or prvs app
-	        	        	System.out.println("invalid userID");
-	        	        
-	        	        }else {
-	        	        	boolean book;
-	        	        	BTOapplication.getApplicationByUserId(app).display();
-	        	        	System.out.println("book flats? Y/N e.g. +ve int for Y, 0 for N");
-	        	        	book=sc.hasNextBoolean();
-	        	        	if(book==true) {
-	        	        		o.bookUnitForApplicant(app,c.getUnitType(), Project.getProjectById(c.getProjectId()));
-	        	        		}
-        	        		else {
-        	        		System.out.println("you entered No");
-	        	        	}
+
+	        	        if (matchingApps.isEmpty()) {
+	        	            System.out.println("No successful applications found for your projects.");
+	        	            break;
 	        	        }
-	        	        
-	        	        
-	        	        break;
-	        	    case 15:
-	        	        System.out.println("Case 15 selected.");
+
+	        	        System.out.print("Input applicant user ID to select BTO application to book: ");
+	        	        sc.nextLine(); // Clear buffer
+	        	        String appId = sc.nextLine();
+	        	        BTOapplication selected = BTOapplication.getApplicationByUserId(appId);
+
+	        	        if (selected == null || !selected.getStatus().equalsIgnoreCase("successful") ||
+	        	            !Project.getProjectById(selected.getProjectId()).getOfficers().contains(o)) {
+	        	            System.out.println("Invalid or unauthorized booking request.");
+	        	            break;
+	        	        }
+
+	        	        selected.display();
+	        	        System.out.print("Book flat for this applicant? (Y/N): ");
+	        	        String confirm = sc.nextLine().trim().toUpperCase();
+
+	        	        if (confirm.equals("Y")) {
+	        	            o.bookUnitForApplicant(appId, selected.getUnitType(), Project.getProjectById(selected.getProjectId()));
+	        	            o.generateReceipt(appId);
+	        	        } else {
+	        	            System.out.println("Cancelled.");
+	        	        }
+
+	        	   
 	        	        break;
 	        	    default:
 	        	        System.out.println("Invalid choice. Try again");
