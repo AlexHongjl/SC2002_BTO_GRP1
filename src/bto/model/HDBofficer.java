@@ -140,7 +140,7 @@ public class HDBofficer extends Applicant implements enquiryInterface {
         // Create the registration with default status "pending"
         OfficerRegistration reg = new OfficerRegistration(this, project);
 
-        System.out.println(this.getName() + " has applied to project '" + project.getProjectName() + "'. Status: pending");
+        System.out.println(this.getName() + " has applied to project '" + project.getProjectName() + "'. Status: Pending Approval");
 
         return reg;
     }
