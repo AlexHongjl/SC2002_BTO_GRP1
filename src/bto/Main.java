@@ -20,7 +20,7 @@ public class Main {
         
     	UserPerson.LoadUsers(Users);
     	
-    	Project.Loadprojects();
+    	Project.loadProjectsFromCSV(Users);
         
         //load in project
         
@@ -257,8 +257,11 @@ public class Main {
 	                	}
 	        	        break;
 	        	    case 13:
+						int projectID4;
 	        	        System.out.println("Case 13 selected.");
-	        	        m.generateReport("projectID", null);
+						System.out.println("input project ID to generate report on all applicant:");
+						projectID4=sc.nextInt();
+	        	        m.generateReport(projectID4, null);
 	        	        break;
 	        	    default:
 	        	        System.out.println("Invalid choice. Try again");
@@ -323,7 +326,7 @@ public class Main {
 		                
 		                if(o.isEligible(Project.getProjectById(projectID),rt)){
 		                	if(o.applyForProject(Project.getProjectById(projectID),rt)) {
-		                		BTOapplication app= new BTOapplication(o.getNRIC(), projectID);
+		                		BTOapplication app= new BTOapplication(o.getNRIC(), projectID,o);//upcast?
 		                	    app.updateStatus("Pending Approval", rt);
 		                	    BTOapplication.addApplication(app);
 		                		System.out.println("Successfully applied!, sent to manager for approval");
@@ -493,7 +496,7 @@ public class Main {
 	        	        break;
 	        	    case 14://only 
 	        	    	String app;
-	        	    	BTOapplication c;
+	        	    	BTOapplication c=null;
 	        	        System.out.println("Case 14 selected.");
 	        	        //display "successful" bto app also filter by his officer project so he can book his own project only
 	        	        for(BTOapplication a :BTOapplication.getAllApplications()) {
@@ -587,7 +590,7 @@ public class Main {
 	                
 	                if(a.isEligible(Project.getProjectById(projectID),rt)){
 	                	if(a.applyForProject(Project.getProjectById(projectID),rt)) {//need actually send to manager, i assume is all a program wide array, and every manager can approve
-	                		BTOapplication app= new BTOapplication(a.getNRIC(), projectID);
+	                		BTOapplication app= new BTOapplication(a.getNRIC(), projectID,a);
 	                	    app.updateStatus("Pending Approval", rt);
 	                	    BTOapplication.addApplication(app);
 	                		System.out.println("Successfully applied!, sent to manager for approval");

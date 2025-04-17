@@ -1,6 +1,10 @@
 package bto.model;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,6 +55,91 @@ public class Project {
     	}
     }
 
+      public static void loadProjectsFromCSV(List<UserPerson> Users) {
+        String path = "data/ProjectList.csv";
+    
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+            String line;
+            boolean isFirstLine = true;
+    
+            while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    isFirstLine = false;
+                    continue;
+                }
+    
+                String[] parts = line.split(",");
+    
+                if (parts.length < 13) continue;
+    
+                String projectName = parts[0].trim();
+                String neighbourhood = parts[1].trim();
+                String type1 = parts[2].trim();
+                int countType1 = Integer.parseInt(parts[3].trim());
+                String type2 = parts[5].trim();
+                int countType2 = Integer.parseInt(parts[6].trim());
+                LocalDate openDate = LocalDate.parse(parts[8].trim(), DateTimeFormatter.ofPattern("d/M/yyyy"));
+                LocalDate closeDate = LocalDate.parse(parts[9].trim(), DateTimeFormatter.ofPattern("d/M/yyyy"));
+                String managerName = parts[10].trim();
+                int officerSlots = Integer.parseInt(parts[11].trim());
+                String[] officerNames = parts[12].split(";|,");
+    
+                int twoRoomCount = 0;
+                int threeRoomCount = 0;
+    
+                if (type1.equals("2-Room")) twoRoomCount = countType1;
+                else if (type1.equals("3-Room")) threeRoomCount = countType1;
+    
+                if (type2.equals("2-Room")) twoRoomCount = countType2;
+                else if (type2.equals("3-Room")) threeRoomCount = countType2;
+    
+                // Find manager from Users list
+                HDBmanager manager = null;
+                for (UserPerson m : Users) {
+                    if (m instanceof HDBmanager && m.getName().equalsIgnoreCase(managerName)) {
+                        manager = (HDBmanager) m;
+                        break;
+                    }
+                }
+    
+                if (manager == null) {
+                    System.out.println("Warning: Manager \"" + managerName + "\" not found. Skipping project: " + projectName);
+                    continue;
+                }
+    
+                // Create project using constructor
+                Project p = new Project(
+                    projectName,
+                    neighbourhood,
+                    twoRoomCount,
+                    threeRoomCount,
+                    true,
+                    openDate,
+                    closeDate,
+                    officerSlots,
+                    manager
+                );
+    
+                // Find and assign officers
+                for (String officerName : officerNames) {
+                    officerName = officerName.trim();
+                    for (UserPerson u : Users) {
+                        if (u instanceof HDBofficer && u.getName().equalsIgnoreCase(officerName)) {
+                            p.getOfficerList().add((HDBofficer) u);
+                            break;
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public List<HDBofficer> getOfficerList() {
+        return officerList;
+    }
+    
 
     public void displayOfficerList() {
         System.out.println("Displaying Officer List...");
