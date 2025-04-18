@@ -1,6 +1,11 @@
 package bto.model;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class BTOapplication {
     private String userID;
@@ -143,4 +148,54 @@ public class BTOapplication {
     public Applicant getUser() {
     	return user;
     }
+    
+    //Data Persistence
+    public static void saveApplicationsToCSV(String filename) {
+        try (FileWriter writer = new FileWriter(filename)) {
+            writer.write("UserID,ProjectID,UnitType,Status,Timestamp\n");
+            for (BTOapplication app : allApplications) {
+                writer.write(app.userID + "," + app.projectId + "," + app.unitType + "," + app.status + "," + app.timestamp + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void loadApplicationsFromCSV(String filename, List<UserPerson> allUsers) {
+        allApplications.clear();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            reader.readLine(); // skip header
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length < 5) continue;
+                String userId = parts[0];
+                int projectId = Integer.parseInt(parts[1]);
+                String unitType = parts[2];
+                String status = parts[3];
+                String timestamp = parts[4];
+
+                Applicant appUser = null;
+                for (UserPerson u : allUsers) {
+                    if (u instanceof Applicant && u.getNRIC().equals(userId)) {
+                        appUser = (Applicant) u;
+                        break;
+                    }
+                }
+
+                if (appUser != null) {
+                    BTOapplication app = new BTOapplication(userId, projectId, appUser);
+                    app.updateStatus(status, unitType);
+                    app.timestamp = timestamp;
+                    allApplications.add(app);
+                    Project p = Project.getProjectById(projectId);
+                    if (p != null) p.addApplication(app);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

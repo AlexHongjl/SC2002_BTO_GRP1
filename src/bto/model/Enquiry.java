@@ -1,5 +1,10 @@
 package bto.model;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import bto.model.Enquiry;
 
 public class Enquiry {
@@ -160,12 +165,57 @@ public class Enquiry {
         this.message = message;
     }
     
-    public static int getCount() {
-        return count;
+    public void setResponse(String response) {
+        this.response = response;
     }
     
     public void setStatus(boolean status) {
         this.status = status;
+    }
+    
+    public static int getCount() {
+        return count;
+    }
+    
+    //Data Persistence
+    public static void saveEnquiriesToCSV(String filename) {
+        try (FileWriter writer = new FileWriter(filename)) {
+            writer.write("ID,Name,Message,Response,Status,ProjectID\n");
+            for (int i = 0; i < count; i++) {
+                Enquiry e = Enquiries[i];
+                writer.write(e.enquiryID + "," + e.applicantName + "," +
+                             e.message.replace(",", ";") + "," +
+                             e.response.replace(",", ";") + "," +
+                             e.status + "," + e.projectId + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void loadEnquiriesFromCSV(String filename) {
+        count = 0;
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            reader.readLine(); // skip header
+            while ((line = reader.readLine()) != null && count < Enquiries.length) {
+                String[] parts = line.split(",");
+                if (parts.length < 6) continue;
+                int id = Integer.parseInt(parts[0]);
+                String name = parts[1];
+                String msg = parts[2].replace(";", ",");
+                String resp = parts[3].replace(";", ",");
+                boolean status = Boolean.parseBoolean(parts[4]);
+                int projId = Integer.parseInt(parts[5]);
+
+                Enquiry e = new Enquiry(id, name, msg, projId);
+                e.setResponse(resp);
+                e.setStatus(status);
+                Enquiries[count++] = e;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 

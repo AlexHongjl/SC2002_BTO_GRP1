@@ -21,6 +21,10 @@ public class Main {
     	ArrayList<UserPerson> Users = new ArrayList<>();
         
     	UserPerson.LoadUsers(Users);
+    	OfficerRegistration.loadRegistrationsFromCSV("data/Registrations.csv", Users);
+    	Project.loadProjectsFromCSV(Users);
+    	BTOapplication.loadApplicationsFromCSV("data/Applications.csv", Users);
+    	Enquiry.loadEnquiriesFromCSV("data/Enquiries.csv");
     	
     	/*for (UserPerson u : Users) {
     	    System.out.println("Found: " + u.getName() + " is instance of " + u.getClass().getSimpleName());
@@ -526,7 +530,10 @@ public class Main {
 						Project.displayAllProjects(saved_filter);//if not alr regged
 						System.out.println("enter project ID:");
 						projectID5=sc.nextInt();
-						o.applyOffReg(Project.getProjectById(projectID5));
+						OfficerRegistration reg = o.applyOffReg(Project.getProjectById(projectID5));
+						if (reg != null && reg.getRegistrationStatus().equals("Pending approval")) {
+						    System.out.println("Application submitted successfully. Status: Pending approval.");
+						}
 	        	        break;
 	        	    case 14:
 	        	        System.out.println("Case 14 selected.");
@@ -799,6 +806,9 @@ public class Main {
         
         UserPerson.writeBackToCSV(Users);
         Project.writeCSVProjects();
+        BTOapplication.saveApplicationsToCSV("data/Applications.csv");
+        OfficerRegistration.saveRegistrationsToCSV("data/Registrations.csv");
+        Enquiry.saveEnquiriesToCSV("data/Enquiries.csv");
         
         if(selection == 8) {
         	logout=1;

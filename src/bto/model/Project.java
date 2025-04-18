@@ -96,55 +96,47 @@ public class Project {
     }
 
 
-      public static void loadProjectsFromCSV(List<UserPerson> Users) {
+    public static void loadProjectsFromCSV(List<UserPerson> Users) {
         String path = "data/ProjectList.csv";
-    
+        count = 0;
+
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line;
             boolean isFirstLine = true;
-    
+
             while ((line = br.readLine()) != null) {
                 if (isFirstLine) {
                     isFirstLine = false;
                     continue;
                 }
-    
-                String[] parts = line.split(",");
-    
-                if (parts.length < 13) continue;
-    
-                String projectName = parts[0].trim();
-                String neighbourhood = parts[1].trim();
-                String type1 = parts[2].trim();
-                int countType1 = Integer.parseInt(parts[3].trim());
-                int countType3 = Integer.parseInt(parts[4].trim());
-                String type2 = parts[5].trim();
-                int countType2 = Integer.parseInt(parts[6].trim());
-                int countType4 = Integer.parseInt(parts[7].trim());
-                LocalDate openDate = LocalDate.parse(parts[8].trim(), DateTimeFormatter.ofPattern("d/M/yyyy"));
-                LocalDate closeDate = LocalDate.parse(parts[9].trim(), DateTimeFormatter.ofPattern("d/M/yyyy"));
-                String managerName = parts[10].trim();
-                int officerSlots = Integer.parseInt(parts[11].trim());
-                //String[] officerNames = parts[12].split(";|,");
-                
-                String[] officerNames = new String[parts.length - 12];//added
-                for (int i = parts.length - officerNames.length ; i < parts.length; i++) {
-                  officerNames[i - 12] = parts[i];
-                }
-                String temp = String.join("," , officerNames);
-                temp = temp.substring(1, temp.length() - 1);
-                officerNames = temp.split(",");//added
-    
+
+                String[] tokens = smartSplitCSVLine(line);
+                if (tokens.length < 13) continue;
+
+                String projectName = tokens[0].trim();
+                String neighbourhood = tokens[1].trim();
+                String type1 = tokens[2].trim();
+                int units1 = Integer.parseInt(tokens[3].trim());
+                int price1 = Integer.parseInt(tokens[4].trim());
+                String type2 = tokens[5].trim();
+                int units2 = Integer.parseInt(tokens[6].trim());
+                int price2 = Integer.parseInt(tokens[7].trim());
+                LocalDate openDate = LocalDate.parse(tokens[8].trim(), DateTimeFormatter.ofPattern("d/M/yyyy"));
+                LocalDate closeDate = LocalDate.parse(tokens[9].trim(), DateTimeFormatter.ofPattern("d/M/yyyy"));
+                String managerName = tokens[10].trim();
+                int officerSlots = Integer.parseInt(tokens[11].trim());
+                String[] officerNames = tokens[12].replace("\"", "").split(",");
+
                 int twoRoomCount = 0;
                 int threeRoomCount = 0;
-    
-                if (type1.equals("2-Room")) twoRoomCount = countType1;
-                else if (type1.equals("3-Room")) threeRoomCount = countType1;
-    
-                if (type2.equals("2-Room")) twoRoomCount = countType2;
-                else if (type2.equals("3-Room")) threeRoomCount = countType2;
-    
-                // Find manager from Users list
+
+                if (type1.equals("2-Room")) twoRoomCount = units1;
+                else if (type1.equals("3-Room")) threeRoomCount = units1;
+
+                if (type2.equals("2-Room")) twoRoomCount = units2;
+                else if (type2.equals("3-Room")) threeRoomCount = units2;
+
+                // Find manager
                 HDBmanager manager = null;
                 for (UserPerson m : Users) {
                     if (m instanceof HDBmanager && m.getName().equalsIgnoreCase(managerName)) {
@@ -152,13 +144,13 @@ public class Project {
                         break;
                     }
                 }
-    
+
                 if (manager == null) {
-                    System.out.println("Warning: Manager \"" + managerName + "\" not found. Skipping project: " + projectName);
+                    System.out.println("⚠ Manager \"" + managerName + "\" not found. Skipping project: " + projectName);
                     continue;
                 }
-    
-                // Create project using constructor
+
+                // Create project
                 Project p = new Project(
                     projectName,
                     neighbourhood,
@@ -169,29 +161,25 @@ public class Project {
                     closeDate,
                     officerSlots,
                     manager,
-                    countType3,
-                    countType4
+                    price1,
+                    price2
                 );
+                manager.addProject(p);
 
-                if(manager!=null) {
-                	manager.addProject(p);
-                }
-                
-                String[] tokens = smartSplitCSVLine(line);
-
-                // Find and assign officers
-                String officerField = tokens[tokens.length - 1]; // e.g., "Daniel,Emily"
-                officerField = officerField.replace("\"", "");   // remove quotes
-
-                String[] officerNames1 = officerField.split(",");
-
-                for (String officerName : officerNames1) {
-                    officerName = officerName.trim();
+                // Reattach officers from CSV column directly (skip approval check)
+                for (String officerName : officerNames) {
                     for (UserPerson u : Users) {
-                        if (u instanceof HDBofficer && u.getName().equalsIgnoreCase(officerName)) {
-                        	HDBofficer o = (HDBofficer) u;
-                            p.getOfficerList().add(o);
-                            o.getRegisteredProjects().add(p); 
+                        if (u instanceof HDBofficer && u.getName().equalsIgnoreCase(officerName.trim())) {
+                            HDBofficer o = (HDBofficer) u;
+
+                            if (!p.getOfficerList().contains(o)) {
+                                p.getOfficerList().add(o);
+                            }
+
+                            if (!o.getRegisteredProjects().contains(p)) {
+                                o.getRegisteredProjects().add(p);
+                            }
+
                             break;
                         }
                     }
@@ -201,6 +189,8 @@ public class Project {
             e.printStackTrace();
         }
     }
+
+
       
       public static String[] smartSplitCSVLine(String line) {
     	    ArrayList<String> result = new ArrayList<>();

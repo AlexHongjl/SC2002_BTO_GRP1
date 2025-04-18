@@ -1,7 +1,12 @@
 package bto.model;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class OfficerRegistration {
     private String registrationStatus; // Pending approval, Successful, Unsuccessful
@@ -15,23 +20,22 @@ public class OfficerRegistration {
     public OfficerRegistration(HDBofficer officer, Project project) {
         this.officer = officer;
         this.project = project;
-        this.registrationStatus = "Pending approval"; // Default status
+        this.registrationStatus = "Pending approval";
         this.registrationDate = LocalDate.now();
 
-        // Add to static list
+        // Add to static list immediately
         allRegistrations.add(this);
 
-        // Validate eligibility before creating registration
+        // Run eligibility checks BEFORE linking this to officer/project
         if (!isEligible()) {
             this.registrationStatus = "Unsuccessful";
             System.out.println("Registration automatically rejected due to eligibility issues.");
         } else {
-            // Add this registration to both the project and officer
+            // Only now add to officer + project tracking lists
             project.addOfficerRegistration(this);
             officer.addOfficerApplication(this);
         }
     }
-    
     public static void displayAll(String givenStatus) {
         boolean found = false;
 
@@ -169,5 +173,65 @@ public class OfficerRegistration {
     
     public LocalDate getRegistrationDate() {
         return registrationDate;
+    }
+    
+    public void setRegistrationStatus(String status) {
+        this.registrationStatus = status;
+    }
+
+    public void setRegistrationDate(LocalDate date) {
+        this.registrationDate = date;
+    }
+    
+    public static List<OfficerRegistration> getAllRegistrations() {
+        return allRegistrations;
+    }
+    
+    //Data Persistence
+    public static void saveRegistrationsToCSV(String filename) {
+        try (FileWriter writer = new FileWriter(filename)) {
+            writer.write("OfficerID,ProjectID,Status,Date\n");
+            for (OfficerRegistration reg : allRegistrations) {
+                writer.write(reg.getOfficer().getNRIC() + "," +
+                             reg.getProject().getProjectId() + "," +
+                             reg.getRegistrationStatus() + "," +
+                             reg.getRegistrationDate() + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void loadRegistrationsFromCSV(String filename, List<UserPerson> allUsers) {
+        allRegistrations.clear();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            reader.readLine(); // skip header
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length < 4) continue;
+                String officerId = parts[0];
+                int projectId = Integer.parseInt(parts[1]);
+                String status = parts[2];
+                LocalDate date = LocalDate.parse(parts[3]);
+
+                HDBofficer officer = null;
+                for (UserPerson u : allUsers) {
+                    if (u instanceof HDBofficer && u.getNRIC().equals(officerId)) {
+                        officer = (HDBofficer) u;
+                        break;
+                    }
+                }
+                Project project = Project.getProjectById(projectId);
+
+                if (officer != null && project != null) {
+                    OfficerRegistration reg = new OfficerRegistration(officer, project);
+                    reg.setRegistrationStatus(status);
+                    reg.setRegistrationDate(date);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

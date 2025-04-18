@@ -168,25 +168,28 @@ public class HDBofficer extends Applicant implements enquiryInterface {
     
     // Method for officer to apply for a project
     public OfficerRegistration applyOffReg(Project project) {
-    	OfficerRegistration reg = new OfficerRegistration(this, project);
         if (project == null) {
             System.out.println("Error: Project cannot be null.");
-            return reg;
+            return null;
         }
+
+        if (this.isRegisteredForProject(project.getProjectId())) {
+            System.out.println("Error: You are already assigned to this project.");
+            return null;
+        }
+
         if (this.checkOverlap(project)) {
-        	System.out.println("Error: Already an officer during this period");
-        	return reg;
+            System.out.println("Error: Already handling a project during this period.");
+            return null;
         }
+
         if (this.getAppliedProjectId() == project.getProjectId()) {
             System.out.println("Error: You have already applied to this project as an applicant.");
-            return reg;
+            return null;
         }
 
-        // Create the registration with default status "pending"
-        if(this.checkOverlap(project)!= true && this.getAppliedProjectId() == project.getProjectId()){
-        System.out.println(this.getName() + " has applied to project '" + project.getProjectName() + "'. Status: Pending Approval");
-
-        return reg;}
+        // Passed all checks – proceed
+        OfficerRegistration reg = new OfficerRegistration(this, project);
         return reg;
     }
     
@@ -233,6 +236,7 @@ public class HDBofficer extends Applicant implements enquiryInterface {
             if (registration.getRegistrationStatus().equalsIgnoreCase("Rejected")) {
                 continue;
             }
+            
 
             Project existingProject = registration.getProject();
             LocalDate existingStart = existingProject.getOpeningDate();
