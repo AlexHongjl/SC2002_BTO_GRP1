@@ -34,6 +34,7 @@ public class OfficerRegistration {
             // Only now add to officer + project tracking lists
             project.addOfficerRegistration(this);
             officer.addOfficerApplication(this);
+            System.out.println("Application succesfully created");
         }
     }
     public static void displayAll(String givenStatus) {

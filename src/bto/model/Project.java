@@ -366,7 +366,7 @@ public class Project {
             if (!project.getOfficers().isEmpty()) {
                 System.out.println("Assigned Officers:");
                 for (HDBofficer officer : project.getOfficers()) {
-                    System.out.println(" - " + officer.getName() + " (NRIC: " + officer.getNRIC() + ")");
+                    System.out.println(" - " + officer.getName() );//+ " (NRIC: " + officer.getNRIC() + ")"
                 }
             } else {
                 System.out.println("Assigned Officers: None");
@@ -490,7 +490,7 @@ public class Project {
                 System.out.println("Number of Officers Assigned: " + project.officerList.size());
                 if (!project.officerList.isEmpty()) {
                     for (HDBofficer officer : project.officerList) {
-                        System.out.println("- Officer: " + officer.getName() + " (NRIC: " + officer.getNRIC() + ")");
+                        System.out.println("- Officer: " + officer.getName() );//+ " (NRIC: " + officer.getNRIC() + ")"
                     }
                 } else {
                     System.out.println("No officers assigned.");
