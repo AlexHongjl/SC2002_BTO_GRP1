@@ -21,23 +21,26 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
 
     // === Project Management ===
     public Project createBTOListings(String projectName, String neighborhood,
-                                    int twoRoomCount,
-                                    int threeRoomCount, boolean projectVisibility, 
-                                   LocalDate openingDate, LocalDate closingDate,
-                                   int officerSlots) {
-        if (isManagingProjectDuringPeriod(openingDate, closingDate)) {
-            System.out.println("Error: You are already managing a project during this period.");
-            return null;
-        }
+            int twoRoomCount, int twoRoompx,
+            int threeRoomCount, int threeRoompx,
+            boolean projectVisibility, 
+            LocalDate openingDate, LocalDate closingDate,
+            int officerSlots) {
+				if (isManagingProjectDuringPeriod(openingDate, closingDate)) {
+				System.out.println("Error: You are already managing a project during this period.");
+				return null;
+				}
+				
+				Project newProject = new Project(projectName, neighborhood,
+				                twoRoomCount, threeRoompx,
+				                projectVisibility, 
+				                openingDate, closingDate,
+				                officerSlots, this, twoRoompx,
+				                threeRoomCount);
+				managedProjects.add(newProject);
+				return newProject;
+				}
 
-        Project newProject = new Project(projectName, neighborhood,
-                twoRoomCount,
-                threeRoomCount, projectVisibility, 
-               openingDate, closingDate,
-               officerSlots, this);
-        managedProjects.add(newProject);
-        return newProject;
-    }
 
     public void editBTOListings(int projectID, String field, Object newValue) {
         Project project = Project.getProjectById(projectID);
