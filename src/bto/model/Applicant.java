@@ -33,6 +33,17 @@ public class Applicant extends UserPerson {
     public boolean applyForProject(Project project, String flatType) {
         if (appliedProjectId != -1 && !hasWithdrawn) return false; // already applied
 
+        // Check if this applicant is also an officer who has applied for the same project
+        if (this instanceof HDBofficer) {
+            HDBofficer officer = (HDBofficer) this;
+            for (OfficerRegistration reg : officer.getOfficerApplications()) {
+                if (reg.getProject().getProjectId() == project.getProjectId()) {
+                    System.out.println("Error: You have already applied to this project as an officer.");
+                    return false;
+                }
+            }
+        }
+
         if (!isEligible(project, flatType)) return false;
 
         this.appliedProjectId = project.getProjectId();
