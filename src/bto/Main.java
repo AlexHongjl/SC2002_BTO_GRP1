@@ -4,7 +4,6 @@ import java.util.Scanner;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-
 import bto.model.Applicant;
 import bto.model.BTOapplication;
 import bto.model.Enquiry;
