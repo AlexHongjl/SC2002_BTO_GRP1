@@ -1,7 +1,6 @@
 package bto.model;
 import java.util.stream.*;
 
-import bto.service.User;
 import bto.util.enquiryInterface;
 
 import java.time.LocalDate;
