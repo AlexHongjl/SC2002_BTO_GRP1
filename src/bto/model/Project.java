@@ -366,22 +366,40 @@ public class Project {
     }
 
 
-    public static void displayAllProjectsApplicant(String field) {
-        // Create a list from the projects array, including only visible projects
-        List<Project> visibleProjects = new ArrayList<>();
+    public static void displayAllProjectsApplicant(String field, Applicant applicant) {
+        // Create a list from the projects array, including only visible projects that the applicant is eligible for
+        List<Project> eligibleProjects = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             if (projects[i] != null && projects[i].isProjectVisibility()) {
-                visibleProjects.add(projects[i]);
+                // Check if the applicant is eligible for this project
+                boolean isEligible = false;
+                
+                // Singles aged 35+ can only apply for 2-Room
+                if (applicant.getMaritalStatus().equalsIgnoreCase("Single") && applicant.getAge() >= 35) {
+                    if (projects[i].getTwoRoomCount() > 0) {
+                        isEligible = true;
+                    }
+                } 
+                // Married aged 21+ can apply for any flat types
+                else if (applicant.getMaritalStatus().equalsIgnoreCase("Married") && applicant.getAge() >= 21) {
+                    if (projects[i].getTwoRoomCount() > 0 || projects[i].getThreeRoomCount() > 0) {
+                        isEligible = true;
+                    }
+                }
+                
+                if (isEligible) {
+                    eligibleProjects.add(projects[i]);
+                }
             }
         }
         
         // Sort the list based on the field
         if (field == null || field.isEmpty()) {
             // Default sort by project name
-            Collections.sort(visibleProjects, Comparator.comparing(Project::getProjectName, String.CASE_INSENSITIVE_ORDER));
+            Collections.sort(eligibleProjects, Comparator.comparing(Project::getProjectName, String.CASE_INSENSITIVE_ORDER));
         } else {
             // Sort based on the specified field
-            Collections.sort(visibleProjects, (p1, p2) -> {
+            Collections.sort(eligibleProjects, (p1, p2) -> {
                 switch (field.toLowerCase()) {
                     case "projectid":
                         return Integer.compare(p1.getProjectId(), p2.getProjectId());
@@ -407,20 +425,34 @@ public class Project {
         }
         
         // Print header
-        System.out.println("============ Available Projects ============");
+        System.out.println("=========== Available Eligible Projects ===========");
         System.out.println("ID | Name | Neighbourhood | Two-Room | Three-Room");
-        System.out.println("-------------------------------------------");
+        System.out.println("---------------------------------------------------");
         
         // Display each project
-        for (Project project : visibleProjects) {
-        	System.out.printf("%d |  %s  |   %s   |  %d  |   %d%n", 
+        for (Project project : eligibleProjects) {
+            // Show available flat types for this applicant
+            String twoRoomInfo = project.getTwoRoomCount() > 0 ? String.valueOf(project.getTwoRoomCount()) : "-";
+            String threeRoomInfo = project.getThreeRoomCount() > 0 ? String.valueOf(project.getThreeRoomCount()) : "-";
+            
+            // If single, not eligible for 3-Room
+            if (applicant.getMaritalStatus().equalsIgnoreCase("Single")) {
+                threeRoomInfo = "Not Eligible";
+            }
+            
+            System.out.printf("%d | %s | %s | %s | %s%n", 
                 project.getProjectId(), 
                 project.getProjectName(), 
                 project.getNeighbourhood(),
-                project.getTwoRoomCount(),
-                project.getThreeRoomCount());
+                twoRoomInfo,
+                threeRoomInfo);
         }
-        System.out.println("===========================================");
+        
+        if (eligibleProjects.isEmpty()) {
+            System.out.println("No eligible projects available for you.");
+        }
+        
+        System.out.println("===================================================");
     }
     public static void display(int projectIdToFind) {
         boolean found = false;

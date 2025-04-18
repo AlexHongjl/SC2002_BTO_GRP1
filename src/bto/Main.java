@@ -320,7 +320,7 @@ public class Main {
 		                if(o.getApplicationStatus()!= "None" && o.getApplicationStatus()!= "Unsuccessful") {
 		                	Project.display(o.getAppliedProjectId());
 		                }else if(o.getApplicationStatus()== "None" ||o.getApplicationStatus()== "Unsuccessful") {
-		                	Project.displayAllProjectsApplicant(null);//sld be same same applicant but display an extra one if he officer
+		                	Project.displayAllProjectsApplicant(saved_filter,o);//sld be same same applicant but display an extra one if he officer
 		                }
 		                break;
 		            case 2:
@@ -594,7 +594,7 @@ public class Main {
 	                if(a.getApplicationStatus()!= "None" && a.getApplicationStatus()!= "Unsuccessful") {
 	                	Project.display(a.getAppliedProjectId());
 	                }else if(a.getApplicationStatus()== "None" ||a.getApplicationStatus()== "Unsuccessful") {
-	                	Project.displayAllProjectsApplicant(saved_filter);
+	                	Project.displayAllProjectsApplicant(saved_filter,a);
 	                }
 	                break;
 	            case 2:
