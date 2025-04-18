@@ -147,6 +147,10 @@ public class HDBofficer extends Applicant implements enquiryInterface {
             System.out.println("Error: Project cannot be null.");
             return null;
         }
+        if (this.getAppliedProjectId() == project.getProjectId()) {
+            System.out.println("Error: You have already applied to this project as an applicant.");
+            return null;
+        }
 
         // Create the registration with default status "pending"
         OfficerRegistration reg = new OfficerRegistration(this, project);
