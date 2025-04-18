@@ -60,6 +60,8 @@ public class Project {
     		System.out.println("Error: Maximum number of projects reached.");
     	}
     }
+    
+    
 
     public static void writeCSVProjects() {
         String project = "Project Name,Neighborhood,Type 1,Number of units for Type 1,Selling price for Type 1,Type 2,Number of units for Type 2,Selling price for Type 2,Application opening date,Application closing date,Manager,Officer Slot,Officer\n";

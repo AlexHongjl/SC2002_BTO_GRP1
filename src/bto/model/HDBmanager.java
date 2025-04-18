@@ -218,20 +218,24 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
             return;
         }
 
-        // Search in the project's application list instead of global list
-        for (BTOapplication app : project.getApplicationList()) {
-            if (app.getUserID().equals(applicantNRIC) && app.getStatus().equals("Pending Approval")) {
+        for (BTOapplication app : BTOapplication.getAllApplications()) {
+            if (app.getProjectId() == projectID &&
+                app.getUserID().equals(applicantNRIC) &&
+                app.getStatus().trim().equalsIgnoreCase("Pending Approval")) {
+                
                 if (app.getUnitType().equals("2-Room") && project.getTwoRoomCount() > 0) {
                     project.setTwoRoomCount(project.getTwoRoomCount() - 1);
                     app.updateStatus("Successful", "2-Room");
-                    System.out.println("Application approved for 2-Room flat.");
+                    System.out.println("Application for 2 room flat approved");
                 } else if (app.getUnitType().equals("3-Room") && project.getThreeRoomCount() > 0) {
                     project.setThreeRoomCount(project.getThreeRoomCount() - 1);
                     app.updateStatus("Successful", "3-Room");
-                    System.out.println("Application approved for 3-Room flat.");
+                    System.out.println("Application for 2 room flat approved");
                 } else {
-                    System.out.println("Error: No available units of the requested type.");
+                    System.out.println("No available units.");
                 }
+
+                BTOapplication.saveApplicationsToCSV("data/Applications.csv");
                 return;
             }
         }
@@ -245,8 +249,11 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
             return;
         }
 
-        for (BTOapplication app : project.getApplicationList()) {
-            if (app.getUserID().equals(applicantNRIC) && app.getStatus().equals("Pending Approval")) {
+        for (BTOapplication app : BTOapplication.getAllApplications()) {
+            if (app.getUser() != null &&
+                app.getUser().getNRIC().equals(applicantNRIC) &&
+                app.getStatus().equals("Pending Approval")) {
+
                 app.updateStatus("Unsuccessful", app.getUnitType());
                 System.out.println("Application rejected.");
                 return;
@@ -262,12 +269,14 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
             return;
         }
 
-        for (BTOapplication app : project.getApplicationList()) {
-            if (app.getUserID().equals(applicantNRIC) && app.getStatus().equals("Withdrawal Requested")) {
+        for (BTOapplication app : BTOapplication.getAllApplications()) {
+            if (app.getUser() != null &&
+                app.getUser().getNRIC().equals(applicantNRIC) &&
+                app.getStatus().equals("Withdrawal Requested")) {
+
                 String previousStatus = app.getStatus();
                 app.updateStatus("Withdrawn", app.getUnitType());
-                
-                // If the application was approved or booked, return the unit to the inventory
+
                 if (previousStatus.equals("Successful") || previousStatus.equals("Booked")) {
                     if (app.getUnitType().equals("2-Room")) {
                         project.setTwoRoomCount(project.getTwoRoomCount() + 1);
@@ -275,11 +284,12 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
                         project.setThreeRoomCount(project.getThreeRoomCount() + 1);
                     }
                 }
-                
+
                 System.out.println("Withdrawal request approved.");
                 return;
             }
         }
+
         System.out.println("No withdrawal request found for applicant with NRIC: " + applicantNRIC);
     }
 
@@ -290,14 +300,17 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
             return;
         }
 
-        for (BTOapplication app : project.getApplicationList()) {
-            if (app.getUserID().equals(applicantNRIC) && app.getStatus().equals("Withdrawal Requested")) {
-                // Set the status back to what it was before the withdrawal request
+        for (BTOapplication app : BTOapplication.getAllApplications()) {
+            if (app.getUser() != null &&
+                app.getUser().getNRIC().equals(applicantNRIC) &&
+                app.getStatus().equals("Withdrawal Requested")) {
+
                 app.updateStatus(app.getPreviousStatus(), app.getUnitType());
                 System.out.println("Withdrawal request rejected.");
                 return;
             }
         }
+
         System.out.println("No withdrawal request found for applicant with NRIC: " + applicantNRIC);
     }
     // === Enquiry Management ===

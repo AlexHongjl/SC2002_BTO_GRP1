@@ -21,7 +21,7 @@ public class BTOapplication {
     public BTOapplication(String userID, int projectId, Applicant u) {
         this.userID = userID;
         this.projectId = projectId;
-        this.status = "Pending approval";
+        this.status = "Pending Approval";
         this.unitType = "";
         this.timestamp = "";
         this.previousStatus="";
@@ -138,6 +138,10 @@ public class BTOapplication {
         return status.equals("Booked");
     }
     
+    public void setUser(Applicant user) {
+        this.user = user;
+    }
+    
     public boolean approveApplication() {
     	return status.equals("Approved");
     }
@@ -152,7 +156,7 @@ public class BTOapplication {
     //Data Persistence
     public static void saveApplicationsToCSV(String filename) {
         try (FileWriter writer = new FileWriter(filename)) {
-            writer.write("UserID,ProjectID,UnitType,Status,Timestamp\n");
+            writer.write("NRIC,ProjectID,UnitType,Status,Timestamp\n");
             for (BTOapplication app : allApplications) {
                 writer.write(app.userID + "," + app.projectId + "," + app.unitType + "," + app.status + "," + app.timestamp + "\n");
             }
@@ -161,36 +165,51 @@ public class BTOapplication {
         }
     }
 
-    public static void loadApplicationsFromCSV(String filename, List<UserPerson> allUsers) {
+    public static void loadApplicationsFromCSV(String filename, List<UserPerson> users) {
         allApplications.clear();
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
             reader.readLine(); // skip header
+
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length < 5) continue;
-                String userId = parts[0];
+
+                String userID = parts[0];
                 int projectId = Integer.parseInt(parts[1]);
                 String unitType = parts[2];
                 String status = parts[3];
                 String timestamp = parts[4];
 
-                Applicant appUser = null;
-                for (UserPerson u : allUsers) {
-                    if (u instanceof Applicant && u.getNRIC().equals(userId)) {
-                        appUser = (Applicant) u;
+   
+                Applicant applicant = null;
+                for (UserPerson u : users) {
+                    if (u instanceof Applicant && u.getNRIC().equals(userID)) {
+                        applicant = (Applicant) u;
                         break;
                     }
                 }
 
-                if (appUser != null) {
-                    BTOapplication app = new BTOapplication(userId, projectId, appUser);
-                    app.updateStatus(status, unitType);
-                    app.timestamp = timestamp;
-                    allApplications.add(app);
-                    Project p = Project.getProjectById(projectId);
-                    if (p != null) p.addApplication(app);
+                if (applicant == null) {
+                    System.out.println("⚠ Applicant with NRIC " + userID + " not found. Skipping.");
+                    continue;
                 }
+
+                BTOapplication app = new BTOapplication(userID, projectId, applicant);
+                app.unitType = unitType;
+                app.status = status;
+                app.timestamp = timestamp;
+
+                
+                app.setUser(applicant); 
+
+       
+                Project p = Project.getProjectById(projectId);
+                if (p != null) {
+                    p.addApplication(app); 
+                }
+                
+                allApplications.add(app);
             }
         } catch (IOException e) {
             e.printStackTrace();
