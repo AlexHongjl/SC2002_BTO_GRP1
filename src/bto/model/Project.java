@@ -189,7 +189,9 @@ public class Project {
                     officerName = officerName.trim();
                     for (UserPerson u : Users) {
                         if (u instanceof HDBofficer && u.getName().equalsIgnoreCase(officerName)) {
-                            p.getOfficerList().add((HDBofficer) u);
+                        	HDBofficer o = (HDBofficer) u;
+                            p.getOfficerList().add(o);
+                            o.getRegisteredProjects().add(p); 
                             break;
                         }
                     }

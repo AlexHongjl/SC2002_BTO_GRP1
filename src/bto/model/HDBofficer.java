@@ -4,14 +4,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import bto.util.enquiryInterface;
 
 public class HDBofficer extends Applicant implements enquiryInterface {
 
-    private List<Project> registeredProjects;
+    private List<Project> registeredProjects;//as officer
     private List<Enquiry> enquiries;
-    private List<String> appliedProjectIDs; // should be a list of int?
+    private List<Integer> appliedProjectIDs; // as applicant
     private List<OfficerRegistration> officerApplications;
 
     public HDBofficer(String name, String NRIC, int age, String married, String password) {
@@ -26,16 +27,24 @@ public class HDBofficer extends Applicant implements enquiryInterface {
     @Override
     public void viewOwnStatus() {
         super.viewOwnStatus(); // Calls Applicant's viewOwnStatus
-        System.out.println("Applied Project IDs: " + String.join(", ", appliedProjectIDs));
+
+        // Convert Integer list to String list for display
+        String ids = appliedProjectIDs.stream()
+                                      .map(String::valueOf)
+                                      .collect(Collectors.joining(", "));
+        System.out.println("Applied Project IDs: " + ids);
+
         System.out.println("Registered Projects: ");
         for (Project p : registeredProjects) {
             System.out.println(" - " + p.getProjectName());
         }
+
         System.out.println("Officer Applications:");
         for (OfficerRegistration reg : officerApplications) {
             System.out.println(" - " + reg.getProject().getProjectName() + " (Status: " + reg.getRegistrationStatus() + ")");
         }
     }
+
 
     
     public boolean isOfficerForProject(int projectID) {
@@ -65,7 +74,7 @@ public class HDBofficer extends Applicant implements enquiryInterface {
         officerApplications.add(application);
     }
 
-    public List<String> getAppliedProjectIDs() {
+    public List<Integer> getAppliedProjectIDs() {
         return appliedProjectIDs;
     }
 
