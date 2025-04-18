@@ -779,6 +779,9 @@ public class Main {
         	System.out.println("invalid user");
         }
         
+        UserPerson.writeBackToCSV(Users);
+        Project.writeCSVProjects();
+        
         if(selection == 8) {
         	logout=1;
         }else {

@@ -1,6 +1,7 @@
 package bto.model;
 
 import java.io.BufferedReader;
+import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -55,6 +56,36 @@ public class Project {
     		System.out.println("Error: Maximum number of projects reached.");
     	}
     }
+    	
+    public static void writeCSVProjects() {//added
+        String project = "Project Name,Neighborhood,Type 1,Number of units for Type 1,Selling price for Type 1,Type 2,Number of units for Type 2,Selling price for Type 2,Application opening date,Application closing date,Manager,Officer Slot,Officer\n";
+        
+        for (Project proj : projects) {
+          if (proj != null) {
+            System.out.println(proj.getOfficers().get(0).getName());
+            project = project + proj.getProjectName() 
+              + "," + proj.getNeighbourhood() 
+              + "," + "2-Room"
+              + "," + proj.getTwoRoomCount()
+              + "," + "Placeholder price 1"
+              + "," + "3-Room"
+              + "," + proj.getThreeRoomCount()
+              + "," + "Placeholder price 2"
+              + "," + proj.getOpeningDate()
+              + "," + proj.getClosingDate()
+              + "," + proj.getManagerInCharge().getName()
+              + "," + proj.getOfficerSlots()
+              + ",\"" + String.join(",", proj.getOfficers().stream().map(x->x.getName()).toList())
+              + "\"\n";
+          }
+        }
+        try (FileWriter writer = new FileWriter("data/ProjectList1.csv")){//edit after px added
+        //System.out.println(project);
+        writer.write(project);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
 
       public static void loadProjectsFromCSV(List<UserPerson> Users) {
         String path = "data/ProjectList.csv";
@@ -83,7 +114,15 @@ public class Project {
                 LocalDate closeDate = LocalDate.parse(parts[9].trim(), DateTimeFormatter.ofPattern("d/M/yyyy"));
                 String managerName = parts[10].trim();
                 int officerSlots = Integer.parseInt(parts[11].trim());
-                String[] officerNames = parts[12].split(";|,");
+                //String[] officerNames = parts[12].split(";|,");
+                
+                String[] officerNames = new String[parts.length - 12];//added
+                for (int i = parts.length - officerNames.length ; i < parts.length; i++) {
+                  officerNames[i - 12] = parts[i];
+                }
+                String temp = String.join("," , officerNames);
+                temp = temp.substring(1, temp.length() - 1);
+                officerNames = temp.split(",");//added
     
                 int twoRoomCount = 0;
                 int threeRoomCount = 0;

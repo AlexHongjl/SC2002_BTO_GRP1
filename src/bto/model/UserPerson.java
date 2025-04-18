@@ -1,6 +1,7 @@
 package bto.model;
 
 import java.io.BufferedReader;
+import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -85,6 +86,48 @@ public class UserPerson {
 
 	    return users;
 	}
+	
+	public static void writeBackToCSV(ArrayList<UserPerson> UserList) {//added
+	    String APPLICANT_PATH = "data/ApplicantList.csv";
+	    String OFFICER_PATH = "data/OfficerList.csv";
+	    String MANAGER_PATH = "data/ManagerList.csv";
+	    
+	    String applicant = "Name,NRIC,Age,Marital Status,Password\n";
+	    String officer = "Name,NRIC,Age,Marital Status,Password\n";
+	    String manager = "Name,NRIC,Age,Marital Status,Password\n";
+	    
+	    for (UserPerson user : UserList) {
+	      String newEntry = user.getName() + "," + user.getNRIC() + "," + user.getAge() + "," + user.getMaritalStatus() + "," + user.getPassword();
+	      if (user instanceof HDBofficer) {
+	        officer = officer + newEntry + "\n";
+	      }
+	      else if (user instanceof Applicant) {
+	        applicant = applicant + newEntry + "\n";
+	      }
+	      else if (user instanceof HDBmanager) {
+	        manager = manager + newEntry + "\n";
+	      }
+	    }
+	    
+	    try (FileWriter writer = new FileWriter(APPLICANT_PATH)){
+	      writer.write(applicant);
+	    } catch (IOException e) {
+	      // TODO Auto-generated catch block
+	      e.printStackTrace();
+	    }
+	    try (FileWriter writer = new FileWriter(OFFICER_PATH)){
+	      writer.write(officer);
+	    } catch (IOException e) {
+	      // TODO Auto-generated catch block
+	      e.printStackTrace();
+	    }
+	    try (FileWriter writer = new FileWriter(MANAGER_PATH)){
+	      writer.write(manager);
+	    } catch (IOException e) {
+	      // TODO Auto-generated catch block
+	      e.printStackTrace();
+	    }
+	  }
 
 	public String getName() {
 		return this.name;
