@@ -404,7 +404,7 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
                     case "all":
                         return true;
                     default:
-                        return false;
+                        return true;
                 }
             })
             .collect(Collectors.toList());

@@ -283,7 +283,9 @@ public class Main {
 	        	        System.out.println("Case 13 selected.");
 						System.out.println("input project ID to generate report on all applicant:");
 						projectID4=sc.nextInt();
-	        	        m.generateReport(projectID4, null);
+						System.out.println("Filter by? Options:(married, single, 2-room, 3-room, all");
+						String fil = sc.nextLine();
+	        	        m.generateReport(projectID4, fil);
 	        	        break;
 	        	    default:
 	        	        System.out.println("Invalid choice. Try again");
