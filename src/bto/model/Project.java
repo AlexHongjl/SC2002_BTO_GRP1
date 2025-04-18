@@ -16,7 +16,9 @@ public class Project {
     private String projectName;
     private String neighbourhood;
     private int twoRoomCount;
+    private int twoRoompx;
     private int threeRoomCount;
+    private int threeRoompx;
     private boolean projectVisibility;
     private HDBmanager managerInCharge;
     private int officerSlots;
@@ -34,13 +36,15 @@ public class Project {
     public Project(String projectName, String neighbourhood,
             int twoRoomCount, int threeRoomCount,
             boolean projectVisibility, LocalDate openDate,
-            LocalDate closeDate, int officerSlots, HDBmanager managerInCharge) {
+            LocalDate closeDate, int officerSlots, HDBmanager managerInCharge,int twoRoompx, int threeRoompx) {
 
     	this.projectId = setCount(getCount() + 1); // Unique project ID
     	this.projectName = projectName;
     	this.neighbourhood = neighbourhood;
     	this.twoRoomCount = twoRoomCount;
+    	this.twoRoompx=twoRoompx;
     	this.threeRoomCount = threeRoomCount;
+    	this.threeRoompx=threeRoompx;
     	this.projectVisibility = projectVisibility;
     	this.openDate = openDate;
     	this.closeDate = closeDate;
@@ -56,36 +60,41 @@ public class Project {
     		System.out.println("Error: Maximum number of projects reached.");
     	}
     }
-    	
-    public static void writeCSVProjects() {//added
+
+    public static void writeCSVProjects() {
         String project = "Project Name,Neighborhood,Type 1,Number of units for Type 1,Selling price for Type 1,Type 2,Number of units for Type 2,Selling price for Type 2,Application opening date,Application closing date,Manager,Officer Slot,Officer\n";
-        
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
+
         for (Project proj : projects) {
-          if (proj != null) {
-            System.out.println(proj.getOfficers().get(0).getName());
-            project = project + proj.getProjectName() 
-              + "," + proj.getNeighbourhood() 
-              + "," + "2-Room"
-              + "," + proj.getTwoRoomCount()
-              + "," + "Placeholder price 1"
-              + "," + "3-Room"
-              + "," + proj.getThreeRoomCount()
-              + "," + "Placeholder price 2"
-              + "," + proj.getOpeningDate()
-              + "," + proj.getClosingDate()
-              + "," + proj.getManagerInCharge().getName()
-              + "," + proj.getOfficerSlots()
-              + ",\"" + String.join(",", proj.getOfficers().stream().map(x->x.getName()).toList())
-              + "\"\n";
-          }
+            if (proj != null) {
+                String openDate = (proj.getOpeningDate() != null) ? proj.getOpeningDate().format(formatter) : "Not set";
+                String closeDate = (proj.getClosingDate() != null) ? proj.getClosingDate().format(formatter) : "Not set";
+
+                project += proj.getProjectName()
+                    + "," + proj.getNeighbourhood()
+                    + "," + "2-Room"
+                    + "," + proj.getTwoRoomCount()
+                    + "," + proj.getTwoRoompx()
+                    + "," + "3-Room"
+                    + "," + proj.getThreeRoomCount()
+                    + "," + proj.getThreeRoompx()
+                    + "," + openDate
+                    + "," + closeDate
+                    + "," + proj.getManagerInCharge().getName()
+                    + "," + proj.getOfficerSlots()
+                    + ",\"" + String.join(",", proj.getOfficers().stream().map(x -> x.getName()).toList())
+                    + "\"\n";
+            }
         }
-        try (FileWriter writer = new FileWriter("data/ProjectList1.csv")){//edit after px added
-        //System.out.println(project);
-        writer.write(project);
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+
+        try (FileWriter writer = new FileWriter("data/ProjectList.csv")) {
+            writer.write(project);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
 
       public static void loadProjectsFromCSV(List<UserPerson> Users) {
         String path = "data/ProjectList.csv";
@@ -108,8 +117,10 @@ public class Project {
                 String neighbourhood = parts[1].trim();
                 String type1 = parts[2].trim();
                 int countType1 = Integer.parseInt(parts[3].trim());
+                int countType3 = Integer.parseInt(parts[4].trim());
                 String type2 = parts[5].trim();
                 int countType2 = Integer.parseInt(parts[6].trim());
+                int countType4 = Integer.parseInt(parts[7].trim());
                 LocalDate openDate = LocalDate.parse(parts[8].trim(), DateTimeFormatter.ofPattern("d/M/yyyy"));
                 LocalDate closeDate = LocalDate.parse(parts[9].trim(), DateTimeFormatter.ofPattern("d/M/yyyy"));
                 String managerName = parts[10].trim();
@@ -157,7 +168,9 @@ public class Project {
                     openDate,
                     closeDate,
                     officerSlots,
-                    manager
+                    manager,
+                    countType3,
+                    countType4
                 );
 
                 if(manager!=null) {
@@ -322,6 +335,10 @@ public class Project {
                         return Integer.compare(p1.getTwoRoomCount(), p2.getTwoRoomCount());
                     case "threeroomcount":
                         return Integer.compare(p1.getThreeRoomCount(), p2.getThreeRoomCount());
+                    case "tworoompx":
+                        return Integer.compare(p1.getTwoRoompx(), p2.getTwoRoompx());
+                    case "threeroompx":
+                        return Integer.compare(p1.getThreeRoompx(), p2.getThreeRoompx());
                     case "projectvisibility":
                         return Boolean.compare(p1.isProjectVisibility(), p2.isProjectVisibility());
                     case "openingdate":
@@ -346,6 +363,8 @@ public class Project {
             System.out.println("Neighbourhood: " + project.getNeighbourhood());
             System.out.println("Two Room Count: " + project.getTwoRoomCount());
             System.out.println("Three Room Count: " + project.getThreeRoomCount());
+            System.out.println("Two Room Price: " + project.getTwoRoompx());
+            System.out.println("Three Room Price: " + project.getThreeRoompx());
             System.out.println("Project Visibility: " + (project.isProjectVisibility() ? "Visible" : "Hidden"));
             System.out.println("Opening Date: " + (project.getOpeningDate() != null ? project.getOpeningDate() : "Not set"));
             System.out.println("Closing Date: " + (project.getClosingDate() != null ? project.getClosingDate() : "Not set"));
@@ -411,6 +430,10 @@ public class Project {
                         return Integer.compare(p1.getTwoRoomCount(), p2.getTwoRoomCount());
                     case "threeroomcount":
                         return Integer.compare(p1.getThreeRoomCount(), p2.getThreeRoomCount());
+                    case "tworoompx":
+                        return Integer.compare(p1.getTwoRoompx(), p2.getTwoRoompx());
+                    case "threeroompx":
+                        return Integer.compare(p1.getThreeRoompx(), p2.getThreeRoompx());
                     case "openingdate":
                         return p1.getOpeningDate().compareTo(p2.getOpeningDate());
                     case "closingdate":
@@ -465,6 +488,8 @@ public class Project {
                 System.out.println("Neighbourhood: " + project.neighbourhood);
                 System.out.println("Two Room Count: " + project.twoRoomCount);
                 System.out.println("Three Room Count: " + project.threeRoomCount);
+                System.out.println("Two Room Price: " + project.getTwoRoompx());
+                System.out.println("Three Room Price: " + project.getThreeRoompx());
                 System.out.println("Project Visibility: " + (project.projectVisibility ? "Visible" : "Hidden"));
                 System.out.println("Manager In Charge: " + project.managerInCharge.getName());
                 System.out.println("Officer Slots: " + project.officerSlots);
@@ -658,5 +683,22 @@ public class Project {
 		Project.count = count;
 		return count;
 	}
+	
+	public int getTwoRoompx() {
+	    return twoRoompx;
+	}
+
+	public void setTwoRoompx(int twoRoompx) {
+	    this.twoRoompx = twoRoompx;
+	}
+
+	public int getThreeRoompx() {
+	    return threeRoompx;
+	}
+
+	public void setThreeRoompx(int threeRoompx) {
+	    this.threeRoompx = threeRoompx;
+	}
+
 }
 
