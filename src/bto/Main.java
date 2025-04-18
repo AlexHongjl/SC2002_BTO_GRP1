@@ -109,7 +109,6 @@ public class Main {
 	        	    	String officerNRIC;
 	        	        System.out.println("Case 4 selected.");
 	        	        OfficerRegistration.displayAll("Pending approval");
-	        	        OfficerRegistration.displayAll("Pending withdrawal");
 	        	        //display list of officer reg under his list of project
 	        	        System.out.println("input project ID:");
 	        	        projectID=sc.nextInt();
