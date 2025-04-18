@@ -330,6 +330,7 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         }
         
         enquiry.reply(reply);
+        enquiry.setStatus(false);
     }
 
     // === Reports & Views ===

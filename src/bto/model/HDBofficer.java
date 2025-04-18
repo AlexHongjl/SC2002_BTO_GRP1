@@ -112,6 +112,7 @@ public class HDBofficer extends Applicant implements enquiryInterface {
             if (e.getEnquiryID() == enquiryId && isRegisteredForProject(e.getProjectId())) {
                 String fullReply = "[" + this.getName() + " | " + LocalDateTime.now() + "] " + replyMessage;
                 e.reply(fullReply);
+                e.setStatus(false);
                 System.out.println("Reply sent.");
                 return;
             }

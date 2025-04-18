@@ -121,6 +121,7 @@ public class Enquiry {
     public void reply(String replyMessage) {
         this.response = replyMessage;
         System.out.println("Reply Sent: " + replyMessage);
+        this.setStatus(false);
     }
 
     public void changeStatus() {
@@ -161,6 +162,10 @@ public class Enquiry {
     
     public static int getCount() {
         return count;
+    }
+    
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 }
 
