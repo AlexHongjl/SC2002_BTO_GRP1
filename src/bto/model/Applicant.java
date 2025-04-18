@@ -42,6 +42,12 @@ public class Applicant extends UserPerson {
                     return false;
                 }
             }
+            for (Project pro : officer.getRegisteredProjects()) {
+                if (pro.getProjectId() == project.getProjectId()) {
+                    System.out.println("Error: You are registered to this project as an officer.");
+                    return false;
+                }
+            }
         }
 
         if (!isEligible(project, flatType)) return false;
