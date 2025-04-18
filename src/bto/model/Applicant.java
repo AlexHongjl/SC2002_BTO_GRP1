@@ -6,9 +6,9 @@ import java.util.List;
 public class Applicant extends UserPerson {
 
     private int appliedProjectId = -1;
-    private String applicationStatus = "None"; // None, Pending, Successful, Booked, Unsuccessful, Withdrawn
+    protected String applicationStatus = "None"; // None, Pending, Successful, Booked, Unsuccessful, Withdrawn
     private String flatTypeBooked = null;
-    private boolean hasWithdrawn = false;
+    protected boolean hasWithdrawn = false;
 
     private final List<Enquiry> enquiries = new ArrayList<>();
 
@@ -40,7 +40,7 @@ public class Applicant extends UserPerson {
     }
 
     public boolean applyForProject(Project project, String flatType) {
-        if (appliedProjectId != -1 && !hasWithdrawn) return false; // already applied
+        if (getAppliedProjectId() != -1 && !hasWithdrawn) return false; // already applied
 
         // Check if this applicant is also an officer who has applied for the same project
         if (this instanceof HDBofficer) {
@@ -61,14 +61,14 @@ public class Applicant extends UserPerson {
 
         if (!isEligible(project, flatType)) return false;
 
-        this.appliedProjectId = project.getProjectId();
+        this.setAppliedProjectId(project.getProjectId());
         this.applicationStatus = "Pending";
         this.hasWithdrawn = false;
         return true;
     }
 
     public boolean withdrawApplication() {
-        if (appliedProjectId == -1) return false;
+        if (getAppliedProjectId() == -1) return false;
 
         this.hasWithdrawn = true;
         this.applicationStatus = "Withdrawn";
@@ -99,7 +99,7 @@ public class Applicant extends UserPerson {
     }
 
     public boolean hasApplied() {
-        return appliedProjectId != -1 && !hasWithdrawn;
+        return getAppliedProjectId() != -1 && !hasWithdrawn;
     }
 
     public boolean isWithdrawn() {
@@ -107,8 +107,8 @@ public class Applicant extends UserPerson {
     }
     
     public Project getAppliedProject() {
-        if (appliedProjectId == -1) return null;
-        return Project.getProjectById(appliedProjectId);
+        if (getAppliedProjectId() == -1) return null;
+        return Project.getProjectById(getAppliedProjectId());
     }
 
     //for enquiries
@@ -135,6 +135,10 @@ public class Applicant extends UserPerson {
             System.out.println("ID: " + e.getEnquiryID() + ", Message: " + e.getMessage());
         }
     }
+
+	public void setAppliedProjectId(int appliedProjectId) {
+		this.appliedProjectId = appliedProjectId;
+	}
 
 //    @Override
 //    public void replyEnquiry(int enquiryId, String replyMessage) {

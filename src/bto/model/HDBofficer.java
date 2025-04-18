@@ -162,6 +162,10 @@ public class HDBofficer extends Applicant implements enquiryInterface {
             System.out.println("Error: Project cannot be null.");
             return null;
         }
+        if (this.checkOverlap(project)) {
+        	System.out.println("Error: Already an officer during this period");
+        	return null;
+        }
         if (this.getAppliedProjectId() == project.getProjectId()) {
             System.out.println("Error: You have already applied to this project as an applicant.");
             return null;
@@ -181,6 +185,30 @@ public class HDBofficer extends Applicant implements enquiryInterface {
             return project.getProjectId() == appliedProject.getProjectId();
         }
         return false;
+    }
+    public boolean applyForProject(Project project, String flatType) {
+        if (getAppliedProjectId() != -1 && !isWithdrawn()) return false; // already applied
+
+        // Check if this applicant is also an officer who has applied for the same project
+            for (OfficerRegistration reg : this.getOfficerApplications()) {
+                if (reg.getProject().getProjectId() == project.getProjectId()) {
+                    System.out.println("Error: You have already applied to this project as an officer.");
+                    return false;
+                }
+            }
+            for (Project pro : this.getRegisteredProjects()) {
+                if (pro.getProjectId() == project.getProjectId()) {
+                    System.out.println("Error: You are registered to this project as an officer.");
+                    return false;
+                }
+            }
+
+        if (!isEligible(project, flatType)) return false;
+
+        this.setAppliedProjectId(project.getProjectId());
+        this.applicationStatus = "Pending";
+        this.hasWithdrawn = false;
+        return true;
     }
 
     private boolean checkOverlap(Project project) {
