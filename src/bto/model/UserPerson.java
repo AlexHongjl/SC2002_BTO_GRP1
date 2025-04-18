@@ -128,6 +128,14 @@ public class UserPerson {
 	      e.printStackTrace();
 	    }
 	  }
+	
+	public void viewOwnStatus() {
+	    System.out.println("User ID: " + getNRIC());
+	    System.out.println("Name: " + getName());
+	    System.out.println("MaritalStatus: " + getMaritalStatus());
+	    // Add other base fields if any
+	}
+
 
 	public String getName() {
 		return this.name;

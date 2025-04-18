@@ -17,6 +17,15 @@ public class Applicant extends UserPerson {
     }
 
     //applicant
+    @Override
+    public void viewOwnStatus() {
+        super.viewOwnStatus();
+        System.out.println("Applied Project ID: " + appliedProjectId);
+        System.out.println("Application Status: " + applicationStatus);
+        System.out.println("Flat Type Booked: " + (flatTypeBooked != null ? flatTypeBooked : "None"));
+        System.out.println("Has Withdrawn: " + hasWithdrawn);
+    }
+
 
     public boolean isEligible(Project project, String flatType) {
         if (!project.isProjectVisibility()) return false;

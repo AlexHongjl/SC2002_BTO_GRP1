@@ -59,6 +59,7 @@ public class Main {
 	        	System.out.println("11. End program");
 	        	System.out.println("12. reply enquries");
 	        	System.out.println("13. generate report");
+	        	System.out.println("14. View own profile");
 	        	System.out.println("Pls input seletion: (e.g. 5)");
 	        	
 	        	selection = sc.nextInt();
@@ -291,11 +292,14 @@ public class Main {
 						String fil = sc.nextLine();
 	        	        m.generateReport(projectID4, fil);
 	        	        break;
+	        	    case 14:
+	        	    	m.viewOwnStatus();
+	        	    	break;
 	        	    default:
 	        	        System.out.println("Invalid choice. Try again");
 	        	        break;
 	        	}
-        	}while(selection<14 && selection>0 && selection!=8 && selection!=11);
+        	}while(selection<15 && selection>0 && selection!=8 && selection!=11);
         	
         }else if(cur.getUserType() == "officer" && cur instanceof HDBofficer) {// no need the enquiries list attribute and applied projID attribute cause applicant class alr have
         	HDBofficer o = (HDBofficer) cur;//downcast
@@ -315,6 +319,7 @@ public class Main {
 	        	System.out.println("12. reply enquries");//doc mention about enquiry for a project
 	        	System.out.println("13. apply for officer of a project");
 	        	System.out.println("14. book slot for applicant on approved applications & generate receipt");//after approved then visible to officer?
+	        	System.out.println("15. View own profile");
 	        	System.out.println("Pls input seletion: (e.g. 5)");
 	        	
 	        	selection = sc.nextInt();
@@ -568,6 +573,9 @@ public class Main {
 
 	        	   
 	        	        break;
+	        	    case 15:
+	        	    	o.viewOwnStatus();
+	        	    	break;
 	        	    default:
 	        	        System.out.println("Invalid choice. Try again");
 	        	        break;
@@ -590,6 +598,7 @@ public class Main {
 	        	System.out.println("9. change PW");
 	        	System.out.println("10. filter by area/flat type availability/px/date");
 	        	System.out.println("11. End program");
+	        	System.out.println("12. View own profile");
 	        	System.out.println("Pls input seletion: (e.g. 5)");
 	        	selection = sc.nextInt();
 	        	switch (selection) {
@@ -775,10 +784,13 @@ public class Main {
 	                sc.close();
 	                System.out.println("Ending...");
 	                break;
+	            case 12:
+	            	a.viewOwnStatus();
+	            	break;
 	            default:
 	                System.out.println("Invalid choice. Try again");
 	        	}
-        	}while(selection<11 && selection>0 && selection!=8 && selection!=11);
+        	}while(selection<13 && selection>0 && selection!=8 && selection!=11);
         	
         	
         }else {

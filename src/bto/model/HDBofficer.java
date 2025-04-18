@@ -23,6 +23,21 @@ public class HDBofficer extends Applicant implements enquiryInterface {
         this.officerApplications = new ArrayList<>();
     }
     
+    @Override
+    public void viewOwnStatus() {
+        super.viewOwnStatus(); // Calls Applicant's viewOwnStatus
+        System.out.println("Applied Project IDs: " + String.join(", ", appliedProjectIDs));
+        System.out.println("Registered Projects: ");
+        for (Project p : registeredProjects) {
+            System.out.println(" - " + p.getProjectName());
+        }
+        System.out.println("Officer Applications:");
+        for (OfficerRegistration reg : officerApplications) {
+            System.out.println(" - " + reg.getProject().getProjectName() + " (Status: " + reg.getRegistrationStatus() + ")");
+        }
+    }
+
+    
     public boolean isOfficerForProject(int projectID) {
         if (registeredProjects == null) return false;
 

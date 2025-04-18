@@ -18,6 +18,16 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         super(name, NRIC, age, maritalStatus, password, "manager");
         this.managedProjects = new ArrayList<>();
     }
+    
+    @Override
+    public void viewOwnStatus() {
+        super.viewOwnStatus(); // Calls UserPerson's viewOwnStatus
+        System.out.println("Managed Projects:");
+        for (Project p : managedProjects) {
+            System.out.println(" - " + p.getProjectName() + " (Project ID: " + p.getProjectId() + ")");
+        }
+    }
+
 
     // === Project Management ===
     public Project createBTOListings(String projectName, String neighborhood,
