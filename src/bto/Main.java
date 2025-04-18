@@ -129,48 +129,52 @@ public class Main {
 	        	        }
 	        	        break;
 	        	    case 5:
-	        	        System.out.println("Case 5 selected.");
-	        	        //display how many list under him first then he want to add to which list or create new list
-	        	        System.out.println("input projectName, String neighborhood,\r\n"
-	        	        		+ "                                    int twoRoomCount,\r\n"
-	        	        		+ "                                    int threeRoomCount, boolean projectVisibility, \r\n"
-	        	        		+ "                                   LocalDate openingDate, LocalDate closingDate,\r\n"
-	        	        		+ "                                   int officerSlots in sequence separated by space, e.g. 1 0 1 0 1 0 1 0");
-	        	        // Collect inputs from user
-						System.out.print("Enter project name: ");
-						String projectName = sc.nextLine();
+	        	    	System.out.println("Case 5 selected.");
+	        	    	// Display instructions for user
+	        	    	System.out.println("Input projectName, neighborhood, twoRoomCount, twoRoomPrice, threeRoomCount, threeRoomPrice, projectVisibility, openingDate, closingDate, officerSlots in sequence.");
 
-						System.out.print("Enter neighbourhood: ");
-						String neighbourhood = sc.nextLine();
+	        	    	// Collect inputs from user
+	        	    	System.out.print("Enter project name: ");
+	        	    	String projectName = sc.nextLine();
 
-						System.out.print("Enter two-room count: ");
-						int twoRoomCount = sc.nextInt();
+	        	    	System.out.print("Enter neighbourhood: ");
+	        	    	String neighbourhood = sc.nextLine();
 
-						System.out.print("Enter three-room count: ");
-						int threeRoomCount = sc.nextInt();
+	        	    	System.out.print("Enter two-room count: ");
+	        	    	int twoRoomCount = sc.nextInt();
 
-						System.out.print("Enter project visibility (1 for true, 0 for false): ");
-						boolean projectVisibility = (sc.nextInt() == 1);
+	        	    	System.out.print("Enter selling price for two-room: ");
+	        	    	int twoRoompx = sc.nextInt();
 
-						// Collect opening and closing dates
-						sc.nextLine(); // consume the leftover newline
-						System.out.print("Enter opening date (yyyy-MM-dd): ");
-						String openDateString = sc.nextLine();
-						LocalDate openDate = LocalDate.parse(openDateString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+	        	    	System.out.print("Enter three-room count: ");
+	        	    	int threeRoomCount = sc.nextInt();
 
-						System.out.print("Enter closing date (yyyy-MM-dd): ");
-						String closeDateString = sc.nextLine();
-						LocalDate closeDate = LocalDate.parse(closeDateString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+	        	    	System.out.print("Enter selling price for three-room: ");
+	        	    	int threeRoompx = sc.nextInt();
 
-						// Collect officer slots (sequence of 1's and 0's)
-						System.out.print("Enter officer slots (sequence separated by space): ");
-						String officerSlotsInput = sc.nextLine();
-						String[] officerSlotsArray = officerSlotsInput.split(" ");
-						int officerSlots = officerSlotsArray.length;
+	        	    	System.out.print("Enter project visibility (1 for true, 0 for false): ");
+	        	    	boolean projectVisibility = (sc.nextInt() == 1);
 
-						// Call the createBTOListings method with user inputs
-						m.createBTOListings(projectName, neighbourhood, twoRoomCount, threeRoomCount, projectVisibility, openDate, closeDate, officerSlots);//sld be a list?
-	        	        break;
+	        	    	sc.nextLine(); // consume the leftover newline
+	        	    	System.out.print("Enter opening date (yyyy-MM-dd): ");
+	        	    	String openDateString = sc.nextLine();
+	        	    	LocalDate openDate = LocalDate.parse(openDateString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+	        	    	System.out.print("Enter closing date (yyyy-MM-dd): ");
+	        	    	String closeDateString = sc.nextLine();
+	        	    	LocalDate closeDate = LocalDate.parse(closeDateString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+	        	    	System.out.print("Enter officer slots (sequence separated by space): ");
+	        	    	String officerSlotsInput = sc.nextLine();
+	        	    	String[] officerSlotsArray = officerSlotsInput.split(" ");
+	        	    	int officerSlots = officerSlotsArray.length;
+
+	        	    	// Call the updated createBTOListings method
+	        	    	m.createBTOListings(projectName, neighbourhood, 
+	        	    	                    twoRoomCount, twoRoompx, 
+	        	    	                    threeRoomCount, threeRoompx,
+	        	    	                    projectVisibility, openDate, closeDate, officerSlots);
+	        	    	break;
 	        	    case 6:
 	        	        System.out.println("Case 6 selected.");// edit field by field can be quite slow
 	        	        System.out.println("input proj ID, field to edit(e.g. projectname), new value in sequence e.g. 1 projectname Taban Garden:");

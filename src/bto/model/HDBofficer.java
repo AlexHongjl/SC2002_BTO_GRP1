@@ -22,6 +22,17 @@ public class HDBofficer extends Applicant implements enquiryInterface {
         this.appliedProjectIDs = new ArrayList<>();
         this.officerApplications = new ArrayList<>();
     }
+    
+    public boolean isOfficerForProject(int projectID) {
+        if (registeredProjects == null) return false;
+
+        for (Project p : registeredProjects) {
+            if (p != null && p.getProjectId() == projectID) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public List<Project> getRegisteredProjects() {
         return registeredProjects;
