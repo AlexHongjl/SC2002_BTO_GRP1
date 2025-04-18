@@ -29,6 +29,7 @@ public class OfficerRegistration {
             // Add this registration to both the project and officer
             project.addOfficerRegistration(this);
             officer.addOfficerApplication(this);
+            System.out.println("Application succesfully created");
         }
     }
     
