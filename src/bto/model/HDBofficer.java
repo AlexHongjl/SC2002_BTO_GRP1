@@ -126,7 +126,15 @@ public class HDBofficer extends Applicant implements enquiryInterface {
             return;
         }
 
-        BTOapplication app = project.getApplicationByUserId(userID);
+        BTOapplication app = null;
+        for (BTOapplication a : BTOapplication.getAllApplications()) {
+            if (a.getUserID().equals(userID) &&
+                a.getProjectId() == project.getProjectId() &&
+                a.getStatus().equalsIgnoreCase("Successful")) {
+                app = a;
+                break;
+            }
+        }
         
         if (app != null && app.isBookable()) {
             boolean booked = false;

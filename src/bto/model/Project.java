@@ -215,6 +215,24 @@ public class Project {
     	    return result.toArray(new String[0]);
     	}
 
+      public static void displayAllSummary() {
+    	    System.out.println("=========== All Projects ===========");
+    	    System.out.println("ID | Name              | Neighbourhood     | Two-Room | Three-Room");
+    	    System.out.println("---------------------------------------------------------------");
+
+    	    for (Project p : getProjects()) {
+    	        if (p == null) continue;
+    	        System.out.printf("%-2d | %-17s | %-18s | %-9d | %-11d%n",
+    	                p.getProjectId(),
+    	                p.getProjectName(),
+    	                p.getNeighbourhood(),
+    	                p.getTwoRoomCount(),
+    	                p.getThreeRoomCount());
+    	    }
+
+    	    System.out.println("===============================================================");
+    	}
+      
     
     public List<HDBofficer> getOfficerList() {
         return officerList;

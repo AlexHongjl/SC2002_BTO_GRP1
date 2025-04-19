@@ -269,15 +269,14 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
             return;
         }
 
-        for (BTOapplication app : BTOapplication.getAllApplications()) {
-            if (app.getUser() != null &&
-                app.getUser().getNRIC().equals(applicantNRIC) &&
-                app.getStatus().equals("Withdrawal Requested")) {
+        for (BTOapplication app :BTOapplication.getAllApplications()) {
+            if (app.getUserID().equals(applicantNRIC) &&
+                app.getStatus().trim().equalsIgnoreCase("Pending Withdrawal")) {
 
-                String previousStatus = app.getStatus();
-                app.updateStatus("Withdrawn", app.getUnitType());
+                // Return flat if needed
+                if (app.getPreviousStatus().equalsIgnoreCase("Successful") ||
+                    app.getPreviousStatus().equalsIgnoreCase("Booked")) {
 
-                if (previousStatus.equals("Successful") || previousStatus.equals("Booked")) {
                     if (app.getUnitType().equals("2-Room")) {
                         project.setTwoRoomCount(project.getTwoRoomCount() + 1);
                     } else if (app.getUnitType().equals("3-Room")) {
@@ -285,6 +284,16 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
                     }
                 }
 
+                // Update application and applicant
+                app.updateStatus("Withdrawn", app.getUnitType());
+
+                if (app.getUser() != null) {
+                    app.getUser().setApplicationStatus("Withdrawn");
+                    app.getUser().setAppliedProjectId(-1);
+                    app.getUser().setWithdrawn(true);
+                }
+
+                BTOapplication.saveApplicationsToCSV("data/Applications.csv");
                 System.out.println("Withdrawal request approved.");
                 return;
             }
@@ -301,12 +310,25 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         }
 
         for (BTOapplication app : BTOapplication.getAllApplications()) {
-            if (app.getUser() != null &&
-                app.getUser().getNRIC().equals(applicantNRIC) &&
-                app.getStatus().equals("Withdrawal Requested")) {
+            if (app.getProjectId() == projectID &&
+                app.getUserID().equals(applicantNRIC) &&
+                app.getStatus().trim().equalsIgnoreCase("Pending Withdrawal")) {
 
-                app.updateStatus(app.getPreviousStatus(), app.getUnitType());
+            	String prevStatus = app.getPreviousStatus();
+            	if (prevStatus == null || prevStatus.isBlank()) {
+            	    prevStatus = "Successful"; // fallback default if missing
+            	}
+            	app.updateStatus(prevStatus, app.getUnitType());
+
+                Applicant applicant = app.getUser();
+                if (applicant != null) {
+                    applicant.setApplicationStatus(prevStatus);
+                    applicant.setWithdrawn(false);
+                    applicant.setAppliedProjectId(projectID);
+                }
+
                 System.out.println("Withdrawal request rejected.");
+                BTOapplication.saveApplicationsToCSV("data/Applications.csv");
                 return;
             }
         }

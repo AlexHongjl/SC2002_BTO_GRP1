@@ -58,9 +58,9 @@ public class BTOapplication {
     }
 
     public static void displayStatusPendingW() {
-        System.out.println("=== Pending Applications ===");
+        System.out.println("=== Pending Withdrawals ===");
         for (BTOapplication app : allApplications) {
-            if (app.status.equals("Pending Withdrawn")) {
+            if (app.getStatus().trim().equalsIgnoreCase("Pending Withdrawal")) {
                 System.out.println(app);
             }
         }
@@ -105,11 +105,17 @@ public class BTOapplication {
     }
 
     public void updateStatus(String status, String unitType) {
+        this.previousStatus = this.status; 
         this.status = status;
         this.unitType = unitType;
         this.timestamp = java.time.LocalDateTime.now().toString();
-    }
 
+        if (user != null) {
+            user.setApplicationStatus(status);
+            user.setAppliedProjectId(projectId);
+            user.setWithdrawn(status.equals("Withdrawn"));
+        }
+    }
     public String getStatus() {
         return status;
     }
@@ -153,6 +159,18 @@ public class BTOapplication {
     	return user;
     }
     
+    public void setPreviousStatus(String prevStatus) {
+        this.previousStatus = prevStatus;
+    }
+    
+    public static void removeOldWithdrawn(String userID, int projectId) {
+        allApplications.removeIf(app ->
+            app.getUserID().equals(userID) &&
+            app.getProjectId() == projectId &&
+            app.getStatus().equalsIgnoreCase("Withdrawn")
+        );
+    }
+    
     //Data Persistence
     public static void saveApplicationsToCSV(String filename) {
         try (FileWriter writer = new FileWriter(filename)) {
@@ -166,7 +184,6 @@ public class BTOapplication {
     }
 
     public static void loadApplicationsFromCSV(String filename, List<UserPerson> users) {
-        allApplications.clear();
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
             reader.readLine(); // skip header
@@ -181,7 +198,7 @@ public class BTOapplication {
                 String status = parts[3];
                 String timestamp = parts[4];
 
-   
+            
                 Applicant applicant = null;
                 for (UserPerson u : users) {
                     if (u instanceof Applicant && u.getNRIC().equals(userID)) {
@@ -195,26 +212,29 @@ public class BTOapplication {
                     continue;
                 }
 
+            
                 BTOapplication app = new BTOapplication(userID, projectId, applicant);
                 app.unitType = unitType;
                 app.status = status;
                 app.timestamp = timestamp;
 
-                
-                app.setUser(applicant); 
-
        
+                applicant.setAppliedProjectId(projectId);
+                applicant.setApplicationStatus(status);
+                applicant.setWithdrawn(status.equalsIgnoreCase("Withdrawn"));
+
                 Project p = Project.getProjectById(projectId);
                 if (p != null) {
-                    p.addApplication(app); 
+                    p.addApplication(app);
                 }
-                
+
                 allApplications.add(app);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
 
 }

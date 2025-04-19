@@ -40,9 +40,8 @@ public class Applicant extends UserPerson {
     }
 
     public boolean applyForProject(Project project, String flatType) {
-        if (getAppliedProjectId() != -1 && !hasWithdrawn) return false; // already applied
+        if (getAppliedProjectId() != -1 && !hasWithdrawn) return false;
 
-        // Check if this applicant is also an officer who has applied for the same project
         if (this instanceof HDBofficer) {
             HDBofficer officer = (HDBofficer) this;
             for (OfficerRegistration reg : officer.getOfficerApplications()) {
@@ -61,6 +60,12 @@ public class Applicant extends UserPerson {
 
         if (!isEligible(project, flatType)) return false;
 
+        //  Delete any old withdrawn applications
+        BTOapplication.getAllApplications().removeIf(app ->
+            app.getUserID().equals(this.getNRIC()) &&
+            app.getStatus().equalsIgnoreCase("Withdrawn")
+        );
+
         this.setAppliedProjectId(project.getProjectId());
         this.applicationStatus = "Pending";
         this.hasWithdrawn = false;
@@ -70,11 +75,22 @@ public class Applicant extends UserPerson {
     public boolean withdrawApplication() {
         if (getAppliedProjectId() == -1) return false;
 
-        this.hasWithdrawn = true;
-        this.applicationStatus = "Withdrawn";
-        return true;
-    }
+        for (BTOapplication app : BTOapplication.getAllApplications()) {
+            if (app.getUserID().equals(getNRIC()) &&
+                app.getProjectId() == getAppliedProjectId()) {
 
+                // Store current status before requesting withdrawal
+                app.setPreviousStatus(app.getStatus());
+                app.updateStatus("Pending Withdrawal", app.getUnitType());
+
+                // Update applicant object too
+                this.applicationStatus = "Pending Withdrawal";
+                this.hasWithdrawn = false; // still pending, not actually withdrawn yet
+                return true;
+            }
+        }
+        return false;
+    }
     public void setApplicationStatus(String status) {
         this.applicationStatus = status;
     }
@@ -138,6 +154,10 @@ public class Applicant extends UserPerson {
 
 	public void setAppliedProjectId(int appliedProjectId) {
 		this.appliedProjectId = appliedProjectId;
+	}
+	
+	public void setWithdrawn(boolean withdrawn) {
+	    this.hasWithdrawn = withdrawn;
 	}
 
 //    @Override
