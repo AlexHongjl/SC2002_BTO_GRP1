@@ -1,17 +1,20 @@
 package bto.Menu;
 
+import bto.Main;
 import bto.model.*;
 import bto.util.changePW;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ApplicantMenu {
-    public static void handleApplicant(Applicant a, Scanner sc) {
+    public static void handleApplicant(Applicant a, Scanner sc,  ArrayList<UserPerson> Users) {
         int selection;
         String saved_filter = null;
 
         do {
+        	System.out.println(); 
             System.out.println("List of actions:");
             System.out.println("1. View BTO project/or only the project you applied for");
             System.out.println("2. Apply for BTO project");
@@ -37,21 +40,31 @@ public class ApplicantMenu {
                         Project.displayAllProjectsApplicant(saved_filter, a);
                 }
                 case 2 -> {
-                    System.out.print("Enter project ID: ");
-                    int pid = sc.nextInt();
-                    Project p = Project.getProjectById(pid);
-                    System.out.println("1. 2-Room: " + p.getTwoRoomCount());
-                    System.out.println("2. 3-Room: " + p.getThreeRoomCount());
-                    int type = sc.nextInt();
-                    String unit = (type == 1) ? "2-Room" : "3-Room";
+                    Project.displayAllProjectsApplicant(saved_filter, a);
+                    try {
+                        System.out.print("Enter project ID: ");
+                        int pid = sc.nextInt(); sc.nextLine();
+                        Project p = Project.getProjectById(pid);
+                        if (p == null) {
+                            System.out.println("Invalid project ID.");
+                            break;
+                        }
+                        System.out.println("1. 2-Room: " + p.getTwoRoomCount());
+                        System.out.println("2. 3-Room: " + p.getThreeRoomCount());
+                        int type = sc.nextInt(); sc.nextLine();
+                        String unit = (type == 1) ? "2-Room" : "3-Room";
 
-                    if (a.isEligible(p, unit) && a.applyForProject(p, unit)) {
-                        BTOapplication app = new BTOapplication(a.getNRIC(), pid, a);
-                        app.updateStatus("Pending Approval", unit);
-                        BTOapplication.addApplication(app);
-                        app.display();
-                    } else {
-                        System.out.println("Ineligible or already applied.");
+                        if (a.isEligible(p, unit) && a.applyForProject(p, unit)) {
+                            BTOapplication app = new BTOapplication(a.getNRIC(), pid, a);
+                            app.updateStatus("Pending Approval", unit);
+                            BTOapplication.addApplication(app);
+                            app.display();
+                        } else {
+                            System.out.println("Ineligible or already applied.");
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Invalid input. Application cancelled.");
+                        sc.nextLine();
                     }
                 }
                 case 3 -> {
@@ -72,28 +85,43 @@ public class ApplicantMenu {
                 }
                 case 6 -> {
                     if (Enquiry.displayByUser(a.getName())) {
-                        System.out.print("Enter enquiry ID to edit: ");
-                        int id = sc.nextInt(); sc.nextLine();
-                        if (Enquiry.getByID(id) != null && Enquiry.getByID(id).getApplicantName().equals(a.getName())) {
-                            System.out.println("Current:");
-                            Enquiry.getByID(id).display();
-                            System.out.print("New message: ");
-                            Enquiry.editEnquiry(id, sc.nextLine());
+                        try {
+                            System.out.print("Enter enquiry ID to edit: ");
+                            int id = sc.nextInt(); sc.nextLine();
+                            if (Enquiry.getByID(id) != null && Enquiry.getByID(id).getApplicantName().equals(a.getName())) {
+                                System.out.println("Current:");
+                                Enquiry.getByID(id).display();
+                                System.out.print("New message: ");
+                                Enquiry.editEnquiry(id, sc.nextLine());
+                            } else {
+                                System.out.println("Invalid enquiry ID.");
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Invalid input.");
+                            sc.nextLine();
                         }
                     }
                 }
                 case 7 -> {
                     if (Enquiry.displayByUser(a.getName())) {
-                        System.out.print("Enter enquiry ID to delete: ");
-                        int id = sc.nextInt();
-                        if (Enquiry.getByID(id) != null && Enquiry.getByID(id).getApplicantName().equals(a.getName())) {
-                            Enquiry.getByID(id).display();
-                            Enquiry.deleteEnquiry(id);
+                        try {
+                            System.out.print("Enter enquiry ID to delete: ");
+                            int id = sc.nextInt(); sc.nextLine();
+                            if (Enquiry.getByID(id) != null && Enquiry.getByID(id).getApplicantName().equals(a.getName())) {
+                                Enquiry.getByID(id).display();
+                                Enquiry.deleteEnquiry(id);
+                            } else {
+                                System.out.println("Invalid enquiry ID.");
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Invalid input.");
+                            sc.nextLine();
                         }
                     }
                 }
                 case 8 -> {
                     System.out.println("Logging out...");
+                    Main.saveAll(Users);
                     return;
                 }
                 case 9 -> {
@@ -101,15 +129,22 @@ public class ApplicantMenu {
                 }
                 case 10 -> {
                     System.out.println("1. projectid\n2. projectname\n3. neighborhood\n4. tworoomcount\n5. threeroomcount\n7. openingdate\n8. closingdate\n9. officerslots");
-                    int ftsel = sc.nextInt(); sc.nextLine();
-                    String ft = switch (ftsel) {
-                        case 1 -> "projectid"; case 2 -> "projectname"; case 3 -> "neighborhood";
-                        case 4 -> "tworoomcount"; case 5 -> "threeroomcount"; case 7 -> "openingdate";
-                        case 8 -> "closingdate"; case 9 -> "officerslots"; default -> null;
-                    };
-                    if (ft != null) {
-                        saved_filter = ft;
-                        Project.displayAllProjects(ft);
+                    try {
+                        int ftsel = sc.nextInt(); sc.nextLine();
+                        String ft = switch (ftsel) {
+                            case 1 -> "projectid"; case 2 -> "projectname"; case 3 -> "neighborhood";
+                            case 4 -> "tworoomcount"; case 5 -> "threeroomcount"; case 7 -> "openingdate";
+                            case 8 -> "closingdate"; case 9 -> "officerslots"; default -> null;
+                        };
+                        if (ft != null) {
+                            saved_filter = ft;
+                            Project.displayAllProjects(ft);
+                        } else {
+                            System.out.println("Invalid filter selection.");
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Invalid input.");
+                        sc.nextLine();
                     }
                 }
                 case 11 -> {

@@ -121,6 +121,7 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
+        
     }
 
     public void deleteBTOListings(int projectID) {

@@ -57,22 +57,32 @@ public class BTOapplication {
         System.out.println("========================\n");
     }
 
-    public static void displayStatusPendingW() {
-        System.out.println("=== Pending Withdrawals ===");
+    public static boolean displayStatusPendingW() {
+        boolean found = false;
         for (BTOapplication app : allApplications) {
             if (app.getStatus().trim().equalsIgnoreCase("Pending Withdrawal")) {
+                if (!found) {
+                    System.out.println("=== Pending Withdrawals ===");
+                    found = true;
+                }
                 System.out.println(app);
             }
         }
+        return found;
     }
     
-    public static void displayStatusPendingA() {
-        System.out.println("=== Pending Applications ===");
+    public static boolean displayStatusPendingA() {
+        boolean found = false;
         for (BTOapplication app : allApplications) {
             if (app.status.equals("Pending Approval")) {
+                if (!found) {
+                    System.out.println("=== Pending Approval ===");
+                    found = true;
+                }
                 System.out.println(app);
             }
         }
+        return found;
     }
 
     

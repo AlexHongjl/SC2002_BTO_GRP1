@@ -27,7 +27,6 @@ public class LoginService {
             if (currentUser == null) {
                 System.out.println("Invalid credentials. Please try again.\n");
                 System.out.println("Username should be in this format. 'S/T', '7 digit, 'last letter'., 'E.g, S1234567A'\n");
-                sc.nextLine();
             }
         } while (currentUser == null);
 

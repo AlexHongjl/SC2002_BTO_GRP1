@@ -44,7 +44,7 @@ public class OfficerRegistration {
             // If givenStatus is null, display everything
             if (givenStatus == null || reg.getRegistrationStatus().equalsIgnoreCase(givenStatus)) {
                 System.out.println("Officer: " + reg.getOfficer().getName() +
-                		", Officer UserID: " + reg.getOfficer().getNRIC() +
+                		", UserID: " + reg.getOfficer().getNRIC() +
                         ", Project: " + reg.getProject().getProjectName() +
                         ", Project ID: " + reg.getProject().getProjectId() +
                         ", Date: " + reg.getRegistrationDate() +

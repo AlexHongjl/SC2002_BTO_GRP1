@@ -656,9 +656,6 @@ public class Project {
     }
     
 
-    public int getProjectID() {
-        return projectId;
-    }
     public LocalDate getOpeningDate() {
         return openDate;
     }
