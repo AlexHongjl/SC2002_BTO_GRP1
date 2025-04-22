@@ -41,11 +41,11 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
 				}
 				
 				Project newProject = new Project(projectName, neighborhood,
-				                twoRoomCount, threeRoompx,
+				                twoRoomCount, threeRoomCount,
 				                projectVisibility, 
 				                openingDate, closingDate,
 				                officerSlots, this, twoRoompx,
-				                threeRoomCount);
+				                threeRoompx);
 				managedProjects.add(newProject);
 				return newProject;
 				}
