@@ -39,12 +39,13 @@ public class ManagerMenu {
             System.out.println("7. Delete BTO listing");
             System.out.println("8. Logout");
             System.out.println("9. Change password");
-            System.out.println("10. Filter by area/flat type availability/price/date");
+            System.out.println("10. Sort by area/flat type availability/price/date");
             System.out.println("11. End program");
             System.out.println("12. Reply enquiries");
             System.out.println("13. Generate report");
             System.out.println("14. View own profile");
-
+            System.out.println("15. Filter projects");
+            
             selection = sc.nextInt();
             sc.nextLine(); // consume newline
             switch (selection) {
@@ -269,6 +270,51 @@ public class ManagerMenu {
                     }
                 }
                 case 14 -> m.viewOwnStatus();
+                case 15 -> {
+                    System.out.println("Filter BTO Projects");
+                    System.out.println("Select filter field:");
+                    System.out.println("1. Project ID");
+                    System.out.println("2. Project Name");
+                    System.out.println("3. Neighborhood");
+                    System.out.println("4. Two-Room Count");
+                    System.out.println("5. Three-Room Count");
+                    System.out.println("6. Two-Room Price");
+                    System.out.println("7. Three-Room Price");
+                    System.out.println("8. Project Visibility");
+                    System.out.println("9. Manager");
+                    System.out.println("10. Officer Slots");
+                    
+                    try {
+                        int fieldChoice = sc.nextInt();
+                        sc.nextLine(); // consume newline
+                        
+                        String field = switch (fieldChoice) {
+                            case 1 -> "projectid";
+                            case 2 -> "projectname";
+                            case 3 -> "neighborhood";
+                            case 4 -> "tworoomcount";
+                            case 5 -> "threeroomcount";
+                            case 6 -> "tworoompx";
+                            case 7 -> "threeroompx";
+                            case 8 -> "projectvisibility";
+                            case 9 -> "managerincharge";
+                            case 10 -> "officerslots";
+                            default -> null;
+                        };
+                        
+                        if (field != null) {
+                            System.out.println("Enter filter value:");
+                            String value = sc.nextLine();
+                            Project.filterProjects(field, value);
+                            saved_filter = field; // Save last used filter
+                        } else {
+                            System.out.println("Invalid field selection.");
+                        }
+                    } catch (InputMismatchException e) {
+                        System.out.println("Invalid input. Please enter a number.");
+                        sc.nextLine(); // Clear buffer
+                    }
+                }
                 default -> System.out.println("Invalid choice.");
             }
         } while (selection != 8 && selection != 11);

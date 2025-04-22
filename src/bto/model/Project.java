@@ -7,7 +7,10 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -96,7 +99,314 @@ public class Project {
             e.printStackTrace();
         }
     }
+    
+    public static void filterProjects(String filterField, String filterValue) {
+        // Create a stream from the projects array, skipping null elements
+        List<Project> filteredProjects = Arrays.stream(projects)
+            .limit(count)
+            .filter(Objects::nonNull)
+            .filter(project -> {
+                // Convert filterValue to lowercase for case-insensitive string comparison
+                String filterValueLower = filterValue.toLowerCase();
+                
+                switch (filterField.toLowerCase()) {
+                    case "projectid":
+                        try {
+                            int idValue = Integer.parseInt(filterValue);
+                            return project.getProjectId() == idValue;
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid numeric value for projectId filter.");
+                            return false;
+                        }
+                    case "projectname":
+                        return project.getProjectName().toLowerCase().startsWith(filterValueLower);
+                    case "neighborhood":
+                    case "neighbourhood":
+                        return project.getNeighbourhood().toLowerCase().startsWith(filterValueLower);
+                    case "tworoomcount":
+                        try {
+                            int roomCount = Integer.parseInt(filterValue);
+                            return project.getTwoRoomCount() == roomCount;
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid numeric value for twoRoomCount filter.");
+                            return false;
+                        }
+                    case "threeroomcount":
+                        try {
+                            int roomCount = Integer.parseInt(filterValue);
+                            return project.getThreeRoomCount() == roomCount;
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid numeric value for threeRoomCount filter.");
+                            return false;
+                        }
+                    case "tworoompx":
+                    case "tworoomprice":
+                        try {
+                            int price = Integer.parseInt(filterValue);
+                            return project.getTwoRoompx() == price;
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid numeric value for twoRoompx filter.");
+                            return false;
+                        }
+                    case "threeroompx":
+                    case "threeroomprice":
+                        try {
+                            int price = Integer.parseInt(filterValue);
+                            return project.getThreeRoompx() == price;
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid numeric value for threeRoompx filter.");
+                            return false;
+                        }
+                    case "visibility":
+                    case "projectvisibility":
+                        boolean visibilityValue = Boolean.parseBoolean(filterValue);
+                        return project.isProjectVisibility() == visibilityValue;
+                    case "manager":
+                    case "managerincharge":
+                        return project.getManagerInCharge() != null && 
+                               project.getManagerInCharge().getName().toLowerCase().startsWith(filterValueLower);
+                    case "officerslots":
+                        try {
+                            int slots = Integer.parseInt(filterValue);
+                            return project.getOfficerSlots() == slots;
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid numeric value for officerSlots filter.");
+                            return false;
+                        }
+                    default:
+                        System.out.println("Unknown filter field: " + filterField);
+                        return false;
+                }
+            })
+            .collect(Collectors.toList());
+        
+        // Display filtered projects
+        System.out.println("=============== Filtered Projects ===============");
+        System.out.println("Filter: " + filterField + " = " + filterValue);
+        
+        if (filteredProjects.isEmpty()) {
+            System.out.println("No projects match the filter criteria.");
+        } else {
+            filteredProjects.forEach(project -> {
+                System.out.println("--------------------------------------------");
+                System.out.println("Project ID: " + project.getProjectId());
+                System.out.println("Name: " + project.getProjectName());
+                System.out.println("Neighbourhood: " + project.getNeighbourhood());
+                System.out.println("Two Room Count: " + project.getTwoRoomCount());
+                System.out.println("Three Room Count: " + project.getThreeRoomCount());
+                System.out.println("Two Room Price: " + project.getTwoRoompx());
+                System.out.println("Three Room Price: " + project.getThreeRoompx());
+                System.out.println("Project Visibility: " + (project.isProjectVisibility() ? "Visible" : "Hidden"));
+                System.out.println("Opening Date: " + (project.getOpeningDate() != null ? project.getOpeningDate() : "Not set"));
+                System.out.println("Closing Date: " + (project.getClosingDate() != null ? project.getClosingDate() : "Not set"));
+                System.out.println("Officer Slots: " + project.getOfficerSlots());
+                System.out.println("Manager In Charge: " + (project.getManagerInCharge() != null ? project.getManagerInCharge().getName() : "None"));
+                System.out.println("Number of Officers Assigned: " + project.getOfficers().size());
+                if (!project.getOfficers().isEmpty()) {
+                    System.out.println("Assigned Officers:");
+                    project.getOfficers().forEach(officer -> System.out.println(" - " + officer.getName()));
+                } else {
+                    System.out.println("Assigned Officers: None");
+                }
+                System.out.println("Applications: " + project.getApplicationList().size());
+            });
+        }
+        System.out.println("=================================================");
+    }
 
+    // Overloaded method to handle integer filter values directly
+    public static void filterProjects(String filterField, int filterValue) {
+        filterProjects(filterField, String.valueOf(filterValue));
+    }
+
+    // Overloaded method to handle boolean filter values directly
+    public static void filterProjects(String filterField, boolean filterValue) {
+        filterProjects(filterField, String.valueOf(filterValue));
+    }
+    public static void filterProjectsApplicant(String filterField, String filterValue, Applicant applicant) {
+        // Create a stream of eligible projects for the applicant
+        List<Project> filteredProjects = Arrays.stream(projects)
+            .limit(count)
+            .filter(Objects::nonNull)
+            // Filter for project visibility - only show visible projects to applicants
+            .filter(project -> project.isProjectVisibility())
+            // Filter for applicant eligibility
+            .filter(project -> {
+                // Singles aged 35+ can only apply for 2-Room
+                if (applicant.getMaritalStatus().equalsIgnoreCase("Single") && applicant.getAge() >= 35) {
+                    return project.getTwoRoomCount() > 0;
+                } 
+                // Married aged 21+ can apply for any flat types
+                else if (applicant.getMaritalStatus().equalsIgnoreCase("Married") && applicant.getAge() >= 21) {
+                    return project.getTwoRoomCount() > 0 || project.getThreeRoomCount() > 0;
+                }
+                return false; // Not eligible otherwise
+            })
+            // Apply the specific filter criteria
+            .filter(project -> {
+                String filterValueLower = filterValue.toLowerCase();
+                
+                switch (filterField.toLowerCase()) {
+                    case "projectid":
+                        try {
+                            int idValue = Integer.parseInt(filterValue);
+                            return project.getProjectId() == idValue;
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid numeric value for projectId filter.");
+                            return false;
+                        }
+                    case "projectname":
+                        return project.getProjectName().toLowerCase().startsWith(filterValueLower);
+                    case "neighborhood":
+                    case "neighbourhood":
+                        return project.getNeighbourhood().toLowerCase().startsWith(filterValueLower);
+                    case "tworoomcount":
+                        try {
+                            int roomCount = Integer.parseInt(filterValue);
+                            return project.getTwoRoomCount() == roomCount;
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid numeric value for twoRoomCount filter.");
+                            return false;
+                        }
+                    case "tworoompx":
+                    case "tworoomprice":
+                        try {
+                            int price = Integer.parseInt(filterValue);
+                            return project.getTwoRoompx() == price;
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid numeric value for twoRoompx filter.");
+                            return false;
+                        }
+                    case "threeroomcount":
+                        // Singles can't filter by 3-room count since they're not eligible
+                        if (applicant.getMaritalStatus().equalsIgnoreCase("Single")) {
+                            System.out.println("Singles are not eligible for 3-Room flats.");
+                            return false;
+                        }
+                        try {
+                            int roomCount = Integer.parseInt(filterValue);
+                            return project.getThreeRoomCount() == roomCount;
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid numeric value for threeRoomCount filter.");
+                            return false;
+                        }
+                    case "threeroompx":
+                    case "threeroomprice":
+                        // Singles can't filter by 3-room price since they're not eligible
+                        if (applicant.getMaritalStatus().equalsIgnoreCase("Single")) {
+                            System.out.println("Singles are not eligible for 3-Room flats.");
+                            return false;
+                        }
+                        try {
+                            int price = Integer.parseInt(filterValue);
+                            return project.getThreeRoompx() == price;
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid numeric value for threeRoompx filter.");
+                            return false;
+                        }
+                    case "openingdate":
+                        try {
+                            LocalDate date = LocalDate.parse(filterValue, DateTimeFormatter.ofPattern("d/M/yyyy"));
+                            return project.getOpeningDate().equals(date);
+                        } catch (Exception e) {
+                            System.out.println("Invalid date format. Please use dd/MM/yyyy.");
+                            return false;
+                        }
+                    case "closingdate":
+                        try {
+                            LocalDate date = LocalDate.parse(filterValue, DateTimeFormatter.ofPattern("d/M/yyyy"));
+                            return project.getClosingDate().equals(date);
+                        } catch (Exception e) {
+                            System.out.println("Invalid date format. Please use dd/MM/yyyy.");
+                            return false;
+                        }
+                    default:
+                        System.out.println("Unknown filter field: " + filterField);
+                        return false;
+                }
+            })
+            .collect(Collectors.toList());
+
+        // Sort the list based on the field
+        if (filterField == null || filterField.isEmpty()) {
+            // Default sort by project name
+            filteredProjects.sort(Comparator.comparing(Project::getProjectName, String.CASE_INSENSITIVE_ORDER));
+        } else {
+            // Sort based on the specified field
+            filteredProjects.sort((p1, p2) -> {
+                switch (filterField.toLowerCase()) {
+                    case "projectid":
+                        return Integer.compare(p1.getProjectId(), p2.getProjectId());
+                    case "projectname":
+                        return p1.getProjectName().compareToIgnoreCase(p2.getProjectName());
+                    case "neighborhood":
+                    case "neighbourhood":
+                        return p1.getNeighbourhood().compareToIgnoreCase(p2.getNeighbourhood());
+                    case "tworoomcount":
+                        return Integer.compare(p1.getTwoRoomCount(), p2.getTwoRoomCount());
+                    case "threeroomcount":
+                        return Integer.compare(p1.getThreeRoomCount(), p2.getThreeRoomCount());
+                    case "tworoompx":
+                    case "tworoomprice":
+                        return Integer.compare(p1.getTwoRoompx(), p2.getTwoRoompx());
+                    case "threeroompx":
+                    case "threeroomprice":
+                        return Integer.compare(p1.getThreeRoompx(), p2.getThreeRoompx());
+                    case "openingdate":
+                        return p1.getOpeningDate().compareTo(p2.getOpeningDate());
+                    case "closingdate":
+                        return p1.getClosingDate().compareTo(p2.getClosingDate());
+                    default:
+                        return 0;
+                }
+            });
+        }
+
+        // Print header
+        System.out.println("========================== Filtered Eligible Projects ==========================");
+        System.out.println("Filter: " + filterField + " = " + filterValue);
+        System.out.println("ID | Name | Neighbourhood | Two-Room | Price | Three-Room | Price");
+        System.out.println("-------------------------------------------------------------------------");
+        
+        // Display each project with appropriate eligibility information
+        for (Project project : filteredProjects) {
+            // Show available flat types for this applicant
+            String twoRoomInfo = project.getTwoRoomCount() > 0 ? String.valueOf(project.getTwoRoomCount()) : "-";
+            String twoRoomPxs = project.getTwoRoomCount() > 0 ? String.valueOf(project.getTwoRoompx()) : "-";
+            String threeRoomInfo;
+            String threeRoomPxs;
+            
+            // If single, not eligible for 3-Room
+            if (applicant.getMaritalStatus().equalsIgnoreCase("Single")) {
+                threeRoomInfo = "Not Eligible";
+                threeRoomPxs = "Not Eligible";
+                
+            } else {
+                threeRoomInfo = project.getThreeRoomCount() > 0 ? String.valueOf(project.getThreeRoomCount()) : "-";
+                threeRoomPxs = project.getThreeRoomCount() > 0 ? String.valueOf(project.getThreeRoompx()) : "-";
+            }
+            
+            System.out.printf("%d | %s | %s | %s | %s%n", 
+                project.getProjectId(), 
+                project.getProjectName(), 
+                project.getNeighbourhood(),
+                twoRoomInfo,
+                twoRoomPxs,
+                threeRoomInfo,
+                threeRoomPxs);
+        }
+        
+        if (filteredProjects.isEmpty()) {
+            System.out.println("No projects match the filter criteria or you are not eligible.");
+        }
+        
+        System.out.println("==================================================================");
+    }
+
+    // Overloaded method to handle integer filter values directly
+    public static void filterProjectsApplicant(String filterField, int filterValue, Applicant applicant) {
+        filterProjectsApplicant(filterField, String.valueOf(filterValue), applicant);
+    }
 
     public static void loadProjectsFromCSV(List<UserPerson> Users) {
         String path = "data/ProjectList.csv";
