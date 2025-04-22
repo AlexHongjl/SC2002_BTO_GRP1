@@ -127,7 +127,7 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
     public void deleteBTOListings(int projectID) {
         // Find project in both system and manager's list
         Project project = Project.getProjectById(projectID);
-        
+
         if (project == null) {
             System.out.println("Error: Project not found.");
             return;
@@ -138,12 +138,33 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
             return;
         }
 
-        // Check for any booked BTO applications in the project
-        List<BTOapplication> apps = project.getApplicationList(); 
+        // Check BTO applications for "Booked", "Pending", or "Successful"
+        List<BTOapplication> apps = project.getApplicationList();
         if (apps != null) {
             for (BTOapplication app : apps) {
-                if ("Booked".equalsIgnoreCase(app.getStatus())) {
-                    System.out.println("Error: Cannot delete project. At least one flat has been booked.");
+                String status = app.getStatus();
+                if ("Booked".equalsIgnoreCase(status) || 
+                    "Pending approval".equalsIgnoreCase(status) || 
+                    "Successful".equalsIgnoreCase(status)) {
+                    System.out.println("Error: Cannot delete project. It has active applications (Booked, Pending, or Successful).");
+                    return;
+                }
+            }
+        }
+
+        // Check officer list is empty
+        if (project.getOfficerList() != null && !project.getOfficerList().isEmpty()) {
+            System.out.println("Error: Cannot delete project. Officer list is not empty.");
+            return;
+        }
+
+        // Check officer registration list for "Pending" or "Successful"
+        List<OfficerRegistration> regList = project.getOfficerApplicantList();
+        if (regList != null) {
+            for (OfficerRegistration reg : regList) {
+                String status = reg.getRegistrationStatus();
+                if ("Pending approval".equalsIgnoreCase(status) || "Successful".equalsIgnoreCase(status)) {
+                    System.out.println("Error: Cannot delete project. It has pending or accepted officer applications.");
                     return;
                 }
             }
@@ -159,6 +180,7 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
             System.out.println("Error: Project could not be fully deleted.");
         }
     }
+
 
 
     public void toggleProjectVisibility(int projectID, boolean visible) {
