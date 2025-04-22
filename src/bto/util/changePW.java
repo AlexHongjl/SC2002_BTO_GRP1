@@ -1,8 +1,6 @@
 package bto.util;
 
 import java.util.Scanner;
-
-import bto.model.HDBmanager;
 import bto.model.UserPerson;
 
 public class changePW {
