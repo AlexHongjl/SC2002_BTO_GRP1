@@ -170,7 +170,6 @@ public class ManagerMenu {
         	            if (supported) {
         	                m.editBTOListings(pid, field, newValue);
         	                Project.writeCSVProjects();
-        	                System.out.println("Successful edit");
         	            }
         	        } catch (Exception e) {
         	            System.out.println("Invalid input or format. Please use: <ID>,<field>,<newValue>");
