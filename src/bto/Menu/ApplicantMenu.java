@@ -50,7 +50,7 @@ public class ApplicantMenu {
 
             switch (selection) {
                 case 1 -> {
-                    if (!a.getApplicationStatus().equals("None") && !a.getApplicationStatus().equals("Unsuccessful"))
+                    if (!a.getApplicationStatus().equals("None") && !a.getApplicationStatus().equals("Unsuccessful")&&!a.getApplicationStatus().equals("Withdrawn"))
                         Project.display(a.getAppliedProjectId());
                     else
                         Project.displayAllProjectsApplicant(saved_filter, a);
@@ -175,6 +175,9 @@ public class ApplicantMenu {
                 }
                 case 12 -> a.viewOwnStatus();
                 case 13 -> {
+                	if (!a.getApplicationStatus().equals("None") && !a.getApplicationStatus().equals("Unsuccessful")&&!a.getApplicationStatus().equals("Withdrawn"))
+                        Project.display(a.getAppliedProjectId());
+                	else {
                     System.out.println("Filter BTO Projects");
                     System.out.println("Select filter field:");
                     System.out.println("1. Project ID");
@@ -218,6 +221,7 @@ public class ApplicantMenu {
                         System.out.println("Invalid input. Please enter a number.");
                         sc.nextLine(); // Clear buffer
                     }
+                }
                 }
                 default -> System.out.println("Invalid.");
             }

@@ -54,7 +54,7 @@ public class OfficerMenu {
 
             switch (selection) {
                 case 1 -> {
-                    if (!o.getApplicationStatus().equals("None") && !o.getApplicationStatus().equals("Unsuccessful"))
+                	if (!o.getApplicationStatus().equals("None") && !o.getApplicationStatus().equals("Unsuccessful")&&!o.getApplicationStatus().equals("Withdrawn"))
                         Project.display(o.getAppliedProjectId());
                     else if(o.isOfficerInCharge()) {
                     	Project.display(o.getRegProj().get(0).getProjectId());
