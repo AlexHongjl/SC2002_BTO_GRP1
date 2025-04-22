@@ -80,8 +80,14 @@ public class ApplicantMenu {
                 }
                 case 4 -> Enquiry.displayAllEnquiries();
                 case 5 -> {
+                	System.out.print("Enter project ID for the project you have enquiry on: ");
+                	int projectid = sc.nextInt();
+                	if(Project.getProjectById(projectid)==null) {
+                		System.out.print("invalid project ID ");
+                		break;
+                	}
                     System.out.print("Enter enquiry message: ");
-                    Enquiry.addEnquiry(new Enquiry(Enquiry.getCount(), a.getName(), sc.nextLine()));
+                    Enquiry.addEnquiry(new Enquiry(Enquiry.getCount(), a.getName(), sc.nextLine(),projectid));
                 }
                 case 6 -> {
                     if (Enquiry.displayByUser(a.getName())) {

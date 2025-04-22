@@ -84,8 +84,14 @@ public class OfficerMenu {
                 }
                 case 4 -> Enquiry.displayAllEnquiries();
                 case 5 -> {
+                	System.out.print("Enter project ID for the project you have enquiry on: ");
+                	int projectid = sc.nextInt();
+                	if(Project.getProjectById(projectid)==null) {
+                		System.out.print("invalid project ID ");
+                		break;
+                	}
                     System.out.print("Enter enquiry message: ");
-                    Enquiry.addEnquiry(new Enquiry(Enquiry.getCount(), o.getName(), sc.nextLine()));
+                    Enquiry.addEnquiry(new Enquiry(Enquiry.getCount(), o.getName(), sc.nextLine(),projectid));
                 }
                 case 6 -> {
                     if (Enquiry.displayByUser(o.getName())) {
@@ -166,12 +172,21 @@ public class OfficerMenu {
                     Enquiry e = Enquiry.getByID(eid);
                     if (e != null) {
                         e.display();
-                        System.out.print("Reply: ");
-                        e.reply(sc.nextLine());
-                    }else {
-                    	System.out.println("No enquiry found with ID " + eid + ".");
+
+                        // Check if officer is in charge of the enquiry's project
+                        Project p = Project.getProjectById(e.getProjectId());
+                        if (p != null && p.getOfficerList().contains(o)) {
+                            System.out.print("Reply: ");
+                            e.reply(sc.nextLine());
+                        } else {
+                            System.out.println("You are not in charge of this project's enquiries.");
+                        }
+
+                    } else {
+                        System.out.println("No enquiry found with ID " + eid + ".");
                     }
                 }
+                
                 case 13 -> {
                     try {
                         Project.displayAllProjects(saved_filter);
