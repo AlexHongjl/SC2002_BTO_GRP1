@@ -156,6 +156,9 @@ public class OfficerMenu {
                 }
                 case 9 -> {
                 	changePW.changePassword(o, sc);
+                	System.out.println("Logging out...");
+                    Main.saveAll(Users);
+                    return;
                 }
                 case 10 -> {
                     try {

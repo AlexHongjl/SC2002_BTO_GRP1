@@ -148,6 +148,9 @@ public class ApplicantMenu {
                 }
                 case 9 -> {
                 	changePW.changePassword(a, sc);
+                	System.out.println("Logging out...");
+                    Main.saveAll(Users);
+                    return;
                 }
                 case 10 -> {
                     System.out.println("1. projectid\n2. projectname\n3. neighborhood\n4. tworoomcount\n5. threeroomcount\n7. openingdate\n8. closingdate\n9. officerslots");
