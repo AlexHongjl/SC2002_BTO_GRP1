@@ -8,8 +8,23 @@ import bto.util.changePW;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-
+/**
+ * Generates a list of actions available to Officers
+ * Depending on the user's selection it will invoke different actions
+ */
 public class OfficerMenu {
+	/**
+	   * Officers can view /filter projects they are handling or projects they have applied for as an applicant
+	   * Just as applicants can, they can create BTO applications or withdraw from projects as an applicant
+	   * Add/Edit/Delete enquiries
+	   * Viewing own profile
+	   * Officer specific functions include:
+	   * Replying enquiries, registering to be an officer of a project or create flat bookings for applicant and generating report
+	   * 
+	   * @param o handling officer
+	   * @param sc scanner input
+	   * @param Users list of users
+	   */
     public static void handleOfficer(HDBofficer o, Scanner sc,  ArrayList<UserPerson> Users) {
         int selection;
         String saved_filter = null;

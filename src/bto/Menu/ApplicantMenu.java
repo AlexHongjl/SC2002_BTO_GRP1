@@ -7,8 +7,22 @@ import bto.util.changePW;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
-
+/**
+ * Generates a list of actions available to Applicants
+ * Depending on the user's selection it will invoke different actions
+ */
 public class ApplicantMenu {
+	/**
+	   * Applicants are able to view BTO projects using filters
+	   * Apply or withdraw their BTO application
+	   * Create/Edit/View enquiries
+	   * View their own profile, which will be updated when they apply for BTO projects
+	   * Change password and Logout functions
+	   * 
+	   * @param a an applicant
+	   * @param sc scanner input
+	   * @param Users list of users
+	   */
     public static void handleApplicant(Applicant a, Scanner sc,  ArrayList<UserPerson> Users) {
         int selection;
         String saved_filter = null;

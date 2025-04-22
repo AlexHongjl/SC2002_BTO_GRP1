@@ -6,7 +6,22 @@ import bto.model.*;
 import bto.service.LoginService;
 import bto.Menu.*;
 
+/**
+ * This is our main function that does the following:
+ * Read in CSV files
+ * Login/Logout function
+ * Write back into original CSV files
+ * 
+ *  @author Eamon, Alex, Zhewen, Kush
+ */
 public class Main {
+	/**
+	   * Read CSV files and stores information of users into an array list 
+	   * Has a login function to identify the type of user logging in
+	   * User can logout whenever they wish
+	   * 
+	   * @param args
+	   */
     public static void main(String[] args) {
     	
         ArrayList<UserPerson> Users = new ArrayList<>();
@@ -40,7 +55,11 @@ public class Main {
             }
         } while (logout == 1);
     }
-    
+    /**
+     * Writes back changed data that had been created or edited back into the original files to maintain data persistence
+     * 
+     * @param Users list of users
+     */
     public static void saveAll(ArrayList<UserPerson> Users) {
         UserPerson.writeBackToCSV(Users);
         Project.writeCSVProjects();

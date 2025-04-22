@@ -8,8 +8,22 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-
+/**
+ * Generates a list of actions available to Managers
+ * Depending on the user's selection it will invoke different actions
+ */
 public class ManagerMenu {
+	/**
+	   * Managers are able to view or filter BTO projects listings
+	   * Change visibility of and add/edit/delete BTO listings
+	   * Approve BTO applications/withdrawals and officer registrations
+	   * Reply enquiries and generate reports
+	   * View own profile
+	   * 
+	   * @param m manager in charge
+	   * @param sc scanner input
+	   * @param Users list of users
+	   */
     public static void handleManager(HDBmanager m, Scanner sc,  ArrayList<UserPerson> Users) {
         int selection = 0;
         String saved_filter = null;
