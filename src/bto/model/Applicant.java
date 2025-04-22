@@ -10,7 +10,7 @@ import java.util.List;
 public class Applicant extends UserPerson {
 
     private int appliedProjectId = -1;
-    protected String applicationStatus = "None"; // None, Pending, Successful, Booked, Unsuccessful, Withdrawn
+    protected String applicationStatus = "None"; // None, Pending, Successful, Booked, Unsuccessful, Pending Withdrawal, Withdrawn
     private String flatTypeBooked = null;
     protected boolean hasWithdrawn = false;
 

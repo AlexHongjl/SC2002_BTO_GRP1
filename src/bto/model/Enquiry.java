@@ -7,6 +7,11 @@ import java.io.IOException;
 
 import bto.model.Enquiry;
 
+/**
+ * The enquiry class stores the enquries created in a list Enquiries
+ * Allows responses to the created enquiries
+ * Able to display the project ID, enquiry ID, Applicant who created the enquiry, enquiry message and response, and status of the enquiry
+ */
 public class Enquiry {
     private int enquiryID;
     private String applicantName;
