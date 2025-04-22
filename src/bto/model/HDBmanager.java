@@ -132,22 +132,34 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
             System.out.println("Error: Project not found.");
             return;
         }
-        
+
         if (!managedProjects.contains(project)) {
             System.out.println("Error: You don't have permission to delete this project.");
             return;
         }
-        
-        // Remove from both collections
+
+        // Check for any booked BTO applications in the project
+        List<BTOapplication> apps = project.getApplicationList(); 
+        if (apps != null) {
+            for (BTOapplication app : apps) {
+                if ("Booked".equalsIgnoreCase(app.getStatus())) {
+                    System.out.println("Error: Cannot delete project. At least one flat has been booked.");
+                    return;
+                }
+            }
+        }
+
+        // Proceed with deletion
         boolean removedFromSystem = Project.removeProjectById(projectID);
         boolean removedFromManaged = managedProjects.remove(project);
-        
+
         if (removedFromSystem && removedFromManaged) {
             System.out.println("Project deleted successfully from all records.");
         } else {
             System.out.println("Error: Project could not be fully deleted.");
         }
     }
+
 
     public void toggleProjectVisibility(int projectID, boolean visible) {
         Project project = Project.getProjectById(projectID);
