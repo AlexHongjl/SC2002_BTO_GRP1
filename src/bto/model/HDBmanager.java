@@ -279,9 +279,9 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
                     app.getPreviousStatus().equalsIgnoreCase("Booked")) {
 
                     if (app.getUnitType().equals("2-Room")) {
-                        project.setTwoRoomCount(project.getTwoRoomCount() + 1);
+                        //project.setTwoRoomCount(project.getTwoRoomCount() + 1);
                     } else if (app.getUnitType().equals("3-Room")) {
-                        project.setThreeRoomCount(project.getThreeRoomCount() + 1);
+                        //project.setThreeRoomCount(project.getThreeRoomCount() + 1);
                     }
                 }
 
