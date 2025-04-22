@@ -204,13 +204,22 @@ public class Applicant extends UserPerson {
         if (getAppliedProjectId() == -1) return null;
         return Project.getProjectById(getAppliedProjectId());
     }
-
-    //for enquiries
-
+    
+    /**
+     * Create an enquiry
+     * 
+     * @param e enquiry message
+     */
     public void addEnquiry(Enquiry e) {
         enquiries.add(e);
     }
-
+    
+    /**
+     * Make changes to enquiry before getting a response
+     * 
+     * @param enquiryId 
+     * @param newMessage edited message
+     */
     public void editEnquiry(int enquiryId, String newMessage) {
         for (Enquiry e : enquiries) {
             if (e.getEnquiryID() == enquiryId) {
@@ -219,21 +228,39 @@ public class Applicant extends UserPerson {
             }
         }
     }
-
+    
+    /**
+     * Delete enquiry that was made
+     * 
+     * @param enquiryId
+     */
     public void deleteEnquiry(int enquiryId) {
         enquiries.removeIf(e -> e.getEnquiryID() == enquiryId);
     }
-
+    
+    /**
+     * View all enquiries that had been created
+     */
     public void viewEnquiriesAll() {
         for (Enquiry e : enquiries) {
             System.out.println("ID: " + e.getEnquiryID() + ", Message: " + e.getMessage());
         }
     }
-
+    
+    /**
+     * Setter function for project ID
+     * 
+     * @param appliedProjectId
+     */
 	public void setAppliedProjectId(int appliedProjectId) {
 		this.appliedProjectId = appliedProjectId;
 	}
 	
+	/**
+	   * Setter function for setting withdrawn status
+	   * 
+	   * @param withdrawn
+	   */
 	public void setWithdrawn(boolean withdrawn) {
 	    this.hasWithdrawn = withdrawn;
 	}
