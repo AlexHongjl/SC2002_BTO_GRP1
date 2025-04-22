@@ -40,6 +40,9 @@ public class OfficerMenu {
                 case 1 -> {
                     if (!o.getApplicationStatus().equals("None") && !o.getApplicationStatus().equals("Unsuccessful"))
                         Project.display(o.getAppliedProjectId());
+                    else if(o.isOfficerInCharge()) {
+                    	Project.display(o.getRegProj().get(0).getProjectId());
+                    }
                     else
                         Project.displayAllProjectsApplicant(saved_filter, o);
                 }

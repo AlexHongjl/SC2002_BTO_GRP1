@@ -24,6 +24,15 @@ public class HDBofficer extends Applicant implements enquiryInterface {
         this.officerApplications = new ArrayList<>();
     }
     
+    public boolean isOfficerInCharge() {
+        return registeredProjects != null && !registeredProjects.isEmpty();
+    }
+    
+    public List<Project> getRegProj() {
+        return registeredProjects;
+    }
+
+    
     @Override
     public void viewOwnStatus() {
         super.viewOwnStatus(); // Calls Applicant's viewOwnStatus
