@@ -54,12 +54,16 @@ public class OfficerMenu {
 
             switch (selection) {
                 case 1 -> {
-                	if (!o.getApplicationStatus().equals("None") && !o.getApplicationStatus().equals("Unsuccessful")&&!o.getApplicationStatus().equals("Withdrawn"))
+                	int a = 0;
+                	if (!o.getApplicationStatus().equals("None") && !o.getApplicationStatus().equals("Unsuccessful")&&!o.getApplicationStatus().equals("Withdrawn")) {
                         Project.display(o.getAppliedProjectId());
-                    else if(o.isOfficerInCharge()) {
+                        a++;
+                	}
+                    if(o.isOfficerInCharge()) {
                     	Project.display(o.getRegProj().get(0).getProjectId());
+                    	a++;
                     }
-                    else
+                    if (a==0)
                         Project.displayAllProjectsApplicant(saved_filter, o);
                 }
                 case 2 -> {
@@ -253,6 +257,16 @@ public class OfficerMenu {
                 }
                 case 15 -> o.viewOwnStatus();
                 case 16 -> {
+                	int a = 0;
+                	if (!o.getApplicationStatus().equals("None") && !o.getApplicationStatus().equals("Unsuccessful")&&!o.getApplicationStatus().equals("Withdrawn")) {
+                        Project.display(o.getAppliedProjectId());
+                        a++;
+                	}
+                    if(o.isOfficerInCharge()) {
+                    	Project.display(o.getRegProj().get(0).getProjectId());
+                    	a++;
+                    }
+                    if (a==0) {
                     System.out.println("Filter BTO Projects");
                     System.out.println("Select filter field:");
                     System.out.println("1. Project ID");
@@ -295,6 +309,7 @@ public class OfficerMenu {
                         System.out.println("Invalid input. Please enter a number.");
                         sc.nextLine(); // Clear buffer
                     }
+                }
                 }
                 default -> System.out.println("Invalid.");
             }
