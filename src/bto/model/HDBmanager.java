@@ -231,7 +231,7 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
                 } else if (app.getUnitType().equals("3-Room") && project.getThreeRoomCount() > 0) {
                     //project.setThreeRoomCount(project.getThreeRoomCount() - 1);
                     app.updateStatus("Successful", "3-Room");
-                    System.out.println("Application for 2 room flat approved");
+                    System.out.println("Application for 3 room flat approved");
                 } else {
                     System.out.println("No available units.");
                 }
