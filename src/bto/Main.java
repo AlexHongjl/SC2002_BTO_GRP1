@@ -33,6 +33,7 @@ public class Main {
         Project.loadProjectsFromCSV(Users);
         BTOapplication.loadApplicationsFromCSV("data/Applications.csv", Users);
         Enquiry.loadEnquiriesFromCSV("data/Enquiries.csv");
+        Project.refreshProjectVisibilities();
         
         int logout;
         do {
@@ -56,7 +57,7 @@ public class Main {
         } while (logout == 1);
     }
     /**
-     * Writes back changed data that had been created or edited back into the original files to maintain data persistence
+     * Writes back changed data that had been created or edited back into the original files to maintain data persistence.
      * 
      * @param Users list of users
      */
