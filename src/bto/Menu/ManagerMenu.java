@@ -63,7 +63,7 @@ public class ManagerMenu {
                 	        String nric = sc.nextLine();
                 	        BTOapplication app = BTOapplication.getApplicationByUserId(nric);
                 	        if (app == null || Project.getProjectById(pid) == null) {
-                	            System.out.println("Invalid application or project.");
+                	            System.out.println("Invalid application or project or NRIC.");
                 	            break;
                 	        }
                 	        app.display();
@@ -90,6 +90,10 @@ public class ManagerMenu {
                         System.out.println("Input officer NRIC:");
                         String onric = sc.nextLine();
                         OfficerRegistration reg = Project.getOfficerRegistrationByID(onric);
+                        if (reg == null || Project.getProjectById(pid) == null) {
+            	            System.out.println("Invalid application or project or NRIC.");
+            	            break;
+            	        }
                         reg.display();
                         System.out.println("Approve (1) or Reject (0):");
                         boolean b = sc.nextInt() == 1;
