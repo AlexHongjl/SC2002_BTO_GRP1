@@ -105,6 +105,7 @@ public class ManagerMenu {
                     }
                 }
                 case 5 -> {
+                	int slots;
                     System.out.print("Enter project name: ");
                     String name = sc.nextLine();
                     System.out.print("Enter neighbourhood: ");
@@ -124,8 +125,17 @@ public class ManagerMenu {
                     LocalDate od = LocalDate.parse(sc.nextLine(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                     System.out.print("Enter closing date (yyyy-MM-dd): ");
                     LocalDate cd = LocalDate.parse(sc.nextLine(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                    System.out.print("Enter officer slots (space separated): ");
-                    int slots = sc.nextLine().split(" ").length;
+                    System.out.print("Enter officer slots (space separated e.g. 1 1 1 means 3 slots): ");
+                    int check=0;
+                    do {
+                    slots = sc.nextLine().split(" ").length;
+                    if(slots>10) {
+                    	check=1;
+                    	System.out.print("At most have 10 slots ");
+                    }else {
+                    	check=0;
+                    }
+                    }while(check==1);
 
                     m.createBTOListings(name, hood, t2c, t2px, t3c, t3px, vis, od, cd, slots);
                 }
