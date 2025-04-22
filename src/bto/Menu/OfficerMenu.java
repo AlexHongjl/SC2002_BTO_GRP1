@@ -77,7 +77,7 @@ public class OfficerMenu {
                         int type = sc.nextInt(); sc.nextLine();
                         String unit = (type == 1) ? "2-Room" : "3-Room";
 
-                        if (o.isEligible(p, unit) && o.applyForProject(p, unit)) {
+                        if (o.isEligible(p, unit) && o.applyForProject(p, unit)&&!o.isOfficerInCharge()) {
                             BTOapplication app = new BTOapplication(o.getNRIC(), pid, o);
                             app.updateStatus("Pending Approval", unit);
                             BTOapplication.addApplication(app);
