@@ -139,10 +139,10 @@ public class HDBofficer extends Applicant implements enquiryInterface {
         if (app != null && app.isBookable()) {
             boolean booked = false;
             if (unitType.equals("2-Room") && project.getTwoRoomCount() > 0) {
-                //project.setTwoRoomCount(project.getTwoRoomCount() - 1);
+                project.setTwoRoomCount(project.getTwoRoomCount() - 1);
                 booked = true;
             } else if (unitType.equals("3-Room") && project.getThreeRoomCount() > 0) {
-                //project.setThreeRoomCount(project.getThreeRoomCount() - 1);
+                project.setThreeRoomCount(project.getThreeRoomCount() - 1);
                 booked = true;
             }
 
@@ -151,6 +151,7 @@ public class HDBofficer extends Applicant implements enquiryInterface {
                 System.out.println("Booking successful for " + userID);
             } else {
                 System.out.println("No available units for type: " + unitType);
+                app.updateStatus("Unsuccessful", unitType);
             }
             return;
         }
