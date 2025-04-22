@@ -97,7 +97,7 @@ public class ApplicantMenu {
                 case 4 -> Enquiry.displayAllEnquiries();
                 case 5 -> {
                 	System.out.print("Enter project ID for the project you have enquiry on: ");
-                	int projectid = sc.nextInt();
+                	int projectid = sc.nextInt(); sc.nextLine();
                 	if(Project.getProjectById(projectid)==null) {
                 		System.out.print("invalid project ID ");
                 		break;
