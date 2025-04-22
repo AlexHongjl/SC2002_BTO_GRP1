@@ -6,6 +6,10 @@ package bto.util;
  * The second method should be implemented to create a response to already existing enquiries
  */
 public interface enquiryInterface {
-	 void viewEnquiriesAll();
-	 void replyEnquiry(int enquiryId, String replyMessage);
+	 default void viewEnquiriesAll() {
+		 System.out.println("Error");
+	 }
+	 default void replyEnquiry(int enquiryId, String replyMessage) {
+		 System.out.println("Error");
+	 }
 }

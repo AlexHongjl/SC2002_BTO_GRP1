@@ -56,6 +56,13 @@ public class Project {
     	this.officerList = new ArrayList<>();
     	this.officerApplicantList = new ArrayList<>();
         this.applicationList = new ArrayList<>(); // Initialize application list
+        LocalDate today = LocalDate.now();
+        if (closeDate.isBefore(today) || openDate.isAfter(today)) {
+            this.projectVisibility = false;
+        } else {
+            this.projectVisibility = projectVisibility; // keep original value if date is valid
+        }
+
 
     	if (getCount() <= projects.length) {
     		projects[getCount() - 1] = this; // Add to project list
@@ -217,6 +224,22 @@ public class Project {
     // Overloaded method to handle integer filter values directly
     public static void filterProjects(String filterField, int filterValue) {
         filterProjects(filterField, String.valueOf(filterValue));
+    }
+    //static method to check if projects should be visible
+    public static void refreshProjectVisibilities() {
+        LocalDate today = LocalDate.now();
+
+        for (int i = 0; i < count; i++) {
+            Project p = projects[i];
+            if (p == null) continue;
+
+            if (p.openDate.isAfter(today) || p.closeDate.isBefore(today)) {
+                p.projectVisibility = false;
+            } else {
+            	if(p.openDate == today)
+            		p.projectVisibility = true;
+            }
+        }
     }
 
     // Overloaded method to handle boolean filter values directly
