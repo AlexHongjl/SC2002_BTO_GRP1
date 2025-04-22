@@ -175,7 +175,7 @@ public class OfficerMenu {
                 case 12 -> {
                     Enquiry.displayAllEnquiries();
                     System.out.print("Enquiry ID to reply: ");
-                    int eid = sc.nextInt(); sc.nextLine();
+                    int eid = sc.nextInt();
                     
                     try {
                         String input = sc.nextLine();
