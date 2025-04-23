@@ -8,6 +8,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Creates Officer registration when Officer wishes to handle a project
+ * Displays all projects which can be applied to handle
+ * Checks eligibility of Officer
+ * Checks availability of slots in project for Officers
+ * Updates status of registration accordingly
+ */
 public class OfficerRegistration {
     private String registrationStatus; // Pending approval, Successful, Unsuccessful
     private HDBofficer officer; // Reference to the officer
@@ -16,7 +23,12 @@ public class OfficerRegistration {
     
     private static ArrayList<OfficerRegistration> allRegistrations = new ArrayList<>();
     
-
+    /**
+     * Constructor 
+     * 
+     * @param officer officer to register
+     * @param project project to register for
+     */
     public OfficerRegistration(HDBofficer officer, Project project) {
         this.officer = officer;
         this.project = project;
@@ -37,6 +49,13 @@ public class OfficerRegistration {
             System.out.println("Application succesfully created");
         }
     }
+    
+    /**
+     * Displays all registrations made by Officers based on the status of the registration
+     * Display error message if no registrations found with the status
+     * 
+     * @param givenStatus current status of the registrations to be used for viewing
+     */
     public static void displayAll(String givenStatus) {
         boolean found = false;
 
@@ -62,7 +81,9 @@ public class OfficerRegistration {
         }
     }
 
-
+    /**
+     * Displays all information in the registration created by the Officer
+     */
     public void display() {
         System.out.println("Officer Registration Details:");
         System.out.println("Officer Name: " + officer.getName());
@@ -72,8 +93,6 @@ public class OfficerRegistration {
         System.out.println("Status: " + registrationStatus); // e.g. "pending", "approved", etc.
     }
     
-
-    // === Eligibility Checks ===
     private boolean isEligible() {
         return !isApplicantForSameProject() && !hasOverlappingProjects() && hasAvailableSlots();
     }
@@ -133,7 +152,11 @@ public class OfficerRegistration {
         return !start1.isAfter(end2) && !start2.isAfter(end1);
     }
 
-    // === Status Management ===
+    /**
+     * Allows Manager to approve Officer's registration
+     * Updates the registration with successful if approved
+     * Display error message if no available slots in project
+     */
     public void approveRegistration() {
         if (registrationStatus.equals("Pending approval")) {
             if (hasAvailableSlots()) {
@@ -148,7 +171,12 @@ public class OfficerRegistration {
             System.out.println("Error: Can only approve registrations with status 'Pending approval'. Current status: " + registrationStatus);
         }
     }
-
+    
+    /**
+     * Allows Manager to reject Officer's registration
+     * Updates registration status with unsuccessful
+     * Display message for rejection of registration
+     */
     public void rejectRegistration() {
         if (registrationStatus.equals("Pending approval")) {
             registrationStatus = "Unsuccessful";
@@ -159,36 +187,76 @@ public class OfficerRegistration {
     }
 
 
-    // === Getters and Setters ===
+    /**
+     * Getter method for getting registration status
+     * 
+     * @return registration status
+     */
     public String getRegistrationStatus() {
         return registrationStatus;
     }
-
+    
+    /**
+     * Getter method for getting Officer 
+     * 
+     * @return Officer
+     */
     public HDBofficer getOfficer() {
         return officer;
     }
-
+    
+    /**
+     * Getter method for getting project
+     * 
+     * @return project
+     */
     public Project getProject() {
         return project;
     }
     
+    /**
+     * Getter method for getting date of registration
+     * 
+     * @return registration date
+     */
     public LocalDate getRegistrationDate() {
         return registrationDate;
     }
     
+    /**
+     * Setter method for setting registration status
+     * 
+     * @param status for registration to be updated to
+     */
     public void setRegistrationStatus(String status) {
         this.registrationStatus = status;
     }
-
+    
+    /**
+     * Setter method for setting registration date
+     * 
+     * @param date of registration
+     */
     public void setRegistrationDate(LocalDate date) {
         this.registrationDate = date;
     }
     
+    /**
+     * Getter method for getting list of all registrations created
+     * 
+     * @return list of all Officers registrations
+     */
     public static List<OfficerRegistration> getAllRegistrations() {
         return allRegistrations;
     }
     
-    //Data Persistence
+    /**
+     * Writes all registrations created by Officers back into a CSV file to ensure data persistence
+     * Joined together by ','
+     * Throws IOException if there is an error and prints the stack trace to find out where the error is from
+     * 
+     * @param filename to be written back into
+     */
     public static void saveRegistrationsToCSV(String filename) {
         try (FileWriter writer = new FileWriter(filename)) {
             writer.write("OfficerID,ProjectID,Status,Date\n");
@@ -202,7 +270,13 @@ public class OfficerRegistration {
             e.printStackTrace();
         }
     }
-
+    
+    /**
+     * Loads all Officer registrations from the CSV file into an array list for easier access during the runtime of the program
+     * 
+     * @param filename of Officer registration list
+     * @param allUsers list of all users
+     */
     public static void loadRegistrationsFromCSV(String filename, List<UserPerson> allUsers) {
         allRegistrations.clear();
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {

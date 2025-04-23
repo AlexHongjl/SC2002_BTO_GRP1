@@ -2,6 +2,7 @@ package bto.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * Applicant class that inherits from UserPerson class
  * Applicant is a subclass of UserPerson, inheriting attributes and methods from the superclass
@@ -15,7 +16,16 @@ public class Applicant extends UserPerson {
     protected boolean hasWithdrawn = false;
 
     private final List<Enquiry> enquiries = new ArrayList<>();
-
+    
+    /**
+     * Constructor
+     * 
+     * @param name of Applicant
+     * @param NRIC of Applicant
+     * @param age of Applicant
+     * @param maritalStatus of Applicant
+     * @param password of Applicant
+     */
     public Applicant(String name, String NRIC, int age, String maritalStatus, String password) {
         super(name, NRIC, age, maritalStatus, password, "applicant");
     }
@@ -130,6 +140,8 @@ public class Applicant extends UserPerson {
     
     /**
      * Setter function to set application status
+     * 
+     * @param status of application
      */
     public void setApplicationStatus(String status) {
         this.applicationStatus = status;
@@ -217,7 +229,7 @@ public class Applicant extends UserPerson {
     /**
      * Make changes to enquiry before getting a response
      * 
-     * @param enquiryId 
+     * @param enquiryId for enquiry
      * @param newMessage edited message
      */
     public void editEnquiry(int enquiryId, String newMessage) {
@@ -232,7 +244,7 @@ public class Applicant extends UserPerson {
     /**
      * Delete enquiry that was made
      * 
-     * @param enquiryId
+     * @param enquiryId for enquiry
      */
     public void deleteEnquiry(int enquiryId) {
         enquiries.removeIf(e -> e.getEnquiryID() == enquiryId);
@@ -250,7 +262,7 @@ public class Applicant extends UserPerson {
     /**
      * Setter function for project ID
      * 
-     * @param appliedProjectId
+     * @param appliedProjectId of applicant
      */
 	public void setAppliedProjectId(int appliedProjectId) {
 		this.appliedProjectId = appliedProjectId;
@@ -259,7 +271,7 @@ public class Applicant extends UserPerson {
 	/**
 	   * Setter function for setting withdrawn status
 	   * 
-	   * @param withdrawn
+	   * @param withdrawn if applicant withdrew
 	   */
 	public void setWithdrawn(boolean withdrawn) {
 	    this.hasWithdrawn = withdrawn;

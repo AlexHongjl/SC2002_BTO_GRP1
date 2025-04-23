@@ -22,7 +22,14 @@ public class BTOapplication {
     private String previousStatus;//"",Pending approval,Pending withdrawal, Successful, Unsuccessful
     
     private static ArrayList<BTOapplication> allApplications = new ArrayList<>();
-
+    
+    /**
+     * Constructor
+     * 
+     * @param userID of Applicant
+     * @param projectId of project
+     * @param u user
+     */
     public BTOapplication(String userID, int projectId, Applicant u) {
         this.userID = userID;
         this.projectId = projectId;
@@ -121,8 +128,6 @@ public class BTOapplication {
     /**
      * Displays successful applications
      * Returns true when an application with the successful status has been found and false otherwise
-     * 
-     * @return true or false
      */
     public static void displayStatusSuccessful() {
         System.out.println("=== Successful Applications ===");
@@ -255,7 +260,7 @@ public class BTOapplication {
     /**
      * Setter function to set Applicant for application
      * 
-     * @param user
+     * @param user Applicant
      */
     public void setUser(Applicant user) {
         this.user = user;
@@ -281,6 +286,8 @@ public class BTOapplication {
     
     /**
      * Getter function to get user
+     * 
+     * @return user
      */
     public Applicant getUser() {
     	return user;
@@ -298,8 +305,8 @@ public class BTOapplication {
     /**
      * Removes applications that had been withdrawn
      * 
-     * @param userID 
-     * @param projectId
+     * @param userID of applicant
+     * @param projectId of project
      */
     public static void removeOldWithdrawn(String userID, int projectId) {
         allApplications.removeIf(app ->
@@ -327,6 +334,9 @@ public class BTOapplication {
 
     /**
      * Reads data from CSV and writes into an array list to store the information during run time
+     * 
+     * @param filename name of CSV file
+     * @param users list of users
      */
     public static void loadApplicationsFromCSV(String filename, List<UserPerson> users) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {

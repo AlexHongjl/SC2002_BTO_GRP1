@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"BTO_PROJECT","l":"bto.model"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"BTO_PROJECT","l":"bto"},{"m":"BTO_PROJECT","l":"bto.Menu"},{"m":"BTO_PROJECT","l":"bto.service"},{"m":"BTO_PROJECT","l":"bto.util"}];updateSearchResults();

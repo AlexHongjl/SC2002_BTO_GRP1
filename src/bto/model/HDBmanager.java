@@ -9,15 +9,35 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-//implement hdb manager functionality
+/**
+ * HDBmanagers is a class that extends UserPerson and subsequently implements the EnquiryInterface
+ * Inherits the methods and attributes of the UserPerson class for each Manager person
+ * Implements concrete methods of the methods in the enquiry interface
+ * Has functions to create/edit/delete BTO listings
+ * Approves/Rejects BTO applications and officers registering to handle the project
+ */
 public class HDBmanager extends UserPerson implements enquiryInterface {
     private List<Project> managedProjects; // Only tracks projects this manager owns
-
+    
+    /**
+     * Constructor
+     * 
+     * @param name of manager
+     * @param NRIC of manager
+     * @param age of manager
+     * @param maritalStatus of manager
+     * @param password of manager
+     */
     public HDBmanager(String name, String NRIC, int age, String maritalStatus, String password) {
         super(name, NRIC, age, maritalStatus, password, "manager");
         this.managedProjects = new ArrayList<>();
     }
     
+    /**
+     * Overrides the method in the UserPerson's class
+     * Method implemented uses the superclass's method in addition to adding more
+     * Fits the manager class more as it displays more details that only the managers have
+     */
     @Override
     public void viewOwnStatus() {
         super.viewOwnStatus(); // Calls UserPerson's viewOwnStatus
@@ -27,8 +47,25 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         }
     }
 
-
-    // === Project Management ===
+    /**
+     * Creates project listings with all the details of the listing accounted for
+     * Manager who creates the project listing will automatically become the Manager in charge
+     * Checks whether the manager already has a project under his name during the same period
+     * Returns null if manager is already managing another project
+     * Returns newly created Project should creation be successful
+     * 
+     * @param projectName name of project
+     * @param neighborhood area which project would be built at
+     * @param twoRoomCount number of two rooms to be in the project
+     * @param twoRoompx two room px
+     * @param threeRoomCount number of three rooms to be in the project
+     * @param threeRoompx three room px
+     * @param projectVisibility visibility of project depending on whether manager wants to change turn it on or off
+     * @param openingDate application period where applicants can apply for the project
+     * @param closingDate deadline for application period
+     * @param officerSlots number of officers allowed to handle the project
+     * @return project
+     */
     public Project createBTOListings(String projectName, String neighborhood,
             int twoRoomCount, int twoRoompx,
             int threeRoomCount, int threeRoompx,
@@ -50,7 +87,16 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
 				return newProject;
 				}
 
-
+    /**
+     * Manager able to change the details of the project by updating it with new information
+     * Checks against the project ID to see if project exists
+     * Prints error message and return if no project matches the project ID
+     * Throws an error when invalid value type is input and catches the error to print out error message
+     * 
+     * @param projectID project ID to check if exists
+     * @param field information to be changed in the project
+     * @param newValue new details of the project to be updated
+     */
     public void editBTOListings(int projectID, String field, Object newValue) {
         Project project = Project.getProjectById(projectID);
         if (project == null || !managedProjects.contains(project)) {
@@ -123,7 +169,16 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         }
         
     }
-
+    
+    /**
+     * Manager choosing to delete BTO listing that he has created
+     * Checks if project exists using project ID
+     * Checks if project has active applications, don't allow deletion
+     * checks if project has active registrations, don't allow deletion
+     * Checks if project has no applications or registrations, allow deletion
+     * 
+     * @param projectID ID of project to be deleted
+     */
     public void deleteBTOListings(int projectID) {
         // Find project in both system and manager's list
         Project project = Project.getProjectById(projectID);
@@ -182,7 +237,13 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
     }
 
 
-
+    /**
+     * Changes visibility setting of the target project
+     * Display error message if project not found or person dont have existing permissions to modify project
+     * 
+     * @param projectID project ID to be changed
+     * @param visible visibility setting to be changed to
+     */
     public void toggleProjectVisibility(int projectID, boolean visible) {
         Project project = Project.getProjectById(projectID);
         if (project != null && managedProjects.contains(project)) {
@@ -193,7 +254,12 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         }
     }
 
-    // === Officer Registration Management ===
+    /**
+     * Displays officer registration details that was created under current project
+     * Only allows manager to view registrations under their project
+     * 
+     * @param projectID project ID of registration
+     */
     public void viewOfficerRegistrations(int projectID) {
         Project project = Project.getProjectById(projectID);
         if (project == null || !managedProjects.contains(project)) {
@@ -209,7 +275,14 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
                              ") - Status: " + reg.getRegistrationStatus());
         }
     }
-
+    
+    /**
+     * Manager can approve Officers who wish to register to handle the project
+     * Checks if there is any registrations "Pending Approval"
+     * 
+     * @param projectID ID of project
+     * @param officerNRIC NRIC of officer who registered
+     */
     public void approveOfficerRegistration(int projectID, String officerNRIC) {
         Project project = Project.getProjectById(projectID);
         if (project == null || !managedProjects.contains(project)) {
@@ -227,6 +300,13 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         System.out.println("No pending registration found for officer with NRIC: " + officerNRIC);
     }
     
+    /**
+     * Able to reject officer registration
+     * Checks if officer registration is pending approval
+     * 
+     * @param projectID ID of project
+     * @param officerNRIC NRIC of officer who registered
+     */
     public void rejectOfficerRegistration(int projectID, String officerNRIC) {
         Project project = Project.getProjectById(projectID);
         if (project == null || !managedProjects.contains(project)) {
@@ -245,7 +325,15 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         System.out.println("No pending registration found for officer with NRIC: " + officerNRIC);
     }
 
-    // === Application Management ===
+    /**
+     * Manager able to approve BTO applications made by applicants
+     * Checks if project exists
+     * Checks if there are available room flats that match the BTO applications
+     * Displays error message if no available room flats left
+     * 
+     * @param projectID ID of project
+     * @param applicantNRIC NRIC of applicant who made application
+     */
     public void approveBTOApplication(int projectID, String applicantNRIC) {
         Project project = Project.getProjectById(projectID);
         if (project == null || !managedProjects.contains(project)) {
@@ -277,6 +365,15 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         System.out.println("No pending application found for applicant with NRIC: " + applicantNRIC);
     }
 
+    /**
+     * Manager able to reject BTO application
+     * Checks if application status is "Pending Approval"
+     * Updates status of application to unsuccessful
+     * Gives error message saying application being rejected
+     * 
+     * @param projectID of project
+     * @param applicationNRIC of applicant
+     */
     public void rejectBTOApplication(int projectID, String applicantNRIC) {
         Project project = Project.getProjectById(projectID);
         if (project == null || !managedProjects.contains(project)) {
@@ -297,6 +394,14 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         System.out.println("No pending application found for applicant with NRIC: " + applicantNRIC);
     }
     
+    /**
+     * Manager able to approve withdrawal request by applicants who applied for the project
+     * If successfully allowed to be withdrawn, update project details accordingly
+     * Updates application status to "Withdrawn" and displays message approving withdrawal request
+     * 
+     * @param projectID ID of project
+     * @param applicantNRIC NRIC of Applicant requesting to withdraw from project
+     */
     public void approveWithdrawalRequest(int projectID, String applicantNRIC) {
         Project project = Project.getProjectById(projectID);
         if (project == null || !managedProjects.contains(project)) {
@@ -336,7 +441,15 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
 
         System.out.println("No withdrawal request found for applicant with NRIC: " + applicantNRIC);
     }
-
+    
+    /**
+     * Manager able to reject withdrawal request by Applicants
+     * Upon rejection of withdrawal requests, application status will be changed back to successful
+     * Displays message to show withdrawal rejection
+     * 
+     * @param projectID ID of project
+     * @param applicantNRIC NRIC of applicant
+     */
     public void rejectWithdrawalRequest(int projectID, String applicantNRIC) {
         Project project = Project.getProjectById(projectID);
         if (project == null || !managedProjects.contains(project)) {
@@ -370,13 +483,22 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
 
         System.out.println("No withdrawal request found for applicant with NRIC: " + applicantNRIC);
     }
-    // === Enquiry Management ===
+    
+    /**
+     * Views all enquiries created
+     */
     @Override
     public void viewEnquiriesAll() {
         System.out.println("All Enquiries:");
         Enquiry.displayAllEnquiries();
     }
     
+    /**
+     * View enquiries specific to project
+     * Display error message if project not found
+     * 
+     * @param projectID ID of project
+     */
     public void viewProjectEnquiries(int projectID) {
         Project project = Project.getProjectById(projectID);
         if (project == null) {
@@ -385,11 +507,13 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         }
         
         System.out.println("Enquiries for Project: " + project.getProjectName());
-        // Assuming Enquiry class has method to filter by projectId
-        // This would need to be implemented
-        // Enquiry.displayByProject(projectID);
     }
     
+    /**
+     * Reply to enquiries
+     * Updates enquiry with reply message
+     * Updates status of enquiry to close after reply
+     */
     @Override
     public void replyEnquiry(int enquiryID, String reply) {
         Enquiry enquiry = Enquiry.getByID(enquiryID);
@@ -402,7 +526,13 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         enquiry.setStatus(false);
     }
 
-    // === Reports & Views ===
+    /**
+     * View projects created by the Manager
+     * Can be filtered by keywords
+     * Displays projects created based on the filter keywords
+     * 
+     * @param filter keyword to filter the project details by
+     */
     public void viewMyProjects(String filter) {
         System.out.println("My Managed Projects:");
         
@@ -464,6 +594,14 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         }
     }
     
+    /**
+     * Generates report of the project based on the filter keyword
+     * Displays the report header with details of the project at the top
+     * Displays applications under that specific project
+     * 
+     * @param projectID ID of project
+     * @param filter keyword to be filtered by
+     */
     public void generateReport(int projectID, String filter) {
         Project project = Project.getProjectById(projectID);
         if (project == null || !managedProjects.contains(project)) {
@@ -520,11 +658,15 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         System.out.println("============================================");
     }
     
+    /**
+     * Allows Manager to view all project available regardless of visibility setting 
+     * 
+     * @param field field
+     */
     public void viewAllProjects(String field) {
         Project.displayAllProjects(field);
     }
 
-    // === Helper Methods ===
     private boolean isManagingProjectDuringPeriod(LocalDate newOpening, LocalDate newClosing) {
         for (Project project : managedProjects) {
             if (datesOverlap(project.getOpeningDate(), project.getClosingDate(), newOpening, newClosing)) {
@@ -533,6 +675,12 @@ public class HDBmanager extends UserPerson implements enquiryInterface {
         }
         return false;
     }
+    
+    /**
+     * Add created project to list of all projects managed by the Manager
+     * 
+     * @param project to be added
+     */
     public void addProject(Project project) {
     	managedProjects.add(project);
     }

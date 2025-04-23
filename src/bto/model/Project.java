@@ -14,6 +14,18 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
+/**
+ * This is class for projects to be created
+ * Each project will have many different attributes tied to the project object created
+ * Every project object will be stored in a list of projects
+ * Managers who create the project will automatically be set as the Manager in charge of that projects
+ * Officers can apply to handle the projects based on the availability of officer slots for each project
+ * Allows filter of projects to be displayed to officers and applicant for viewing
+ * Applicants can create BTO applications for project should they wish to apply for a specific project
+ * Projects have opening and closing dates set by the manager
+ * Manager can edit the project details but officers and applicants cannot
+ * Includes helpful methods to ensure project details are set correctly and displayed accordingly to the needs of the user
+ */
 public class Project {
     private int projectId;
     private String projectName;
@@ -35,7 +47,21 @@ public class Project {
     private static int count = 0;
     
     
-
+    /**
+     * Constructor 
+     * 
+     * @param projectName name
+     * @param neighbourhood of project
+     * @param twoRoomCount 2 room count
+     * @param threeRoomCount 3 room count
+     * @param projectVisibility of project
+     * @param openDate of project
+     * @param closeDate of project
+     * @param officerSlots of project
+     * @param managerInCharge of project
+     * @param twoRoompx in project
+     * @param threeRoompx in project
+     */
     public Project(String projectName, String neighbourhood,
             int twoRoomCount, int threeRoomCount,
             boolean projectVisibility, LocalDate openDate,
@@ -71,8 +97,11 @@ public class Project {
     	}
     }
     
-    
-
+    /**
+     * Writes the list of projects back into the original CSV file for data persistence
+     * Includes header to differentiate the categories of information for the project
+     * Throws a IOException to handle error and prints the stack trace for debugging purposes
+     */
     public static void writeCSVProjects() {
         String project = "Project Name,Neighborhood,Type 1,Number of units for Type 1,Selling price for Type 1,Type 2,Number of units for Type 2,Selling price for Type 2,Application opening date,Application closing date,Manager,Officer Slot,Officer\n";
 
@@ -107,6 +136,14 @@ public class Project {
         }
     }
     
+    /**
+     * Filter projects based on the filter keyword and filter values
+     * Uses stream to check and filter from the list of projects
+     * Displays projects filtered by the filter field
+     * 
+     * @param filterField to be filtered by
+     * @param filterValue to be filtered by
+     */
     public static void filterProjects(String filterField, String filterValue) {
         // Create a stream from the projects array, skipping null elements
         List<Project> filteredProjects = Arrays.stream(projects)
@@ -221,11 +258,19 @@ public class Project {
         System.out.println("=================================================");
     }
 
-    // Overloaded method to handle integer filter values directly
+    /**
+     * Overloaded method to handle integer filter values directly
+     * 
+     * @param filterField to be filtered by
+     * @param filterValue to be filtered by 
+     */
     public static void filterProjects(String filterField, int filterValue) {
         filterProjects(filterField, String.valueOf(filterValue));
     }
-    //static method to check if projects should be visible
+    
+    /**
+     * static method to check if projects should be visible
+     */
     public static void refreshProjectVisibilities() {
         LocalDate today = LocalDate.now();
 
@@ -242,10 +287,25 @@ public class Project {
         }
     }
 
-    // Overloaded method to handle boolean filter values directly
+    /**
+     * Overloaded method to handle boolean filter values directly
+     * 
+     * @param filterField to be filtered by 
+     * @param filterValue to be filtered by 
+     */
     public static void filterProjects(String filterField, boolean filterValue) {
         filterProjects(filterField, String.valueOf(filterValue));
     }
+    
+    /**
+     * Filters project applicants based on filter keywords and filter values
+     * Uses streams to filter by eligibility of applicant
+     * Displays the projects available to them based on their eligibility
+     * 
+     * @param filterField to be filtered by 
+     * @param filterValue to be filtered by 
+     * @param applicant to check eligibility
+     */
     public static void filterProjectsApplicant(String filterField, String filterValue, Applicant applicant) {
         // Create a stream of eligible projects for the applicant
         List<Project> filteredProjects = Arrays.stream(projects)
@@ -426,11 +486,22 @@ public class Project {
         System.out.println("==================================================================");
     }
 
-    // Overloaded method to handle integer filter values directly
+    /**
+     *  Overloaded method to handle integer filter values directly
+     *  
+     * @param filterField to be filtered by 
+     * @param filterValue to be filtered by 
+     * @param applicant to be filtered by 
+     */
     public static void filterProjectsApplicant(String filterField, int filterValue, Applicant applicant) {
         filterProjectsApplicant(filterField, String.valueOf(filterValue), applicant);
     }
-
+    
+    /**
+     * Loads all projects from the CSV file into an array list for easier access during the runtime of the program
+     * 
+     * @param Users list of users
+     */
     public static void loadProjectsFromCSV(List<UserPerson> Users) {
         String path = "data/ProjectList.csv";
         count = 0;
@@ -526,7 +597,14 @@ public class Project {
     }
 
 
-      
+      /**
+       * When reading CSV files
+       * Splits each line by ','
+       * Clears buffer after
+       * 
+       * @param line to be read in CSV file
+       * @return array results
+       */
       public static String[] smartSplitCSVLine(String line) {
     	    ArrayList<String> result = new ArrayList<>();
     	    StringBuilder sb = new StringBuilder();
@@ -547,7 +625,10 @@ public class Project {
     	    result.add(sb.toString().trim()); // add last value
     	    return result.toArray(new String[0]);
     	}
-
+      
+      /**
+       * Displays summary of all projects
+       */
       public static void displayAllSummary() {
     	    System.out.println("=========== All Projects ===========");
     	    System.out.println("ID | Name              | Neighbourhood     | Two-Room | Three-Room");
@@ -566,23 +647,48 @@ public class Project {
     	    System.out.println("===============================================================");
     	}
       
-    
+    /**
+     * Getter method for getting list of officers
+     * 
+     * @return list of officers
+     */
     public List<HDBofficer> getOfficerList() {
         return officerList;
     }
     
+    /**
+     * Getter method for getting officers application list
+     * 
+     * @return list of officer applicants
+     */
     public List<OfficerRegistration> getOfficerApplicantList() {
         return this.officerApplicantList;
     }
-
+    
+    /**
+     * Getter method for getting application list
+     * 
+     * @return application list
+     */
     public List<BTOapplication> getApplicationList() {
         return this.applicationList;
     }
-
+    
+    /**
+     * Adds application created to the list of all applications
+     * 
+     * @param application created by applicants
+     */
     public void addApplication(BTOapplication application) {
         this.applicationList.add(application);
     }
-
+    
+    /**
+     * Getter method for getting Officer registrations by the officer ID
+     * 
+     * @param officerID to check against
+     * @return registration by the officer
+     */
     public static OfficerRegistration getOfficerRegistrationByID(String officerID) {
         for (int i = 0; i < count; i++) {
             Project p = projects[i];
@@ -598,7 +704,12 @@ public class Project {
         return null; // not found
     }
     
-    // Method to get application by user ID within this project
+    /**
+     * Getter method for getting application by user ID within this project
+     * 
+     * @param userId to be checked against
+     * @return application created by user
+     */
     public BTOapplication getApplicationByUserId(String userId) {
         for (BTOapplication app : applicationList) {
             if (app.getUserID().equals(userId)) {
@@ -608,7 +719,12 @@ public class Project {
         return null;
     }
     
-    // Static method to find an application by user ID across all projects
+    /** 
+     * Static method to find an application by user ID across all projects
+     * 
+     * @param userId to be checked against
+     * @return application created by user
+     */
     public static BTOapplication findApplicationByUserId(String userId) {
         for (int i = 0; i < count; i++) {
             Project p = projects[i];
@@ -621,7 +737,10 @@ public class Project {
         }
         return null;
     }
-
+    
+    /**
+     * Displays the list of officers for each project
+     */
     public void displayOfficerList() {
         System.out.println("Displaying Officer List...");
         if (officerList == null || officerList.isEmpty()) {
@@ -632,7 +751,10 @@ public class Project {
             System.out.println("Officer: " + officer.getName() + " (NRIC: " + officer.getNRIC() + ")");
         }
     }
-
+    
+    /**
+     * Displays the list of officer applications for each project
+     */
     public void displayApplicantList() {
         System.out.println("Displaying Officer Applicant List...");
         for (OfficerRegistration reg : officerApplicantList) {
@@ -642,6 +764,9 @@ public class Project {
         }
     }
     
+    /**
+     * Displays the list of applications for each project
+     */
     public void displayApplicationList() {
         System.out.println("Displaying BTO Applications for Project " + projectName + ":");
         if (applicationList == null || applicationList.isEmpty()) {
@@ -655,6 +780,13 @@ public class Project {
         }
     }
     
+    /**
+     * Displays all projects
+     * Sorts the list of projects based on the field
+     * Prints all details of the different projects
+     * 
+     * @param field to be checked against
+     */
     public static void displayAllProjects(String field) {
         // Create a list from the projects array, skipping null elements
         List<Project> projectList = new ArrayList<>();
@@ -729,7 +861,14 @@ public class Project {
         System.out.println("============================================");
     }
 
-
+    /**
+     * Displays all applicants in the projects
+     * Checks applicant's marital status and display accordingly
+     * Sorts list of applicants based on the field provided
+     * 
+     * @param field to be checked against
+     * @param applicant applicant user
+     */
     public static void displayAllProjectsApplicant(String field, Applicant applicant) {
         // Create a list from the projects array, including only visible projects that the applicant is eligible for
         List<Project> eligibleProjects = new ArrayList<>();
@@ -822,6 +961,15 @@ public class Project {
         
         System.out.println("===================================================");
     }
+    
+    /**
+     * Display all project details
+     * Displays officers assigned to handle the project, shows error message if no officers handling the project
+     * Displays number of Officer applications
+     * Displays number of Applicant applications
+     * 
+     * @param projectIdToFind project ID to look for
+     */
     public static void display(int projectIdToFind) {
         boolean found = false;
         for (int i = 0; i < count; i++) {
@@ -862,7 +1010,13 @@ public class Project {
         }
     }
 
-    // Method to display all BTO applications with specific status
+    /**
+     * Method to display all BTO applications with specific status
+     * Checks if status match, and displays applications that match
+     * Displays error message if no such applications exist
+     * 
+     * @param status of application
+     */
     public void displayApplicationsByStatus(String status) {
         System.out.println("=== " + status + " Applications for Project " + projectName + " ===");
         boolean found = false;
@@ -877,7 +1031,11 @@ public class Project {
         }
     }
     
-    // Get all applications across all projects
+    /**
+     * Getter method to get list of all applications created
+     * 
+     * @return list of all applications made
+     */
     public static List<BTOapplication> getAllApplications() {
         List<BTOapplication> allApps = new ArrayList<>();
         for (int i = 0; i < count; i++) {
@@ -887,10 +1045,15 @@ public class Project {
         }
         return allApps;
     }
-    
-  //------------------------------------------------------------------separate proj list functions
-    
-
+        
+    /**
+     * Removes project by passing in project ID
+     * Checks project ID to list of projects
+     * Update the count of projects available
+     * 
+     * @param projectId of project
+     * @return true or false
+     */
     public static boolean removeProjectById(int projectId) {
         for (int i = 0; i < getCount(); i++) {
             if (projects[i].projectId == projectId) {
@@ -904,7 +1067,14 @@ public class Project {
         }
         return false;
     }
-
+    
+    /**
+     * Getter method for getting project from list of projects
+     * Checks if project ID matches from project list
+     * 
+     * @param projectId of project
+     * @return project or null
+     */
     public static Project getProjectById(int projectId) {
         for (int i = 0; i < getCount(); i++) {
             if (projects[i].projectId == projectId) {
@@ -913,131 +1083,278 @@ public class Project {
         }
         return null;
     }
-
+    
+    /**
+     * Adds officer registration to list of registrations
+     * 
+     * @param registration of officer
+     */
     public void addOfficerRegistration(OfficerRegistration registration) {
         officerApplicantList.add(registration);
     }
+    
+    /**
+     * Adds officer to list of officers handling the project
+     * Provided Officer is not already in the list
+     * 
+     * @param officer to be added
+     */
     public void addOfficer(HDBofficer officer) {
         if (!officerList.contains(officer)) {
             officerList.add(officer);
         }
     }
     
-    
-    //------------------------------------------------------------------separate get set functions
-    
+    /**
+     * Getter method for getting project ID
+     * 
+     * @return project ID
+     */
     public int getProjectId() {
         return projectId;
     }
-
+    
+    /**
+     * Setter method for setting project ID
+     * 
+     * @param projectId of project
+     */
     public void setProjectId(int projectId) {
         this.projectId = projectId;
     }
-
+    
+    /**
+     * Getter method for getting project name
+     * 
+     * @return project name
+     */
     public String getProjectName() {
         return projectName;
     }
-
+    
+    /**
+     * Setter method for setting project name
+     * 
+     * @param projectName or project
+     */
     public void setProjectName(String projectName) {
         this.projectName = projectName;
     }
-
+    
+    /**
+     * Getter method of getting neighborhood of the project
+     * 
+     * @return neighborhood
+     */
     public String getNeighbourhood() {
         return neighbourhood;
     }
-
+    
+    /**
+     * Setter method for setting neighborhood of project
+     * 
+     * @param neighbourhood of project
+     */
     public void setNeighbourhood(String neighbourhood) {
         this.neighbourhood = neighbourhood;
     }
-
+    
+    /**
+     * Getter method for getting two room count
+     * 
+     * @return two room count
+     */
     public int getTwoRoomCount() {
         return twoRoomCount;
     }
-
+    
+    /**
+     * Setter method for setting count for two room flats
+     * 
+     * @param twoRoomCount of two rooms
+     */
     public void setTwoRoomCount(int twoRoomCount) {
         this.twoRoomCount = twoRoomCount;
     }
-
+    
+    /**
+     * Getter method for getting three room count
+     * 
+     * @return three room count
+     */
     public int getThreeRoomCount() {
         return threeRoomCount;
     }
-
+    
+    /**
+     * Setter method for setting count for three room flats
+     * 
+     * @param threeRoomCount of three rooms
+     */
     public void setThreeRoomCount(int threeRoomCount) {
         this.threeRoomCount = threeRoomCount;
     }
-
+    
+    /**
+     * Getter method for getting project visibility
+     * 
+     * @return current project's visibility
+     */
     public boolean isProjectVisibility() {
         return projectVisibility;
     }
-
+    
+    /**
+     * Setter method to set visibility of the project
+     * 
+     * @param projectVisibility to be set to
+     */
     public void setProjectVisibility(boolean projectVisibility) {
         this.projectVisibility = projectVisibility;
     }
-
+    
+    /**
+     * Getter method for getting manager in charge of the project
+     * 
+     * @return manager in charge of the project
+     */
     public HDBmanager getManagerInCharge() {
         return managerInCharge;
     }
 
-
+    /**
+     * Getter method for getting list of officer registrations
+     * 
+     * @return list of officer registrations
+     */
     public List<OfficerRegistration> getOfficerRegistrations() {
         return officerApplicantList;
     }
     
-
+    /**
+     * Getter method for getting officer list of project
+     * 
+     * @return list of officers
+     */
     public List<HDBofficer> getOfficers() {
         return officerList;
     }
     
-
+    /**
+     * Getter method for getting opening date of project
+     * 
+     * @return opening date
+     */
     public LocalDate getOpeningDate() {
         return openDate;
     }
     
+    /**
+     * Setter method for setting opening date of project
+     * 
+     * @param openDate of project
+     */
     public void setOpeningDate(LocalDate openDate) {
         this.openDate = openDate;
     }
     
+    /**
+     * Getter method for getting closing date of project
+     * 
+     * @return closing date
+     */
     public LocalDate getClosingDate() {
         return closeDate;
     }
     
+    /**
+     * Setter method for setting closing data of project
+     * 
+     * @param closeDate of project
+     */
     public void setClosingDate(LocalDate closeDate) {
         this.closeDate = closeDate;
     }
+    
+    /**
+     * Getter method for getting number of officer slots
+     * 
+     * @return number of officer slots
+     */
     public int getOfficerSlots() {
         return officerSlots;
     }
-    
+    	
+    /**
+     * Setter method for setting amount of officer slots
+     * 
+     * @param officerSlots available slots
+     */
     public void setOfficerSlots(int officerSlots) {
         this.officerSlots = officerSlots;
     }
+    
+    /**
+     * Getter method for getting projects
+     * 
+     * @return projects of project
+     */
     public static Project[] getProjects() {
     	return projects;
     }
 
-
+    /**
+     * Getter method for getting project count 
+     * 
+     * @return count of project
+     */
 	public static int getCount() {
 		return count;
 	}
 
-
+	/**
+	 * Setter method for setting project count
+	 * 
+	 * @param count project count
+	 * @return count
+	 */
 	public static int setCount(int count) {
 		Project.count = count;
 		return count;
 	}
 	
+	/**
+	 * Getter method for getting two room px
+	 * 
+	 * @return two room px
+	 */
 	public int getTwoRoompx() {
 	    return twoRoompx;
 	}
-
+	
+	/**
+	 * Setter method for setting two room px
+	 * 
+	 * @param twoRoompx of project
+	 */
 	public void setTwoRoompx(int twoRoompx) {
 	    this.twoRoompx = twoRoompx;
 	}
-
+	
+	/**
+	 * Getter method for getting three room px
+	 * 
+	 * @return three room px
+	 */
 	public int getThreeRoompx() {
 	    return threeRoompx;
 	}
-
+	
+	/**
+	 * Setter method for setting three room px
+	 * 
+	 * @param threeRoompx of project
+	 */
 	public void setThreeRoompx(int threeRoompx) {
 	    this.threeRoompx = threeRoompx;
 	}

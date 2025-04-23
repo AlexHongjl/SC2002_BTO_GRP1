@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"bto.model","l":"Applicant"}];updateSearchResults();
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"bto.Menu","l":"ApplicantMenu"},{"p":"bto.util","l":"changePW"},{"p":"bto.util","l":"enquiryInterface"},{"p":"bto.service","l":"LoginService"},{"p":"bto","l":"Main"},{"p":"bto.Menu","l":"ManagerMenu"},{"p":"bto.Menu","l":"OfficerMenu"},{"p":"bto.model","l":"UserPerson"}];updateSearchResults();

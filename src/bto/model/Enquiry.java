@@ -21,7 +21,14 @@ public class Enquiry {
     
     private static Enquiry[] Enquiries = new Enquiry[100];
     private static int count = 0;
-
+    
+    /**
+     * Constructor
+     * 
+     * @param enquiryID of enquiry
+     * @param applicantName of applicant
+     * @param message of enquiry
+     */
     public Enquiry(int enquiryID, String applicantName, String message) {
         this.enquiryID = enquiryID;
         this.applicantName = applicantName;
@@ -29,7 +36,15 @@ public class Enquiry {
         this.response = "";
         this.status = true;
     }
-
+    
+    /**
+     * Constructor
+     * 
+     * @param enquiryID of enquiry
+     * @param applicantName of applicant
+     * @param message of enquiry
+     * @param projectId of project
+     */
     public Enquiry(int enquiryID, String applicantName, String message, int projectId) {
         this.enquiryID = enquiryID;
         this.applicantName = applicantName;
@@ -39,6 +54,9 @@ public class Enquiry {
         this.projectId = projectId;
     }
     
+    /**
+     * Displays enquiry details and message
+     */
     public void display() {
         System.out.println("Enquiry ID: " + enquiryID);
         System.out.println("Applicant Name: " + applicantName);
@@ -49,6 +67,14 @@ public class Enquiry {
         System.out.println("-------------------------------");
     }
     
+    /**
+     * Displays enquiry by specified user
+     * Checks target applicant name against enquiry applicant name
+     * Returns true if target applicant's enquiry has been found, return false otherwise
+     * 
+     * @param applicantName target name
+     * @return true or false
+     */
     public static boolean displayByUser(String applicantName) {
         boolean found = false;
 
@@ -66,6 +92,14 @@ public class Enquiry {
         return found;
     }
     
+    /**
+     * Displays enquiry by specified enquiry ID
+     * Checks target applicant name against enquiry ID
+     * Returns true if target enquiry ID has been found, return false otherwise
+     * 
+     * @param enquiryID target ID
+     * @return true or false
+     */
     public static Enquiry getByID(int enquiryID) {
         for (int i = 0; i < count; i++) {
             if (Enquiries[i].getEnquiryID() == enquiryID) {
@@ -75,7 +109,10 @@ public class Enquiry {
         return null; // not found
     }
 
-    // Display all enquiries
+    /**
+     * Displays all created enquiries
+     * Returns when no enquiries create, else display all enquiries
+     */
     public static void displayAllEnquiries() {
         if (count == 0) {
             System.out.println("No enquiries found.");
@@ -87,7 +124,13 @@ public class Enquiry {
         }
     }
 
-    // Add enquiry
+    /**
+     * Creates an enquiry by passing in the message
+     * Checks if maximum enquiry limit has been reached
+     * Returns when list is full and add new enquiry otherwise
+     * 
+     * @param e enquiry message
+     */
     public static void addEnquiry(Enquiry e) {
         if (count >= Enquiries.length) {
             System.out.println("Enquiry list full.");
@@ -98,7 +141,13 @@ public class Enquiry {
         System.out.println("Enquiry added successfully.");
     }
 
-    // Edit enquiry
+    /**
+     * Edit enquiry by passing in enquiry ID to be edited and edited message
+     * Updates enquiry with new message
+     * 
+     * @param enquiryID enquiry ID to be edited
+     * @param newMessage updated message
+     */
     public static void editEnquiry(int enquiryID, String newMessage) {
         for (int i = 0; i < count; i++) {
             if (Enquiries[i].getEnquiryID() == enquiryID) {
@@ -110,7 +159,14 @@ public class Enquiry {
         System.out.println("Enquiry not found.");
     }
 
-    // Delete enquiry
+    /**
+     * Delete enquiry by passing in enquiry ID
+     * Checks if enquiry exists by checking enquiry ID
+     * Return once deleted
+     * Prints message when enquiry ID not found
+     * 
+     * @param enquiryID target ID
+     */
     public static void deleteEnquiry(int enquiryID) {
         for (int i = 0; i < count; i++) {
             if (Enquiries[i].getEnquiryID() == enquiryID) {
@@ -126,62 +182,126 @@ public class Enquiry {
         System.out.println("Enquiry not found.");
     }
     
-    
+    /**
+     * Creates response to enquiries
+     * Displays reply message
+     * Sets status of false to close enquiry
+     * 
+     * @param replyMessage response message
+     */
     public void reply(String replyMessage) {
         this.response = replyMessage;
         System.out.println("Reply Sent: " + replyMessage);
         this.setStatus(false);
     }
-
+    
+    /**
+     * Changes status of enquiry message
+     * If true, change to false
+     * If false, change to true
+     * Prints message when status successfully changed
+     */
     public void changeStatus() {
         this.status = !this.status;
         System.out.println("Enquiry Status Changed: " + status);
     }
     
     
-    //------------------------------------------------------------------separate get set functions
+    /**
+     * Getter function for getting enquiry ID
+     * 
+     * @return enquiryID of enquiry
+     */
     public int getEnquiryID() {
         return enquiryID;
     }
-
+    
+    /**
+     * Setter function to set enquiry message
+     * 
+     * @param enquiryID of enquiry
+     */
     public void setEnquiryID(int enquiryID) {
         this.enquiryID = enquiryID;
     }
     
+    /**
+     * Getter function for getting Applicant's name
+     * 
+     * @return Applicant's name
+     */
     public String getApplicantName() {
         return applicantName;
     }
     
+    /**
+     * Getter function for getting project ID
+     * 
+     * @return project ID
+     */
     public int getProjectId() {
         return projectId;
     }
-
+    
+    /**
+     * Setter function for setting Applicant's name
+     * 
+     * @param applicantName Applicant's name
+     */
     public void setApplicantName(String applicantName) {
         this.applicantName = applicantName;
     }
 
-    
+    /**
+     * Getter function for getting enquiry message
+     * 
+     * @return enquiry message
+     */
     public String getMessage() {
         return message;
     }
-
+    
+    /**
+     * Setter function for setting enquiry message
+     * 
+     * @param message to set
+     */
     public void setMessage(String message) {
         this.message = message;
     }
     
+    /**
+     * Setter function for setting reply message
+     * 
+     * @param response reply message
+     */
     public void setResponse(String response) {
         this.response = response;
     }
     
+    /**
+     * Setter function for setting enquiry status
+     * 
+     * @param status to set
+     */
     public void setStatus(boolean status) {
         this.status = status;
     }
     
+    /**
+     * Getter function for enquiry count
+     * 
+     * @return count
+     */
     public static int getCount() {
         return count;
     }
     
-    //Data Persistence
+    /**
+     * Writes back and stores created enquiries to CSV file, ensuring data persistence
+     * 
+     * @param filename filename to be saved into
+     */
     public static void saveEnquiriesToCSV(String filename) {
         try (FileWriter writer = new FileWriter(filename)) {
             writer.write("ID,Name,Message,Response,Status,ProjectID\n");
@@ -196,7 +316,12 @@ public class Enquiry {
             e.printStackTrace();
         }
     }
-
+    
+    /**
+     * Reads data from CSV and writes into an array list to store the information during run time
+     * 
+     * @param filename to be loaded
+     */
     public static void loadEnquiriesFromCSV(String filename) {
         count = 0;
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {

@@ -20,7 +20,7 @@ public class Main {
 	   * Has a login function to identify the type of user logging in
 	   * User can logout whenever they wish
 	   * 
-	   * @param args
+	   * @param args String[] args
 	   */
     public static void main(String[] args) {
     	
