@@ -59,13 +59,17 @@ public class OfficerMenu {
                         Project.display(o.getAppliedProjectId());
                         a++;
                 	}
-                    if(o.isOfficerInCharge()||o.hasPendingReg()) {
-                    	Project.display(o.getRegProj().get(0).getProjectId());
-                    	a++;
+                    	for (OfficerRegistration reg : o.getOfficerApplications()) {
+                            if (!reg.getRegistrationStatus().equalsIgnoreCase("Unsuccessful")) {
+                                Project.display(reg.getProject().getProjectId());
+                            
+                            a++;
                     }
-                    if (a==0)
+                    	}
+                    if (a==0) {
                         Project.displayAllProjectsApplicant(saved_filter, o);
                 }
+                    	}
                 case 2 -> {
                     try {
                         System.out.print("Enter project ID: ");
