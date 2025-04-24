@@ -1,7 +1,7 @@
-Name,NRIC,Age,Marital Status,Password
+﻿Name,NRIC,Age,Marital Status,Password
 Daniel,T2109876H,36,Single,password
 Emily,S6543210I,28,Single,password
-David,T1234567J,29,Married,password123
+David,T1234567J,29,Married,password
 Nora,S1543213I,48,Single,password
 Noah,S2543212I,38,Married,password
 Nova,S3543211I,28,Married,password
