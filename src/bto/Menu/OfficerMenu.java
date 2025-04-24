@@ -254,6 +254,7 @@ public class OfficerMenu {
                         selected.display();
                         System.out.print("Book unit? (Y/N): ");
                         if (sc.nextLine().trim().equalsIgnoreCase("Y")) {
+                        	selected.getUser().bookFlat(selected.getUnitType());
                             o.bookUnitForApplicant(aid, selected.getUnitType(), Project.getProjectById(selected.getProjectId()));
                             o.generateReceipt(aid);
                         }
