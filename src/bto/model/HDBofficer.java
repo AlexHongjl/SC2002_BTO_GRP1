@@ -38,6 +38,17 @@ public class HDBofficer extends Applicant implements enquiryInterface {
         this.appliedProjectIDs = new ArrayList<>();
         this.officerApplications = new ArrayList<>();
     }
+
+    public boolean hasPendingReg() {
+        for (OfficerRegistration offReg : officerApplications) {
+            String status = offReg.getApplicationStatus();
+            if (status.equalsIgnoreCase("Pending Approval") || status.equalsIgnoreCase("Successful")) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     
     /**
      * Checks if registered projects exists
@@ -352,7 +363,7 @@ public class HDBofficer extends Applicant implements enquiryInterface {
         if (newStart == null || newEnd == null) return false;
 
         for (OfficerRegistration registration : officerApplications) {
-            if (registration.getRegistrationStatus().equalsIgnoreCase("Rejected")) {
+            if (registration.getRegistrationStatus().equalsIgnoreCase("Unsuccessful")) {
                 continue;
             }
             

@@ -59,7 +59,7 @@ public class OfficerMenu {
                         Project.display(o.getAppliedProjectId());
                         a++;
                 	}
-                    if(o.isOfficerInCharge()) {
+                    if(o.isOfficerInCharge()||o.hasPendingReg()) {
                     	Project.display(o.getRegProj().get(0).getProjectId());
                     	a++;
                     }
