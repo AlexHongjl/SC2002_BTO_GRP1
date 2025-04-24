@@ -164,10 +164,8 @@ public class Applicant extends UserPerson {
      * @param flatType flat type to be booked
      */
     public void bookFlat(String flatType) {
-        if (applicationStatus.equals("Successful")) {
             this.flatTypeBooked = flatType;
             this.applicationStatus = "Booked";
-        }
     }
     
     /**

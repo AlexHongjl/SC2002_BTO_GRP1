@@ -376,9 +376,9 @@ public class BTOapplication {
        
                 applicant.setAppliedProjectId(projectId);
                 applicant.setApplicationStatus(status);
-                if(status.equalsIgnoreCase("booked")) {
-                	app.getUser().bookFlat(app.getUnitType());
-                }
+                if(status.equalsIgnoreCase("booked"))
+                applicant.bookFlat(app.getUnitType());
+  
                 applicant.setWithdrawn(status.equalsIgnoreCase("Withdrawn"));
 
                 Project p = Project.getProjectById(projectId);
