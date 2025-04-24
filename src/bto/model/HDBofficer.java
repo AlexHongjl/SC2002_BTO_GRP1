@@ -41,7 +41,7 @@ public class HDBofficer extends Applicant implements enquiryInterface {
 
     public boolean hasPendingReg() {
         for (OfficerRegistration offReg : officerApplications) {
-            String status = offReg.getApplicationStatus();
+            String status = offReg.getRegistrationStatus();
             if (status.equalsIgnoreCase("Pending Approval") || status.equalsIgnoreCase("Successful")) {
                 return true;
             }
