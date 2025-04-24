@@ -58,9 +58,9 @@ public class UserPerson {
 	    }
 
 	    // Optional: Debug print
-	    for (UserPerson user : target) {
-	        System.out.println(user.getName() + " | " + user.getNRIC() + " | " + user.getUserType());
-	    }
+	    //for (UserPerson user : target) {
+	        //System.out.println(user.getName() + " | " + user.getNRIC() + " | " + user.getUserType());
+	    //}
 	}
 	
 	/**
