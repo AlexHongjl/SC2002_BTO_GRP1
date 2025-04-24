@@ -255,7 +255,12 @@ public class HDBofficer extends Applicant implements enquiryInterface {
 
             if (booked) {
                 app.updateStatus("Booked", unitType);
-                System.out.println("Booking successful for " + userID);
+    
+                // Update flatTypeBooked directly from the user reference in BTOapplication
+                Applicant applicant = app.getUser();
+                if (applicant != null) {
+                    applicant.bookFlat(unitType);;
+                }
             } else {
                 System.out.println("No available units for type: " + unitType);
                 app.updateStatus("Unsuccessful", unitType);
