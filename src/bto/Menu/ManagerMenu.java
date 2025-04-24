@@ -140,7 +140,7 @@ public class ManagerMenu {
                     LocalDate od = LocalDate.parse(sc.nextLine(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                     System.out.print("Enter closing date (yyyy-MM-dd): ");
                     LocalDate cd = LocalDate.parse(sc.nextLine(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                    System.out.print("Enter officer slots (space separated e.g. 1 1 1 means 3 slots): ");
+                    System.out.print("Enter officer slots (space separated e.g. 1 1 1 means 3 slots)(max 10): ");
                     int check=0;
                     do {
                     slots = sc.nextLine().split(" ").length;
